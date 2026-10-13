@@ -47,6 +47,14 @@ const CARD_NUMBER = "5614688705522596";
 const CLICK_P2P_URL = "https://my.click.uz/clickp2p/AD55BA719ACF0C31B5F5452F1E1BA7E74AF221A3E8877AB23189C4C8743368B6";
 const PAYME_P2P_URL = "https://payme.uz/fallback/pay?card=" + CARD_NUMBER;
 
+// Запрос к API с JWT-токеном пользователя
+function authFetch(url: string, init: RequestInit = {}) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('tahrir_token') : null;
+  const headers = new Headers(init.headers);
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  return fetch(url, { ...init, headers });
+}
+
 interface UserData {
   id: number;
   identifier: string;
@@ -160,11 +168,22 @@ export default function Home() {
 
   const [isProcessingDoc, setIsProcessingDoc] = useState(false);
 
-  const loadUserWallet = useCallback(async (uid: number) => {
+  const resetSession = useCallback(() => {
+    localStorage.removeItem('tahrir_user');
+    localStorage.removeItem('tahrir_token');
+    setUser(null);
+    setUserCoins(0);
+    setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
+  }, []);
+
+  const loadUserWallet = useCallback(async () => {
     setIsLoadingWallet(true);
     try {
-      const res = await fetch(`${API_URL}/api/wallet/${uid}`);
-      if (res.ok) {
+      const res = await authFetch(`${API_URL}/api/wallet`);
+      if (res.status === 401) {
+        resetSession();
+        addToast('warning', 'Sessiya tugadi', 'Iltimos, qaytadan tizimga kiring');
+      } else if (res.ok) {
         const data = await res.json();
         setWalletStats(data);
         setUserCoins(data.coins);
@@ -174,20 +193,23 @@ export default function Home() {
     } finally {
       setIsLoadingWallet(false);
     }
-  }, []);
+  }, [resetSession, addToast]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('tahrir_user');
-    if (savedUser) {
+    const savedToken = localStorage.getItem('tahrir_token');
+    if (savedUser && savedToken) {
       try {
         const parsed = JSON.parse(savedUser);
         setUser(parsed);
-        loadUserWallet(parsed.id);
+        loadUserWallet();
       } catch {
-        localStorage.removeItem('tahrir_user');
+        resetSession();
       }
+    } else if (savedUser) {
+      resetSession();
     }
-  }, [loadUserWallet]);
+  }, [loadUserWallet, resetSession]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -220,7 +242,7 @@ export default function Home() {
 
     const polling = setInterval(async () => {
       try {
-        const res = await fetch(`${API_URL}/api/payment/check-status/${activeOrder.orderId}`);
+        const res = await authFetch(`${API_URL}/api/payment/check-status/${activeOrder.orderId}`);
         if (res.ok) {
           const data = await res.json();
           if (data.status === 'PAID') {
@@ -230,7 +252,7 @@ export default function Home() {
             setSuccessCoins(totalGained);
             setPaymentSuccess(true);
             setActiveOrder(null);
-            if (user) await loadUserWallet(user.id);
+            if (user) await loadUserWallet();
           }
         }
       } catch {
@@ -252,29 +274,35 @@ export default function Home() {
       return;
     }
 
-    const exactAmount = pkg.numericPrice;
-    const clientOrderId = `ord_${Date.now()}_${user.id}`;
-
+    let order: { orderId: string; amount: number };
     try {
-      await fetch(`${API_URL}/api/payment/create-order`, {
+      const res = await authFetch(`${API_URL}/api/payment/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: clientOrderId,
-          userId: user.id,
-          packageId: pkg.id,
-          amount: exactAmount,
-          coins: pkg.amount + (pkg.bonus || 0)
-        })
+        body: JSON.stringify({ packageId: pkg.id })
       });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        resetSession();
+        setShowShop(false);
+        setAuthMode('login');
+        setShowAuthModal(true);
+        return;
+      }
+      if (!res.ok || !data.orderId) {
+        addToast('error', 'Xatolik', data.error || 'Buyurtma yaratib boʻlmadi');
+        return;
+      }
+      order = { orderId: data.orderId, amount: data.amount };
     } catch {
-      // Server javob bermasa ham to'lov oynasi ochiladi
+      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi');
+      return;
     }
 
     setActiveOrder({
-      orderId: clientOrderId,
+      orderId: order.orderId,
       pkg,
-      exactAmount: exactAmount
+      exactAmount: order.amount
     });
     setTimeLeft(600);
     setShowShop(false);
@@ -320,7 +348,7 @@ export default function Home() {
       setAuthIdentifier('');
       setAuthPassword('');
       setAuthName('');
-      loadUserWallet(data.user.id);
+      loadUserWallet();
       addToast('success', 'Muvaffaqiyatli!', authMode === 'login' ? 'Tizimga xush kelibsiz!' : 'Yangi hisob ochildi va +15 tanga berildi!');
     } catch {
       setAuthError('Serverga ulanishda xatolik yuz berdi');
@@ -330,11 +358,7 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('tahrir_user');
-    localStorage.removeItem('tahrir_token');
-    setUser(null);
-    setUserCoins(0);
-    setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
+    resetSession();
     addToast('info', 'Chiqildi', 'Hisobdan chiqdingiz');
   };
 
@@ -490,10 +514,9 @@ export default function Home() {
     
     const formData = new FormData();
     formData.append('document', file);
-    formData.append('userId', String(user.id));
 
     try {
-      const res = await fetch(`${API_URL}/api/check-file`, {
+      const res = await authFetch(`${API_URL}/api/check-file`, {
         method: 'POST',
         body: formData,
       });
@@ -510,7 +533,7 @@ export default function Home() {
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
         addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-{pageInfo.requiredCoins} tanga).`);
-        await loadUserWallet(user.id);
+        await loadUserWallet();
       } else {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Hujjatni qayta ishlashda xatolik yuz berdi.');
