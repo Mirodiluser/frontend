@@ -47,6 +47,9 @@ const CARD_NUMBER = "5614688705522596";
 const CLICK_P2P_URL = "https://my.click.uz/clickp2p/AD55BA719ACF0C31B5F5452F1E1BA7E74AF221A3E8877AB23189C4C8743368B6";
 const PAYME_P2P_URL = "https://payme.uz/fallback/pay?card=" + CARD_NUMBER;
 
+// Tugallanmagan buyurtma shu kalit ostida saqlanadi (sahifa qayta yuklansa ham to'lov kuzatiladi)
+const PENDING_ORDER_KEY = 'tahrir_pending_order';
+
 interface UserData {
   id: number;
   identifier: string;
@@ -73,6 +76,25 @@ interface Toast {
   title: string;
   message: string;
 }
+
+interface ActiveOrder {
+  orderId: string;
+  pkg: CoinPackage;
+  exactAmount: number; // serverdan kelgan aniq to'lov summasi (har bir buyurtma uchun noyob)
+  coins: number;
+  expiresAt: number; // ms, brauzer soati bo'yicha
+}
+
+// DIQQAT: narxlar va bonuslar serverdagi PACKAGES (backend/payments.js) bilan mos bo'lishi shart.
+// Haqiqiy narxni server hisoblaydi, bu yerdagi qiymatlar faqat ko'rsatish uchun.
+const coinPackages: CoinPackage[] = [
+  { id: 'pkg_15', amount: 15, priceUzs: '7 990 soʻm', priceUsd: '$0.69', numericPrice: 7990, badge: 'Boshlangʻich', iconType: 'basic' },
+  { id: 'pkg_50', amount: 50, bonus: 5, priceUzs: '22 990 soʻm', priceUsd: '$1.95', numericPrice: 22990, badge: 'Tejamkor (-5%)', iconType: 'basic' },
+  { id: 'pkg_100', amount: 100, bonus: 15, priceUzs: '42 990 soʻm', priceUsd: '$3.65', numericPrice: 42990, popular: true, badge: '🔥 Eng ommabop (-10%)', iconType: 'popular' },
+  { id: 'pkg_250', amount: 250, bonus: 40, priceUzs: '99 990 soʻm', priceUsd: '$8.45', numericPrice: 99990, bestValue: true, badge: '⚡ Super Tejamkor (-15%)', iconType: 'popular' },
+  { id: 'pkg_500', amount: 500, bonus: 80, priceUzs: '169 990 soʻm', priceUsd: '$14.40', numericPrice: 169990, badge: '🎓 OAK / Katta Tejamkor (-20%)', iconType: 'vip' },
+  { id: 'pkg_1200', amount: 1000, bonus: 150, priceUzs: '309 990 soʻm', priceUsd: '$26.25', numericPrice: 309990, badge: '👑 VIP Cheksiz (-25%)', iconType: 'vip' },
+];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
@@ -114,25 +136,14 @@ export default function Home() {
   });
 
   // To'lov jarayoni holatlari
-  const [activeOrder, setActiveOrder] = useState<{
-    orderId: string;
-    pkg: CoinPackage;
-    exactAmount: number;
-  } | null>(null);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [activeOrder, setActiveOrder] = useState<ActiveOrder | null>(null);
+  const [payModalOpen, setPayModalOpen] = useState(false);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [cardCopied, setCardCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [successCoins, setSuccessCoins] = useState(0);
-
-  const coinPackages: CoinPackage[] = [
-    { id: 'pkg_15', amount: 15, priceUzs: '7 990 soʻm', priceUsd: '$0.69', numericPrice: 7990, badge: 'Boshlangʻich', iconType: 'basic' },
-    { id: 'pkg_50', amount: 50, bonus: 5, priceUzs: '22 990 soʻm', priceUsd: '$1.95', numericPrice: 22990, badge: 'Tejamkor (-5%)', iconType: 'basic' },
-    { id: 'pkg_100', amount: 100, bonus: 15, priceUzs: '42 990 soʻm', priceUsd: '$3.65', numericPrice: 42990, popular: true, badge: '🔥 Eng ommabop (-10%)', iconType: 'popular' },
-    { id: 'pkg_250', amount: 250, bonus: 40, priceUzs: '99 990 soʻm', priceUsd: '$8.45', numericPrice: 99990, bestValue: true, badge: '⚡ Super Tejamkor (-15%)', iconType: 'popular' },
-    { id: 'pkg_500', amount: 500, bonus: 80, priceUzs: '169 990 soʻm', priceUsd: '$14.40', numericPrice: 169990, badge: '🎓 OAK / Katta Tejamkor (-20%)', iconType: 'vip' },
-    { id: 'pkg_1200', amount: 1000, bonus: 150, priceUzs: '309 990 soʻm', priceUsd: '$26.25', numericPrice: 309990, badge: '👑 VIP Cheksiz (-25%)', iconType: 'vip' },
-  ];
 
   const [pageInfo, setPageInfo] = useState<{ pages: number; requiredCoins: number } | null>(null);
   const [isCountingPages, setIsCountingPages] = useState(false);
@@ -160,10 +171,39 @@ export default function Home() {
 
   const [isProcessingDoc, setIsProcessingDoc] = useState(false);
 
+  // Sessiyani to'liq tozalash (chiqish yoki token eskirganda)
+  const clearSession = useCallback(() => {
+    localStorage.removeItem('tahrir_user');
+    localStorage.removeItem('tahrir_token');
+    localStorage.removeItem(PENDING_ORDER_KEY);
+    setUser(null);
+    setUserCoins(0);
+    setActiveOrder(null);
+    setPayModalOpen(false);
+    setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
+  }, []);
+
+  // Barcha himoyalangan so'rovlar shu orqali ketadi: token avtomatik qo'shiladi,
+  // token yaroqsiz bo'lsa foydalanuvchi qayta kirishga yo'naltiriladi
+  const authFetch = useCallback(async (path: string, init: RequestInit = {}) => {
+    const token = localStorage.getItem('tahrir_token');
+    const headers = new Headers(init.headers);
+    if (token) headers.set('Authorization', `Bearer ${token}`);
+
+    const res = await fetch(`${API_URL}${path}`, { ...init, headers });
+    if (res.status === 401) {
+      clearSession();
+      setAuthMode('login');
+      setShowAuthModal(true);
+      addToast('warning', 'Sessiya tugadi', 'Iltimos, hisobingizga qaytadan kiring.');
+    }
+    return res;
+  }, [clearSession, addToast]);
+
   const loadUserWallet = useCallback(async (uid: number) => {
     setIsLoadingWallet(true);
     try {
-      const res = await fetch(`${API_URL}/api/wallet/${uid}`);
+      const res = await authFetch(`/api/wallet/${uid}`);
       if (res.ok) {
         const data = await res.json();
         setWalletStats(data);
@@ -174,7 +214,7 @@ export default function Home() {
     } finally {
       setIsLoadingWallet(false);
     }
-  }, []);
+  }, [authFetch]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('tahrir_user');
@@ -189,60 +229,116 @@ export default function Home() {
     }
   }, [loadUserWallet]);
 
+  // Sahifa qayta ochilganda (masalan, Click/Payme ilovasidan qaytganda) tugallanmagan buyurtmani tiklaymiz
+  useEffect(() => {
+    if (!user) return;
+    try {
+      const raw = localStorage.getItem(PENDING_ORDER_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const pkg = coinPackages.find((p) => p.id === saved.packageId);
+      if (!pkg || saved.userId !== user.id || typeof saved.orderId !== 'string') {
+        localStorage.removeItem(PENDING_ORDER_KEY);
+        return;
+      }
+      const expiresAt = Number(saved.expiresAt);
+      setActiveOrder({
+        orderId: saved.orderId,
+        pkg,
+        exactAmount: Number(saved.exactAmount),
+        coins: Number(saved.coins),
+        expiresAt,
+      });
+      // Muddati o'tgan bo'lsa oynani ochmaymiz, lekin to'langan-to'lanmaganini baribir tekshiramiz
+      setPayModalOpen(expiresAt > Date.now());
+    } catch {
+      localStorage.removeItem(PENDING_ORDER_KEY);
+    }
+  }, [user]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setShowAuthModal(false);
         setShowShop(false);
         setSelectedPackage(null);
-        if (!paymentSuccess) setActiveOrder(null);
+        // To'lov oynasi yopilsa ham to'lov fonda kuzatiladi
+        setPayModalOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [paymentSuccess]);
+  }, []);
 
-  // Taymer va to'lovni avtomatik tekshirish
+  // Qolgan vaqt hisoblagichi (muddatni server belgilaydi)
   useEffect(() => {
-    if (!activeOrder || paymentSuccess) return;
+    if (!activeOrder) return;
+    const tick = () => setTimeLeft(Math.max(0, Math.floor((activeOrder.expiresAt - Date.now()) / 1000)));
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, [activeOrder]);
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setActiveOrder(null);
-          addToast('warning', 'Vaqt tugadi', "To'lov sessiyasi muddati tugadi. Iltimos qaytadan urinib ko'ring.");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // To'lovni avtomatik tekshirish: har 3 soniyada va sahifaga qaytganda darhol
+  useEffect(() => {
+    if (!activeOrder || !user) return;
 
-    const polling = setInterval(async () => {
+    const order = activeOrder;
+    const userId = user.id;
+    let stopped = false;
+
+    const finish = () => {
+      stopped = true;
+      localStorage.removeItem(PENDING_ORDER_KEY);
+      setActiveOrder(null);
+      setPayModalOpen(false);
+    };
+
+    const check = async () => {
+      if (stopped) return;
       try {
-        const res = await fetch(`${API_URL}/api/payment/check-status/${activeOrder.orderId}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.status === 'PAID') {
-            clearInterval(timer);
-            clearInterval(polling);
-            const totalGained = activeOrder.pkg.amount + (activeOrder.pkg.bonus || 0);
-            setSuccessCoins(totalGained);
-            setPaymentSuccess(true);
-            setActiveOrder(null);
-            if (user) await loadUserWallet(user.id);
-          }
+        const res = await authFetch(`/api/payment/check-status/${encodeURIComponent(order.orderId)}`);
+        if (stopped) return;
+        if (res.status === 401) {
+          stopped = true; // authFetch foydalanuvchini allaqachon chiqarib yubordi
+          return;
+        }
+        if (res.status === 404) {
+          finish();
+          return;
+        }
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (stopped) return;
+
+        if (data.status === 'PAID') {
+          finish();
+          setSuccessCoins(typeof data.coins === 'number' ? data.coins : order.coins);
+          setPaymentSuccess(true);
+          await loadUserWallet(userId);
+        } else if (data.status === 'EXPIRED') {
+          finish();
+          addToast('warning', 'Vaqt tugadi', "To'lov sessiyasi muddati tugadi. Agar to'lovni yuborgan bo'lsangiz, qo'llab-quvvatlash xizmatiga murojaat qiling.");
         }
       } catch {
-        // Tarmoq xatolarini sokin o'tkazib yuboramiz
+        // Tarmoq xatolarini sokin o'tkazib yuboramiz, keyingi urinishda qayta tekshiramiz
       }
-    }, 3000);
+    };
+
+    check();
+    const polling = setInterval(check, 3000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') check();
+    };
+    document.addEventListener('visibilitychange', onVisible);
 
     return () => {
-      clearInterval(timer);
+      stopped = true;
       clearInterval(polling);
+      document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [activeOrder, paymentSuccess, user, loadUserWallet, addToast]);
+  }, [activeOrder, user, authFetch, loadUserWallet, addToast]);
 
   const handleStartPayment = async (pkg: CoinPackage) => {
     if (!user) {
@@ -251,34 +347,52 @@ export default function Home() {
       setShowAuthModal(true);
       return;
     }
+    if (isCreatingOrder) return;
 
-    const exactAmount = pkg.numericPrice;
-    const clientOrderId = `ord_${Date.now()}_${user.id}`;
-
+    setIsCreatingOrder(true);
     try {
-      await fetch(`${API_URL}/api/payment/create-order`, {
+      // Serverga faqat paket id yuboriladi: narx va tangalar sonini server o'zi belgilaydi
+      const res = await authFetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: clientOrderId,
-          userId: user.id,
-          packageId: pkg.id,
-          amount: exactAmount,
-          coins: pkg.amount + (pkg.bonus || 0)
-        })
+        body: JSON.stringify({ packageId: pkg.id }),
       });
-    } catch {
-      // Server javob bermasa ham to'lov oynasi ochiladi
-    }
+      const data = await res.json().catch(() => ({}));
 
-    setActiveOrder({
-      orderId: clientOrderId,
-      pkg,
-      exactAmount: exactAmount
-    });
-    setTimeLeft(600);
-    setShowShop(false);
-    setSelectedPackage(null);
+      if (!res.ok || !data.orderId || typeof data.amount !== 'number') {
+        // 401 holatini authFetch o'zi hal qiladi
+        if (res.status !== 401) {
+          addToast('error', 'Xatolik', data.error || "Buyurtma yaratib bo'lmadi. Iltimos, birozdan so'ng qayta urinib ko'ring.");
+        }
+        return;
+      }
+
+      const order: ActiveOrder = {
+        orderId: data.orderId,
+        pkg,
+        exactAmount: data.amount,
+        coins: Number(data.coins) || pkg.amount + (pkg.bonus || 0),
+        expiresAt: Date.now() + (Number(data.expiresInSec) || 0) * 1000,
+      };
+
+      localStorage.setItem(PENDING_ORDER_KEY, JSON.stringify({
+        orderId: order.orderId,
+        packageId: pkg.id,
+        userId: user.id,
+        exactAmount: order.exactAmount,
+        coins: order.coins,
+        expiresAt: order.expiresAt,
+      }));
+
+      setActiveOrder(order);
+      setPayModalOpen(true);
+      setShowShop(false);
+      setSelectedPackage(null);
+    } catch {
+      addToast('error', 'Xatolik', "Serverga ulanib bo'lmadi. Internetni tekshirib, qayta urinib ko'ring.");
+    } finally {
+      setIsCreatingOrder(false);
+    }
   };
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
@@ -330,11 +444,7 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('tahrir_user');
-    localStorage.removeItem('tahrir_token');
-    setUser(null);
-    setUserCoins(0);
-    setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
+    clearSession();
     addToast('info', 'Chiqildi', 'Hisobdan chiqdingiz');
   };
 
@@ -490,10 +600,10 @@ export default function Home() {
     
     const formData = new FormData();
     formData.append('document', file);
-    formData.append('userId', String(user.id));
 
     try {
-      const res = await fetch(`${API_URL}/api/check-file`, {
+      // Foydalanuvchi serverda token orqali aniqlanadi (userId yuborilmaydi)
+      const res = await authFetch('/api/check-file', {
         method: 'POST',
         body: formData,
       });
@@ -509,11 +619,13 @@ export default function Home() {
         a.remove();
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
-        addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-{pageInfo.requiredCoins} tanga).`);
+        addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-${pageInfo.requiredCoins} tanga).`);
         await loadUserWallet(user.id);
-      } else {
+      } else if (res.status !== 401) {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Hujjatni qayta ishlashda xatolik yuz berdi.');
+        // Xatolikda server tangalarni qaytaradi, balansni yangilab qo'yamiz
+        await loadUserWallet(user.id);
       }
     } catch {
       addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi.');
@@ -1430,10 +1542,11 @@ export default function Home() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleStartPayment(selectedPackage)}
-                  className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#D4A373] to-[#8C6239] text-[#0A0706] font-bold text-xs shadow-md shadow-[#D4A373]/20 flex items-center justify-center gap-1.5 cursor-pointer"
+                  disabled={isCreatingOrder}
+                  className="py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#D4A373] to-[#8C6239] text-[#0A0706] font-bold text-xs shadow-md shadow-[#D4A373]/20 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >
-                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>Toʻlovga oʻtish</span>
+                  {isCreatingOrder ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                  <span>{isCreatingOrder ? 'Yaratilmoqda...' : 'Toʻlovga oʻtish'}</span>
                 </motion.button>
               </div>
             </motion.div>
@@ -1443,10 +1556,10 @@ export default function Home() {
 
       {/* TO'LOV JARAYONI VA REKVIZITLAR MODALI (CLICK VA PAYME BILAN) */}
       <AnimatePresence>
-        {activeOrder && (
+        {activeOrder && payModalOpen && (
           <div 
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-2xl p-4 overflow-y-auto"
-            onClick={() => setActiveOrder(null)}
+            onClick={() => setPayModalOpen(false)}
           >
             <motion.div 
               initial={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -1458,7 +1571,7 @@ export default function Home() {
             >
               {/* YOPISH TUGMASI (X) */}
               <button 
-                onClick={() => setActiveOrder(null)}
+                onClick={() => setPayModalOpen(false)}
                 className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[#1E1511] border border-[#2E211B] flex items-center justify-center text-[#A89485] hover:text-[#FFF] transition-all cursor-pointer z-10"
                 title="Yopish"
               >
@@ -1497,6 +1610,11 @@ export default function Home() {
                     {amountCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
+                {activeOrder.exactAmount !== activeOrder.pkg.numericPrice && (
+                  <p className="mt-1.5 text-[10px] text-[#8C7A6B]">
+                    Paket narxi {activeOrder.pkg.priceUzs} + {formatPrice(activeOrder.exactAmount - activeOrder.pkg.numericPrice)} soʻm (toʻlovingizni aniqlash uchun)
+                  </p>
+                )}
               </div>
 
               {/* Click QR-kodi */}
@@ -1592,10 +1710,11 @@ export default function Home() {
                   <span>Toʻlov kutilmoqda...</span>
                 </div>
                 <button 
-                  onClick={() => setActiveOrder(null)} 
-                  className="text-[#8C7A6B] hover:text-rose-400 underline text-[11px] cursor-pointer"
+                  onClick={() => setPayModalOpen(false)} 
+                  className="text-[#8C7A6B] hover:text-[#E0A96D] underline text-[11px] cursor-pointer"
+                  title="Oynani yopsangiz ham to'lov avtomatik tekshirilaveradi"
                 >
-                  Bekor qilish
+                  Yopish
                 </button>
               </div>
             </motion.div>
