@@ -50,6 +50,14 @@ const PAYME_P2P_URL = "https://payme.uz/fallback/pay?card=" + CARD_NUMBER;
 // Tugallanmagan buyurtma shu kalit ostida saqlanadi (sahifa qayta yuklansa ham to'lov kuzatiladi)
 const PENDING_ORDER_KEY = 'tahrir_pending_order';
 
+// Запрос к API с JWT-токеном пользователя
+function authFetch(url: string, init: RequestInit = {}) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('tahrir_token') : null;
+  const headers = new Headers(init.headers);
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+  return fetch(url, { ...init, headers });
+}
+
 interface UserData {
   id: number;
   identifier: string;
@@ -85,7 +93,7 @@ interface ActiveOrder {
   expiresAt: number; // ms, brauzer soati bo'yicha
 }
 
-// DIQQAT: narxlar va bonuslar serverdagi PACKAGES (backend/payments.js) bilan mos bo'lishi shart.
+// DIQQAT: narxlar va bonuslar serverdagi COIN_PACKAGES (backend/index.js) bilan mos bo'lishi shart.
 // Haqiqiy narxni server hisoblaydi, bu yerdagi qiymatlar faqat ko'rsatish uchun.
 const coinPackages: CoinPackage[] = [
   { id: 'pkg_15', amount: 15, priceUzs: '7 990 soʻm', priceUsd: '$0.69', numericPrice: 7990, badge: 'Boshlangʻich', iconType: 'basic' },
@@ -171,8 +179,7 @@ export default function Home() {
 
   const [isProcessingDoc, setIsProcessingDoc] = useState(false);
 
-  // Sessiyani to'liq tozalash (chiqish yoki token eskirganda)
-  const clearSession = useCallback(() => {
+  const resetSession = useCallback(() => {
     localStorage.removeItem('tahrir_user');
     localStorage.removeItem('tahrir_token');
     localStorage.removeItem(PENDING_ORDER_KEY);
@@ -183,28 +190,14 @@ export default function Home() {
     setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
   }, []);
 
-  // Barcha himoyalangan so'rovlar shu orqali ketadi: token avtomatik qo'shiladi,
-  // token yaroqsiz bo'lsa foydalanuvchi qayta kirishga yo'naltiriladi
-  const authFetch = useCallback(async (path: string, init: RequestInit = {}) => {
-    const token = localStorage.getItem('tahrir_token');
-    const headers = new Headers(init.headers);
-    if (token) headers.set('Authorization', `Bearer ${token}`);
-
-    const res = await fetch(`${API_URL}${path}`, { ...init, headers });
-    if (res.status === 401) {
-      clearSession();
-      setAuthMode('login');
-      setShowAuthModal(true);
-      addToast('warning', 'Sessiya tugadi', 'Iltimos, hisobingizga qaytadan kiring.');
-    }
-    return res;
-  }, [clearSession, addToast]);
-
-  const loadUserWallet = useCallback(async (uid: number) => {
+  const loadUserWallet = useCallback(async () => {
     setIsLoadingWallet(true);
     try {
-      const res = await authFetch(`/api/wallet/${uid}`);
-      if (res.ok) {
+      const res = await authFetch(`${API_URL}/api/wallet`);
+      if (res.status === 401) {
+        resetSession();
+        addToast('warning', 'Sessiya tugadi', 'Iltimos, qaytadan tizimga kiring');
+      } else if (res.ok) {
         const data = await res.json();
         setWalletStats(data);
         setUserCoins(data.coins);
@@ -214,20 +207,23 @@ export default function Home() {
     } finally {
       setIsLoadingWallet(false);
     }
-  }, [authFetch]);
+  }, [resetSession, addToast]);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('tahrir_user');
-    if (savedUser) {
+    const savedToken = localStorage.getItem('tahrir_token');
+    if (savedUser && savedToken) {
       try {
         const parsed = JSON.parse(savedUser);
         setUser(parsed);
-        loadUserWallet(parsed.id);
+        loadUserWallet();
       } catch {
-        localStorage.removeItem('tahrir_user');
+        resetSession();
       }
+    } else if (savedUser) {
+      resetSession();
     }
-  }, [loadUserWallet]);
+  }, [loadUserWallet, resetSession]);
 
   // Sahifa qayta ochilganda (masalan, Click/Payme ilovasidan qaytganda) tugallanmagan buyurtmani tiklaymiz
   useEffect(() => {
@@ -284,7 +280,6 @@ export default function Home() {
     if (!activeOrder || !user) return;
 
     const order = activeOrder;
-    const userId = user.id;
     let stopped = false;
 
     const finish = () => {
@@ -297,10 +292,12 @@ export default function Home() {
     const check = async () => {
       if (stopped) return;
       try {
-        const res = await authFetch(`/api/payment/check-status/${encodeURIComponent(order.orderId)}`);
+        const res = await authFetch(`${API_URL}/api/payment/check-status/${encodeURIComponent(order.orderId)}`);
         if (stopped) return;
         if (res.status === 401) {
-          stopped = true; // authFetch foydalanuvchini allaqachon chiqarib yubordi
+          stopped = true;
+          resetSession();
+          addToast('warning', 'Sessiya tugadi', 'Iltimos, qaytadan tizimga kiring');
           return;
         }
         if (res.status === 404) {
@@ -316,7 +313,7 @@ export default function Home() {
           finish();
           setSuccessCoins(typeof data.coins === 'number' ? data.coins : order.coins);
           setPaymentSuccess(true);
-          await loadUserWallet(userId);
+          await loadUserWallet();
         } else if (data.status === 'EXPIRED') {
           finish();
           addToast('warning', 'Vaqt tugadi', "To'lov sessiyasi muddati tugadi. Agar to'lovni yuborgan bo'lsangiz, qo'llab-quvvatlash xizmatiga murojaat qiling.");
@@ -338,7 +335,7 @@ export default function Home() {
       clearInterval(polling);
       document.removeEventListener('visibilitychange', onVisible);
     };
-  }, [activeOrder, user, authFetch, loadUserWallet, addToast]);
+  }, [activeOrder, user, loadUserWallet, resetSession, addToast]);
 
   const handleStartPayment = async (pkg: CoinPackage) => {
     if (!user) {
@@ -352,18 +349,21 @@ export default function Home() {
     setIsCreatingOrder(true);
     try {
       // Serverga faqat paket id yuboriladi: narx va tangalar sonini server o'zi belgilaydi
-      const res = await authFetch('/api/payment/create-order', {
+      const res = await authFetch(`${API_URL}/api/payment/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packageId: pkg.id }),
+        body: JSON.stringify({ packageId: pkg.id })
       });
       const data = await res.json().catch(() => ({}));
-
+      if (res.status === 401) {
+        resetSession();
+        setShowShop(false);
+        setAuthMode('login');
+        setShowAuthModal(true);
+        return;
+      }
       if (!res.ok || !data.orderId || typeof data.amount !== 'number') {
-        // 401 holatini authFetch o'zi hal qiladi
-        if (res.status !== 401) {
-          addToast('error', 'Xatolik', data.error || "Buyurtma yaratib bo'lmadi. Iltimos, birozdan so'ng qayta urinib ko'ring.");
-        }
+        addToast('error', 'Xatolik', data.error || "Buyurtma yaratib bo'lmadi. Iltimos, birozdan so'ng qayta urinib ko'ring.");
         return;
       }
 
@@ -434,7 +434,7 @@ export default function Home() {
       setAuthIdentifier('');
       setAuthPassword('');
       setAuthName('');
-      loadUserWallet(data.user.id);
+      loadUserWallet();
       addToast('success', 'Muvaffaqiyatli!', authMode === 'login' ? 'Tizimga xush kelibsiz!' : 'Yangi hisob ochildi va +15 tanga berildi!');
     } catch {
       setAuthError('Serverga ulanishda xatolik yuz berdi');
@@ -444,7 +444,7 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    clearSession();
+    resetSession();
     addToast('info', 'Chiqildi', 'Hisobdan chiqdingiz');
   };
 
@@ -602,8 +602,7 @@ export default function Home() {
     formData.append('document', file);
 
     try {
-      // Foydalanuvchi serverda token orqali aniqlanadi (userId yuborilmaydi)
-      const res = await authFetch('/api/check-file', {
+      const res = await authFetch(`${API_URL}/api/check-file`, {
         method: 'POST',
         body: formData,
       });
@@ -620,12 +619,12 @@ export default function Home() {
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
         addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-${pageInfo.requiredCoins} tanga).`);
-        await loadUserWallet(user.id);
-      } else if (res.status !== 401) {
+        await loadUserWallet();
+      } else {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Hujjatni qayta ishlashda xatolik yuz berdi.');
         // Xatolikda server tangalarni qaytaradi, balansni yangilab qo'yamiz
-        await loadUserWallet(user.id);
+        await loadUserWallet();
       }
     } catch {
       addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi.');
@@ -1197,7 +1196,7 @@ export default function Home() {
                         </>
                       ) : (
                         <>
-                          <span>Tekshirishni boshlash {pageInfo ? `(-{pageInfo.requiredCoins} tanga)` : ''}</span>
+                          <span>Tekshirishni boshlash {pageInfo ? `(-${pageInfo.requiredCoins} tanga)` : ''}</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -1612,7 +1611,7 @@ export default function Home() {
                 </div>
                 {activeOrder.exactAmount !== activeOrder.pkg.numericPrice && (
                   <p className="mt-1.5 text-[10px] text-[#8C7A6B]">
-                    Paket narxi {activeOrder.pkg.priceUzs} + {formatPrice(activeOrder.exactAmount - activeOrder.pkg.numericPrice)} soʻm (toʻlovingizni aniqlash uchun)
+                    Paket narxi {activeOrder.pkg.priceUzs}, {formatPrice(activeOrder.pkg.numericPrice - activeOrder.exactAmount)} soʻm chegirma bilan (toʻlovingizni aniqlash uchun)
                   </p>
                 )}
               </div>
