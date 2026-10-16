@@ -516,8 +516,13 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: grammarInput })
       });
-      const data = await res.json();
-      
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        addToast('error', 'Xatolik', data.error || 'Imlo tekshiruvi ishlamadi. Keyinroq urinib koʻring.');
+        return;
+      }
+
       if (data.result) {
         try {
           const parsed = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
