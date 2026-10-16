@@ -620,6 +620,11 @@ export default function Home() {
 
         addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-${pageInfo.requiredCoins} tanga).`);
         await loadUserWallet();
+      } else if (res.status === 401) {
+        resetSession();
+        setAuthMode('login');
+        setShowAuthModal(true);
+        addToast('warning', 'Sessiya tugadi', 'Iltimos, qaytadan tizimga kiring');
       } else {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Hujjatni qayta ishlashda xatolik yuz berdi.');
@@ -627,7 +632,9 @@ export default function Home() {
         await loadUserWallet();
       }
     } catch {
-      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi.');
+      addToast('error', 'Xatolik', "Aloqa uzildi. Tangalar qaytarilgan bo'lishi mumkin, balansni tekshiring va qayta urinib ko'ring.");
+      // Ulanish uzilganda server tangalarni qaytaradi, balansni yangilab qo'yamiz
+      setTimeout(() => { loadUserWallet(); }, 1500);
     } finally {
       setIsProcessingDoc(false);
     }
