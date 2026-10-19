@@ -39,6 +39,7 @@ import {
   PartyPopper,
   QrCode
 } from 'lucide-react';
+import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -307,6 +308,48 @@ export default function Home() {
     setTimeLeft(600);
     setShowShop(false);
     setSelectedPackage(null);
+  };
+
+  const handleStartCustomPayment = async (mode:'budget'|'coins',value:number,quote:FlexibleCoinQuote) => {
+    if(!user) {
+      setShowShop(false);
+      setAuthMode('login');
+      setShowAuthModal(true);
+      return;
+    }
+    // Quotes are advisory; the backend recalculates both price and coins.
+    if(quote.coins>15) {
+      addToast('warning','Toʻlov chegarasi','Hozir SMS orqali faqat 15 tangagacha avtomatik tasdiqlash yoqilgan.');
+      return;
+    }
+    try {
+      const response=await authFetch(API_URL+'/api/payment/create-order',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(mode==='budget'?{customBudget:value}:{customCoins:value})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(response.status===401) {
+        resetSession();setShowShop(false);setAuthMode('login');setShowAuthModal(true);
+        return;
+      }
+      if(!response.ok||!data.orderId||!Number.isSafeInteger(data.amount)||
+         !Number.isSafeInteger(data.coins)||data.coins<1||data.coins>15) {
+        addToast('error','Xatolik',data.error||'Buyurtma yaratib boʻlmadi');
+        return;
+      }
+      const customPkg:CoinPackage={
+        id:'custom_'+mode,amount:data.coins,numericPrice:data.amount,
+        priceUzs:formatPrice(data.amount)+' soʻm',priceUsd:'Maxsus narx',
+        iconType:'basic'
+      };
+      setActiveOrder({orderId:data.orderId,pkg:customPkg,exactAmount:data.amount});
+      setTimeLeft(600);
+      setShowShop(false);
+      setSelectedPackage(null);
+    }catch{
+      addToast('error','Xatolik','Serverga ulanib boʻlmadi');
+    }
   };
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
@@ -1305,6 +1348,8 @@ export default function Home() {
                     Faol hisob
                   </span>
                 </div>
+
+                <FlexibleCoinOffer apiUrl={API_URL} onCheckout={handleStartCustomPayment} />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {coinPackages.map((pkg) => {
