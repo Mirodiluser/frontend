@@ -318,8 +318,8 @@ export default function Home() {
       return;
     }
     // Quotes are advisory; the backend recalculates both price and coins.
-    if(quote.coins>15) {
-      addToast('warning','Toʻlov chegarasi','Hozir SMS orqali faqat 15 tangagacha avtomatik tasdiqlash yoqilgan.');
+    if(quote.coins>quote.limits.maxAutoCoins) {
+      addToast('warning','Toʻlov chegarasi','Bu miqdor uchun avtomatik toʻlov vaqtincha cheklangan.');
       return;
     }
     try {
@@ -334,7 +334,7 @@ export default function Home() {
         return;
       }
       if(!response.ok||!data.orderId||!Number.isSafeInteger(data.amount)||
-         !Number.isSafeInteger(data.coins)||data.coins<1||data.coins>15) {
+         !Number.isSafeInteger(data.coins)||data.coins<1||data.coins>1150) {
         addToast('error','Xatolik',data.error||'Buyurtma yaratib boʻlmadi');
         return;
       }
