@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect,useState} from 'react';
-import {ArrowRight,Coins,Loader2,SlidersHorizontal,Wallet} from 'lucide-react';
+import {ArrowRight,Coins,Loader2} from 'lucide-react';
 
 export type FlexibleCoinQuote={
   coins:number;
@@ -78,79 +78,78 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   };
   const temporarilyLimited=ready&&quote.coins>quote.limits.maxAutoCoins;
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-[#D4A373]/40 bg-gradient-to-br from-[#241812] via-[#19110E] to-[#100C09] p-4 sm:p-5 shadow-[0_12px_35px_rgba(0,0,0,0.25)]">
-      <div className="pointer-events-none absolute -top-16 right-0 h-36 w-36 rounded-full bg-[#D4A373]/10 blur-3xl"/>
-      <div className="relative flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#D4A373]/30 bg-[#D4A373]/15 text-[#E0A96D]">
-          <SlidersHorizontal className="h-4 w-4"/>
+    <section className="relative mx-auto w-full max-w-[440px] overflow-hidden rounded-[22px] border border-[#AD7E4E]/45 bg-gradient-to-br from-[#261A14] via-[#1B130F] to-[#120D0B] p-3.5 sm:p-4 shadow-[0_12px_32px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,223,173,0.08)]">
+      <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-[#D4A373]/[0.08] blur-3xl"/>
+      <div className="relative flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#D4A373]/25 bg-gradient-to-br from-[#D4A373]/20 to-[#D4A373]/[0.04] text-[#E9BB83]">
+            <Coins className="h-[17px] w-[17px]"/>
+          </span>
+          <h3 className="text-[13px] font-semibold tracking-wide text-[#F7E5D2]">Oʻzingizga mos tangalar</h3>
         </div>
-        <div>
-          <h3 className="text-sm font-bold text-[#FBF5F0]">Oʻzingizga mos tangalar</h3>
-          <p className="text-[11px] text-[#BBA899]">Summa yoki tangalar sonini oʻzingiz belgilang</p>
-        </div>
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#CDA074] shadow-[0_0_10px_rgba(212,163,115,0.55)]"/>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl border border-[#342319] bg-[#110C09] p-1">
-        <button type="button" onClick={()=>switchMode('budget')}
-          aria-pressed={mode==='budget'}
-          className={'rounded-lg px-3 py-2.5 text-xs font-semibold transition-all '+(mode==='budget'?'bg-[#D4A373] text-[#120D0A] shadow-sm':'text-[#BDA99A] hover:text-white')}>
+      <div className="relative mt-3 flex rounded-[11px] border border-[#4E3628]/65 bg-[#0F0B09]/80 p-[3px]">
+        <button type="button" onClick={()=>switchMode('budget')} aria-pressed={mode==='budget'}
+          className={'min-w-0 flex-1 rounded-[8px] px-2.5 py-2 text-xs font-semibold transition-all duration-200 '+(mode==='budget'
+            ? 'bg-gradient-to-r from-[#E5B985] to-[#BB8956] text-[#160E09] shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
+            : 'text-[#AC9480] hover:text-[#E9D3BD]')}>
           Summa kiritish
         </button>
-        <button type="button" onClick={()=>switchMode('coins')}
-          aria-pressed={mode==='coins'}
-          className={'rounded-lg px-3 py-2.5 text-xs font-semibold transition-all '+(mode==='coins'?'bg-[#D4A373] text-[#120D0A] shadow-sm':'text-[#BDA99A] hover:text-white')}>
+        <button type="button" onClick={()=>switchMode('coins')} aria-pressed={mode==='coins'}
+          className={'min-w-0 flex-1 rounded-[8px] px-2.5 py-2 text-xs font-semibold transition-all duration-200 '+(mode==='coins'
+            ? 'bg-gradient-to-r from-[#E5B985] to-[#BB8956] text-[#160E09] shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
+            : 'text-[#AC9480] hover:text-[#E9D3BD]')}>
           Tanga kiritish
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr] sm:items-end">
-        <label className="block">
-          <span className="mb-1.5 block text-[11px] font-medium text-[#CDB8A8]">
-            {mode==='budget'?'Qancha soʻm sarflamoqchisiz?':'Nechta tanga kerak?'}
+      <div className="relative mt-3 grid grid-cols-2 items-stretch gap-2">
+        <label className="min-w-0 rounded-[12px] border border-[#5C4231]/75 bg-[#120D0A]/90 px-3 py-2.5 transition-colors focus-within:border-[#D4A373] focus-within:ring-1 focus-within:ring-[#D4A373]/25">
+          <span className="block text-[10px] font-medium text-[#AA917D]">
+            {mode==='budget'?'Sizning summangiz':'Tangalar soni'}
           </span>
-          <div className="flex items-center rounded-xl border border-[#60422D] bg-[#100B08] px-3 focus-within:border-[#D4A373] focus-within:ring-2 focus-within:ring-[#D4A373]/10">
+          <span className="mt-1 flex min-w-0 items-baseline gap-1">
             <input
-              inputMode="numeric"
-              type="number" min={1} step={1}
-              value={value}
+              type="number" inputMode="numeric" min={1} step={1} value={value}
               onChange={e=>setValue(e.target.value)}
-              className="w-full min-w-0 bg-transparent py-3 text-lg font-bold tabular-nums text-[#FBF5F0] outline-none"
               aria-label={mode==='budget'?'Summa UZS':'Tanga soni'}
+              className="w-full min-w-0 bg-transparent text-[16px] font-semibold leading-6 tabular-nums text-[#FFF5E9] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
-            <span className="shrink-0 text-xs font-semibold text-[#D4A373]">{mode==='budget'?'soʻm':'tanga'}</span>
-          </div>
+            <span className="shrink-0 text-[10px] font-medium text-[#C69B70]">{mode==='budget'?'soʻm':'tanga'}</span>
+          </span>
         </label>
 
-        <div className="rounded-xl border border-[#D4A373]/20 bg-[#D4A373]/[0.07] px-4 py-3">
-          <p className="text-[10px] text-[#BEA999]">{mode==='budget'?'Siz olasiz':'Taxminiy narx'}</p>
-          <div className="mt-1 flex min-h-7 items-center gap-1.5">
-            {loading?<Loader2 className="h-5 w-5 animate-spin text-[#D4A373]"/>:
-             ready?<><span className="text-xl font-bold tabular-nums text-[#FBF5F0]">{display(mode==='budget'?quote!.coins:quote!.price)}</span>
-               <span className="text-xs text-[#D4A373]">{mode==='budget'?'tanga':'soʻm'}</span></>:
-             <span className="text-xs text-[#8C7A6B]">—</span>}
+        <div aria-live="polite" className="min-w-0 rounded-[12px] border border-[#D4A373]/20 bg-gradient-to-b from-[#D4A373]/[0.10] to-[#D4A373]/[0.04] px-3 py-2.5">
+          <span className="block text-[10px] font-medium text-[#AA917D]">{mode==='budget'?'Siz olasiz':'Toʻlov narxi'}</span>
+          <div className="mt-1 flex min-h-6 min-w-0 items-baseline gap-1">
+            {loading
+              ? <Loader2 className="h-4 w-4 animate-spin self-center text-[#D4A373]"/>
+              : ready
+                ? <>
+                    <span className="min-w-0 text-[16px] font-bold leading-6 tabular-nums text-[#F5D19C]">{display(mode==='budget'?quote!.coins:quote!.price)}</span>
+                    <span className="shrink-0 text-[10px] font-medium text-[#C69B70]">{mode==='budget'?'tanga':'soʻm'}</span>
+                  </>
+                : <span className="text-sm text-[#887362]">—</span>}
           </div>
-          {ready&&<p className="mt-1 text-[10px] text-[#C3AC99]">
-            {mode==='budget'?('Narx: '+display(quote!.price)+' soʻm'):
-              ('1 tanga o‘rtacha '+display(Math.round(quote!.price/quote!.coins))+' soʻm')}
-          </p>}
         </div>
       </div>
 
-      {error&&<p role="alert" className="mt-2 text-xs text-rose-300">{error}</p>}
-      {temporarilyLimited&&<p className="mt-2 text-[11px] text-amber-300">
-        {quote!.limits.maxAutoCoins>0?('Hozir avtomatik toʻlov '+quote!.limits.maxAutoCoins+' tangagacha ishlaydi. Kattaroq miqdor vaqtincha cheklangan.'):'Avtomatik toʻlov hozircha vaqtincha oʻchirilgan.'}
+      {error&&<p role="alert" className="relative mt-2 text-[11px] text-rose-300">{error}</p>}
+      {temporarilyLimited&&<p className="relative mt-2 text-[11px] text-amber-300">
+        {quote!.limits.maxAutoCoins>0
+          ? 'Toʻlov hozir '+quote!.limits.maxAutoCoins+' tangagacha mavjud'
+          : 'Toʻlov vaqtincha mavjud emas'}
       </p>}
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-[10px] leading-relaxed text-[#A89485] sm:max-w-[58%]">
-          Yirikroq buyurtmalar uchun tanga narxi pasayadi. Tayyor paketlar eng qulay taklif boʻlib qoladi.
-        </p>
-        <button type="button" disabled={!ready||submitting||temporarilyLimited}
-          onClick={()=>void checkout()}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E0B283] to-[#BA8959] px-5 py-3 text-xs font-bold text-[#160E08] shadow-md shadow-[#D4A373]/15 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45">
-          {submitting?<Loader2 className="h-4 w-4 animate-spin"/>:<><Wallet className="h-4 w-4"/><span>Toʻlovga oʻtish</span><ArrowRight className="h-4 w-4"/></>}
-        </button>
-      </div>
-      <p className="mt-2.5 text-[10px] text-[#8C7A6B]">Aniq toʻlov summasi buyurtma yaratilganda tasdiqlanadi (99 soʻmgacha kamroq).</p>
+
+      <button type="button" disabled={!ready||submitting||temporarilyLimited}
+        onClick={()=>void checkout()}
+        className="relative mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E5BA86] via-[#D2A06D] to-[#B98552] px-4 py-2.5 text-xs font-bold text-[#1C110A] shadow-[0_5px_16px_rgba(212,163,115,0.13)] transition-all duration-200 hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45">
+        {submitting
+          ? <Loader2 className="h-4 w-4 animate-spin"/>
+          : <>Toʻlovga oʻtish <ArrowRight className="h-3.5 w-3.5"/></>}
+      </button>
     </section>
   );
 }
