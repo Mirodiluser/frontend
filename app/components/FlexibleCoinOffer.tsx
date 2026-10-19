@@ -8,7 +8,7 @@ export type FlexibleCoinQuote={
   price:number;
   mode:'budget'|'coins';
   minimumPrice?:number;
-  limits:{minCoins:number;maxCoins:number;minBudget:number;maxBudget:number};
+  limits:{minCoins:number;maxCoins:number;minBudget:number;maxBudget:number;maxAutoCoins:number};
 };
 
 type Props={
@@ -19,7 +19,7 @@ const display=(v:number)=>new Intl.NumberFormat('ru-RU').format(v);
 
 export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const [mode,setMode]=useState<'budget'|'coins'>('budget');
-  const [value,setValue]=useState('20000');
+  const [value,setValue]=useState('7990');
   const [quote,setQuote]=useState<FlexibleCoinQuote|null>(null);
   const [quotedKey,setQuotedKey]=useState('');
   const [error,setError]=useState('');
@@ -68,7 +68,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const switchMode=(next:'budget'|'coins')=>{
     if(mode===next)return;
     setMode(next);
-    setValue(next==='budget'?'20000':'50');
+    setValue(next==='budget'?'7990':'10');
   };
   const checkout=async()=>{
     if(!ready||submitting||!quote)return;
@@ -76,7 +76,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
     try {await onCheckout(mode,Number(value),quote);}
     finally {setSubmitting(false);}
   };
-  const temporarilyLimited=ready&&quote.coins>15;
+  const temporarilyLimited=ready&&quote.coins>quote.limits.maxAutoCoins;
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[#D4A373]/40 bg-gradient-to-br from-[#241812] via-[#19110E] to-[#100C09] p-4 sm:p-5 shadow-[0_12px_35px_rgba(0,0,0,0.25)]">
       <div className="pointer-events-none absolute -top-16 right-0 h-36 w-36 rounded-full bg-[#D4A373]/10 blur-3xl"/>
@@ -138,7 +138,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
 
       {error&&<p role="alert" className="mt-2 text-xs text-rose-300">{error}</p>}
       {temporarilyLimited&&<p className="mt-2 text-[11px] text-amber-300">
-        Hozir SMS orqali avtomatik tasdiqlash 15 tangagacha cheklangan. Kattaroq miqdor uchun toʻlov keyinroq ochiladi.
+        {quote!.limits.maxAutoCoins>0?('Hozir avtomatik toʻlov '+quote!.limits.maxAutoCoins+' tangagacha ishlaydi. Kattaroq miqdor vaqtincha cheklangan.'):'Avtomatik toʻlov hozircha vaqtincha oʻchirilgan.'}
       </p>}
       <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-[10px] leading-relaxed text-[#A89485] sm:max-w-[58%]">
