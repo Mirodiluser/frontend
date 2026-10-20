@@ -19,7 +19,7 @@ const display=(v:number)=>new Intl.NumberFormat('ru-RU').format(v);
 
 export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const [mode,setMode]=useState<'budget'|'coins'>('budget');
-  const [value,setValue]=useState('7990');
+  const [value,setValue]=useState('7900');
   const [quote,setQuote]=useState<FlexibleCoinQuote|null>(null);
   const [quotedKey,setQuotedKey]=useState('');
   const [error,setError]=useState('');
@@ -68,7 +68,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const switchMode=(next:'budget'|'coins')=>{
     if(mode===next)return;
     setMode(next);
-    setValue(next==='budget'?'7990':'10');
+    setValue(next==='budget'?'7900':'10');
   };
   const checkout=async()=>{
     if(!ready||submitting||!quote)return;
