@@ -525,14 +525,20 @@ export default function Home() {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
-      if (data.pages) {
-        setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
-      } else {
-        setPageInfo({ pages: 1, requiredCoins: 1 });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !Number.isSafeInteger(data.pages) || data.pages < 1) {
+        const message = data.error || 'DOCX faylini oʻqib boʻlmadi. Boshqa .DOCX faylini tanlang.';
+        setFile(null);
+        setPageInfo(null);
+        setFileFormatError(message);
+        addToast('warning', 'Fayl qabul qilinmadi', message);
+        return;
       }
+      setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
     } catch {
-      setPageInfo({ pages: 1, requiredCoins: 1 });
+      setFile(null);
+      setPageInfo(null);
+      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi. Iltimos, qayta urinib koʻring.');
     } finally {
       setIsCountingPages(false);
     }
