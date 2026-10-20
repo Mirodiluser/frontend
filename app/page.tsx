@@ -1132,8 +1132,6 @@ export default function Home() {
                           </div>
                         ) : pageInfo && (
                           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#D4A373]/10 border border-[#D4A373]/30 text-xs text-[#E0A96D] font-medium">
-                            <span>📄 Hajmi: <b>{pageInfo.pages} sahifa</b></span>
-                            <span>•</span>
                             <span>💰 Narxi: <b>{pageInfo.requiredCoins} tanga</b></span>
                           </div>
                         )}
@@ -1167,7 +1165,7 @@ export default function Home() {
                         </>
                       ) : (
                         <>
-                          <span>Tekshirishni boshlash {pageInfo ? `(-{pageInfo.requiredCoins} tanga)` : ''}</span>
+                          <span>Tekshirishni boshlash</span>
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
