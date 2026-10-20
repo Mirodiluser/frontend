@@ -581,7 +581,7 @@ export default function Home() {
         a.remove();
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
-        addToast('success', 'Tayyor!', `Hujjat muvaffaqiyatli tahrirlandi (-{pageInfo.requiredCoins} tanga).`);
+        addToast('success', 'Tayyor!', 'Hujjat muvaffaqiyatli tahrirlandi. Narxi: '+pageInfo.requiredCoins+' tanga.');
         await loadUserWallet();
       } else {
         const errorData = await res.json().catch(() => ({}));
