@@ -76,7 +76,6 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
     try {await onCheckout(mode,Number(value),quote);}
     finally {setSubmitting(false);}
   };
-  const temporarilyLimited=ready&&quote.coins>quote.limits.maxAutoCoins;
   return (
     <section className="relative mx-auto w-full max-w-[440px] overflow-hidden rounded-[22px] border border-[#AD7E4E]/45 bg-gradient-to-br from-[#261A14] via-[#1B130F] to-[#120D0B] p-3.5 sm:p-4 shadow-[0_12px_32px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,223,173,0.08)]">
       <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-[#D4A373]/[0.08] blur-3xl"/>
@@ -137,13 +136,8 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
       </div>
 
       {error&&<p role="alert" className="relative mt-2 text-[11px] text-rose-300">{error}</p>}
-      {temporarilyLimited&&<p className="relative mt-2 text-[11px] text-amber-300">
-        {quote!.limits.maxAutoCoins>0
-          ? 'Toʻlov hozir '+quote!.limits.maxAutoCoins+' tangagacha mavjud'
-          : 'Toʻlov vaqtincha mavjud emas'}
-      </p>}
 
-      <button type="button" disabled={!ready||submitting||temporarilyLimited}
+      <button type="button" disabled={!ready||submitting}
         onClick={()=>void checkout()}
         className="relative mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E5BA86] via-[#D2A06D] to-[#B98552] px-4 py-2.5 text-xs font-bold text-[#1C110A] shadow-[0_5px_16px_rgba(212,163,115,0.13)] transition-all duration-200 hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45">
         {submitting

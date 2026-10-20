@@ -318,10 +318,6 @@ export default function Home() {
       return;
     }
     // Quotes are advisory; the backend recalculates both price and coins.
-    if(quote.coins>quote.limits.maxAutoCoins) {
-      addToast('warning','Toʻlov chegarasi','Bu miqdor uchun avtomatik toʻlov vaqtincha cheklangan.');
-      return;
-    }
     try {
       const response=await authFetch(API_URL+'/api/payment/create-order',{
         method:'POST',
