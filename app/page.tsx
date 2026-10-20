@@ -149,6 +149,7 @@ export default function Home() {
 
   const [converterFile, setConverterFile] = useState<File | null>(null);
   const [targetFormat, setTargetFormat] = useState<string>('pdf');
+  const [pdfWordMode, setPdfWordMode] = useState<'editable' | 'visual'>('editable');
   const [isConverting, setIsConverting] = useState(false);
 
   const [inputText, setInputText] = useState('');
@@ -595,12 +596,12 @@ export default function Home() {
   };
 
   const handleSelectConverterFile = (selectedFile: File) => {
-    const validExts = ['.docx', '.doc', '.txt', '.pdf', '.jpg', '.jpeg', '.png', '.webp'];
+    const validExts = ['.docx', '.doc', '.txt', '.pdf', '.rtf', '.odt', '.html', '.htm', '.jpg', '.jpeg', '.png', '.webp'];
     const lower = selectedFile.name.toLowerCase();
     const isSupported = validExts.some((ext) => lower.endsWith(ext));
 
     if (!isSupported) {
-      addToast('warning', 'Qoʻllab-quvvatlanmaydi!', 'Faqat DOCX, PDF, TXT yoki rasmlar (JPG, PNG, WebP) qabul qilinadi.');
+      addToast('warning', 'Qoʻllab-quvvatlanmaydi!', 'Word, PDF, TXT, ODT, RTF, HTML yoki rasm yuklang.');
       return;
     }
 
@@ -613,7 +614,8 @@ export default function Home() {
       setTargetFormat('pdf');
     }else if(fileExt==='pdf'){
       setTargetFormat('docx');
-    }else if(fileExt==='txt'||fileExt==='doc'||fileExt==='docx'){
+      setPdfWordMode('editable');
+    }else if(['txt','doc','docx','odt','rtf','html','htm'].includes(fileExt)){
       setTargetFormat('pdf');
     }
     setConverterFile(selectedFile);
@@ -627,6 +629,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append('files', converterFile);
     formData.append('targetFormat', targetFormat);
+    formData.append('mode', pdfWordMode);
 
     try {
       const res = await fetch(`${API_URL}/api/convert-file`, {
@@ -646,10 +649,15 @@ export default function Home() {
         a.remove();
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
-        const lossy=res.headers.get('X-Conversion-Mode')==='editable-text';
+        const actualMode=res.headers.get('X-Conversion-Mode')||'';
         addToast('success', 'Oʻgirildi!',
-          lossy ? 'Matn saqlandi. Murakkab bezak va joylashuv farq qilishi mumkin.' :
-          'Fayl muvaffaqiyatli konvertatsiya qilindi!');
+          actualMode==='visual'
+            ? 'Asl koʻrinish saqlandi. Word sahifalari rasm sifatida joylangan.'
+            : actualMode==='editable-layout'
+              ? 'Tahrirlanadigan Word tayyor. Ayrim elementlar joylashuvi farq qilishi mumkin.'
+              : actualMode==='editable-text'
+                ? 'Matn saqlandi. Murakkab bezak farq qilishi mumkin.'
+                : 'Fayl muvaffaqiyatli konvertatsiya qilindi!');
       } else {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Faylni oʻgirishda xatolik yuz berdi.');
@@ -1228,7 +1236,7 @@ export default function Home() {
                     <input
                       id="converterFileInput"
                       type="file"
-                      accept=".docx,.doc,.txt,.pdf,.jpg,.jpeg,.png,.webp"
+                      accept=".docx,.doc,.txt,.pdf,.odt,.rtf,.html,.htm,.jpg,.jpeg,.png,.webp"
                       className="hidden"
                       onChange={(e) => {
                         const picked=e.currentTarget.files?.[0];
@@ -1269,12 +1277,12 @@ export default function Home() {
                               { id: 'txt', label: 'Matn (.txt)' }
                             ].map((fmt) => {
                               const imageSelected=/\.(jpg|jpeg|png|webp)$/i.test(converterFile.name);
-                              const unavailable=imageSelected&&fmt.id!=='pdf';
+                              const unavailable=false;
                               return (
                               <button
                                 key={fmt.id}
                                 disabled={unavailable}
-                                title={unavailable?'Rasmlar faqat PDF formatiga oʻgiriladi':undefined}
+                                title={unavailable?'Rasmlarni PDF yoki Word formatiga oʻgirish mumkin':undefined}
                                 onClick={() => setTargetFormat(fmt.id)}
                                 className={`py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
                                   targetFormat === fmt.id
@@ -1289,9 +1297,34 @@ export default function Home() {
                           </div>
                         </div>
                         {converterFile.name.toLowerCase().endsWith('.pdf') && targetFormat==='docx' && (
-                          <p className="mt-2 text-center text-[10px] text-[#A89485]">
-                            Word matni tahrirlanadi, murakkab PDF bezagi farq qilishi mumkin.
-                          </p>
+                          <div className="mt-3 rounded-xl border border-[#D4A373]/25 bg-[#140E0B]/90 p-2.5" onClick={e=>e.stopPropagation()}>
+                            <p className="mb-2 text-center text-[11px] font-medium text-[#DAB18A]">PDF → Word rejimi</p>
+                            <div className="grid grid-cols-2 gap-1.5">
+                              <button
+                                type="button"
+                                aria-pressed={pdfWordMode==='editable'}
+                                onClick={()=>setPdfWordMode('editable')}
+                                className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition ${pdfWordMode==='editable'
+                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[#F1C897]'
+                                  : 'border-[#37281E] bg-[#211712] text-[#B6A095] hover:border-[#D4A373]/50'}`}>
+                                Tahrirlanadigan Word
+                              </button>
+                              <button
+                                type="button"
+                                aria-pressed={pdfWordMode==='visual'}
+                                onClick={()=>setPdfWordMode('visual')}
+                                className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition ${pdfWordMode==='visual'
+                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[#F1C897]'
+                                  : 'border-[#37281E] bg-[#211712] text-[#B6A095] hover:border-[#D4A373]/50'}`}>
+                                Asl koʻrinish
+                              </button>
+                            </div>
+                            <p className="mt-2 text-center text-[10px] leading-4 text-[#AB9587]">
+                              {pdfWordMode==='editable'
+                                ? 'Matnni oʻzgartirish mumkin; murakkab bezak farq qilishi mumkin.'
+                                : 'Ramka, shrift va joylashuv rasm sifatida saqlanadi; matn tahrirlanmaydi.'}
+                            </p>
+                          </div>
                         )}
                       </div>
                     ) : (
@@ -1299,7 +1332,7 @@ export default function Home() {
                         <h4 className="text-sm sm:text-base font-medium text-[#FBF5F0]">
                           Hujjat yoki rasmni bu yerga tashlang yoki <span className="text-[#D4A373] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
                         </h4>
-                        <p className="mt-1 text-xs text-[#A89485]">DOCX, PDF, TXT, JPG, PNG, WebP qabul qilinadi.</p>
+                        <p className="mt-1 text-xs text-[#A89485]">PDF, Word, ODT, RTF, HTML, TXT va rasmlar qabul qilinadi.</p>
                       </>
                     )}
 
@@ -1334,7 +1367,7 @@ export default function Home() {
         <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-[#A89485]">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[#D4A373]" />
-            <span>Asl format va uslub toʻliq saqlanadi</span>
+            <span>Format imkon qadar saqlanadi</span>
           </div>
           <div>•</div>
           <div>Akademik standartlar boʻyicha tahrir</div>
