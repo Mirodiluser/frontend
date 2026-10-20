@@ -604,6 +604,18 @@ export default function Home() {
       return;
     }
 
+    if(selectedFile.size > 25 * 1024 * 1024){
+      addToast('warning','Fayl juda katta','Fayl hajmi 25 MB dan oshmasligi kerak.');
+      return;
+    }
+    const fileExt=lower.split('.').pop() || '';
+    if(['jpg','jpeg','png','webp'].includes(fileExt)){
+      setTargetFormat('pdf');
+    }else if(fileExt==='pdf'){
+      setTargetFormat('docx');
+    }else if(fileExt==='txt'||fileExt==='doc'||fileExt==='docx'){
+      setTargetFormat('pdf');
+    }
     setConverterFile(selectedFile);
   };
 
@@ -634,7 +646,10 @@ export default function Home() {
         a.remove();
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
-        addToast('success', 'Oʻgirildi!', 'Fayl muvaffaqiyatli konvertatsiya qilindi!');
+        const lossy=res.headers.get('X-Conversion-Mode')==='editable-text';
+        addToast('success', 'Oʻgirildi!',
+          lossy ? 'Matn saqlandi. Murakkab bezak va joylashuv farq qilishi mumkin.' :
+          'Fayl muvaffaqiyatli konvertatsiya qilindi!');
       } else {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Faylni oʻgirishda xatolik yuz berdi.');
@@ -1215,7 +1230,11 @@ export default function Home() {
                       type="file"
                       accept=".docx,.doc,.txt,.pdf,.jpg,.jpeg,.png,.webp"
                       className="hidden"
-                      onChange={(e) => e.target.files?.[0] && handleSelectConverterFile(e.target.files[0])}
+                      onChange={(e) => {
+                        const picked=e.currentTarget.files?.[0];
+                        e.currentTarget.value='';
+                        if(picked)handleSelectConverterFile(picked);
+                      }}
                     />
                     
                     <div className="w-12 h-12 rounded-2xl bg-[#1E1511] border border-[#3A2B23] flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
@@ -1248,11 +1267,16 @@ export default function Home() {
                               { id: 'pdf', label: 'PDF (.pdf)' },
                               { id: 'docx', label: 'Word (.docx)' },
                               { id: 'txt', label: 'Matn (.txt)' }
-                            ].map((fmt) => (
+                            ].map((fmt) => {
+                              const imageSelected=/\.(jpg|jpeg|png|webp)$/i.test(converterFile.name);
+                              const unavailable=imageSelected&&fmt.id!=='pdf';
+                              return (
                               <button
                                 key={fmt.id}
+                                disabled={unavailable}
+                                title={unavailable?'Rasmlar faqat PDF formatiga oʻgiriladi':undefined}
                                 onClick={() => setTargetFormat(fmt.id)}
-                                className={`py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
+                                className={`py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
                                   targetFormat === fmt.id
                                     ? 'bg-[#D4A373] text-[#0A0706] border-[#D4A373] font-bold'
                                     : 'bg-[#1E1511] text-[#A89485] border-[#2A1F1A] hover:text-[#E0A96D]'
@@ -1260,9 +1284,15 @@ export default function Home() {
                               >
                                 {fmt.label}
                               </button>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
+                        {converterFile.name.toLowerCase().endsWith('.pdf') && targetFormat==='docx' && (
+                          <p className="mt-2 text-center text-[10px] text-[#A89485]">
+                            Word matni tahrirlanadi, murakkab PDF bezagi farq qilishi mumkin.
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <>
