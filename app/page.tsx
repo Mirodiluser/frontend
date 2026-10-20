@@ -135,12 +135,12 @@ export default function Home() {
   const [successCoins, setSuccessCoins] = useState(0);
 
   const coinPackages: CoinPackage[] = [
-    { id: 'pkg_15', amount: 15, priceUzs: '7 990 soʻm', priceUsd: '$0.69', numericPrice: 7990, badge: 'Boshlangʻich', iconType: 'basic' },
-    { id: 'pkg_50', amount: 50, bonus: 5, priceUzs: '22 990 soʻm', priceUsd: '$1.95', numericPrice: 22990, badge: 'Tejamkor (-5%)', iconType: 'basic' },
-    { id: 'pkg_100', amount: 100, bonus: 15, priceUzs: '42 990 soʻm', priceUsd: '$3.65', numericPrice: 42990, popular: true, badge: '🔥 Eng ommabop (-10%)', iconType: 'popular' },
-    { id: 'pkg_250', amount: 250, bonus: 40, priceUzs: '99 990 soʻm', priceUsd: '$8.45', numericPrice: 99990, bestValue: true, badge: '⚡ Super Tejamkor (-15%)', iconType: 'popular' },
-    { id: 'pkg_500', amount: 500, bonus: 80, priceUzs: '169 990 soʻm', priceUsd: '$14.40', numericPrice: 169990, badge: '🎓 OAK / Katta Tejamkor (-20%)', iconType: 'vip' },
-    { id: 'pkg_1200', amount: 1000, bonus: 150, priceUzs: '309 990 soʻm', priceUsd: '$26.25', numericPrice: 309990, badge: '👑 VIP Cheksiz (-25%)', iconType: 'vip' },
+    { id: 'pkg_15', amount: 15, priceUzs: '7 900 soʻm', priceUsd: '$0.69', numericPrice: 7900, badge: 'Boshlangʻich', iconType: 'basic' },
+    { id: 'pkg_50', amount: 50, bonus: 5, priceUzs: '22 900 soʻm', priceUsd: '$1.95', numericPrice: 22900, badge: 'Tejamkor (-5%)', iconType: 'basic' },
+    { id: 'pkg_100', amount: 100, bonus: 15, priceUzs: '42 900 soʻm', priceUsd: '$3.65', numericPrice: 42900, popular: true, badge: '🔥 Eng ommabop (-10%)', iconType: 'popular' },
+    { id: 'pkg_250', amount: 250, bonus: 40, priceUzs: '99 900 soʻm', priceUsd: '$8.45', numericPrice: 99900, bestValue: true, badge: '⚡ Super Tejamkor (-15%)', iconType: 'popular' },
+    { id: 'pkg_500', amount: 500, bonus: 80, priceUzs: '169 900 soʻm', priceUsd: '$14.40', numericPrice: 169900, badge: '🎓 OAK / Katta Tejamkor (-20%)', iconType: 'vip' },
+    { id: 'pkg_1200', amount: 1000, bonus: 150, priceUzs: '309 900 soʻm', priceUsd: '$26.25', numericPrice: 309900, badge: '👑 VIP Cheksiz (-25%)', iconType: 'vip' },
   ];
 
   const [pageInfo, setPageInfo] = useState<{ pages: number; requiredCoins: number } | null>(null);
