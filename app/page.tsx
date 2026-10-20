@@ -88,6 +88,7 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const [isConverterDragging, setIsConverterDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [fileFormatError, setFileFormatError] = useState('');
 
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -496,16 +497,19 @@ export default function Home() {
   };
 
   const processSelectedFile = async (selectedFile: File) => {
-    const validExtensions = ['.docx', '.doc', '.txt', '.pdf'];
-    const fileNameLower = selectedFile.name.toLowerCase();
-    const isValid = validExtensions.some((ext) => fileNameLower.endsWith(ext));
-
-    if (!isValid) {
-      addToast('warning', 'Notoʻgʻri format!', 'Faqat .docx, .doc, .txt yoki .pdf formatidagi fayllar qabul qilinadi.');
+    if (!/\.docx$/i.test(selectedFile.name)) {
+      const message = 'Iltimos, faqat .DOCX formatidagi Word faylini yuklang.';
+      setFile(null);
+      setPageInfo(null);
+      setFileFormatError(message);
+      addToast('warning', 'Notoʻgʻri format!', message);
       return;
     }
+    setFileFormatError('');
 
     if (selectedFile.size > 25 * 1024 * 1024) {
+      setFile(null);
+      setPageInfo(null);
       addToast('error', 'Hajm katta', 'Fayl hajmi 25 MB dan oshmasligi kerak.');
       return;
     }
@@ -521,14 +525,20 @@ export default function Home() {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
-      if (data.pages) {
-        setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
-      } else {
-        setPageInfo({ pages: 1, requiredCoins: 1 });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !Number.isSafeInteger(data.pages) || data.pages < 1) {
+        const message = data.error || 'DOCX faylini oʻqib boʻlmadi. Boshqa .DOCX faylini tanlang.';
+        setFile(null);
+        setPageInfo(null);
+        setFileFormatError(message);
+        addToast('warning', 'Fayl qabul qilinmadi', message);
+        return;
       }
+      setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
     } catch {
-      setPageInfo({ pages: 1, requiredCoins: 1 });
+      setFile(null);
+      setPageInfo(null);
+      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi. Iltimos, qayta urinib koʻring.');
     } finally {
       setIsCountingPages(false);
     }
@@ -1085,9 +1095,13 @@ export default function Home() {
                     <input
                       id="fileInput"
                       type="file"
-                      accept=".docx,.doc,.txt,.pdf"
+                      accept=".docx"
                       className="hidden"
-                      onChange={(e) => e.target.files?.[0] && processSelectedFile(e.target.files[0])}
+                      onChange={(e) => {
+                        const selectedFile = e.currentTarget.files?.[0];
+                        e.currentTarget.value = '';
+                        if (selectedFile) void processSelectedFile(selectedFile);
+                      }}
                     />
 
                     <div className="w-12 h-12 rounded-2xl bg-[#1E1511] border border-[#3A2B23] flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
@@ -1129,8 +1143,14 @@ export default function Home() {
                         <h4 className="text-sm sm:text-base font-medium text-[#FBF5F0]">
                           Hujjatni bu yerga tashlang yoki <span className="text-[#D4A373] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
                         </h4>
-                        <p className="mt-1 text-xs text-[#A89485]">Faqat .DOCX, .DOC, .TXT, .PDF formatlari qabul qilinadi.</p>
+                        <p className="mt-1 text-xs text-[#A89485]">Faqat .DOCX formatidagi Word fayli qabul qilinadi.</p>
                       </>
+                    )}
+
+                    {fileFormatError && (
+                      <p role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-300">
+                        {fileFormatError}
+                      </p>
                     )}
 
                     <motion.button
