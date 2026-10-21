@@ -19,7 +19,7 @@ const display=(v:number)=>new Intl.NumberFormat('ru-RU').format(v);
 
 export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const [mode,setMode]=useState<'budget'|'coins'>('budget');
-  const [value,setValue]=useState('7900');
+  const [value,setValue]=useState('');
   const [quote,setQuote]=useState<FlexibleCoinQuote|null>(null);
   const [quotedKey,setQuotedKey]=useState('');
   const [error,setError]=useState('');
@@ -68,7 +68,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
   const switchMode=(next:'budget'|'coins')=>{
     if(mode===next)return;
     setMode(next);
-    setValue(next==='budget'?'7900':'10');
+    setValue('');
   };
   const checkout=async()=>{
     if(!ready||submitting||!quote)return;
@@ -111,7 +111,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
           </span>
           <span className="mt-1 flex min-w-0 items-baseline gap-1">
             <input
-              type="number" inputMode="numeric" min={1} step={1} value={value}
+              type="number" inputMode="numeric" min={1} step={1} value={value} placeholder="0"
               onChange={e=>setValue(e.target.value)}
               aria-label={mode==='budget'?'Summa UZS':'Tanga soni'}
               className="w-full min-w-0 bg-transparent text-[16px] font-semibold leading-6 tabular-nums text-[#FFF5E9] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -130,7 +130,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
                     <span className="min-w-0 text-[16px] font-bold leading-6 tabular-nums text-[#F5D19C]">{display(mode==='budget'?quote!.coins:quote!.price)}</span>
                     <span className="shrink-0 text-[10px] font-medium text-[#C69B70]">{mode==='budget'?'tanga':'soʻm'}</span>
                   </>
-                : <span className="text-sm text-[#887362]">—</span>}
+                : <span className="text-sm text-[#887362]">0</span>}
           </div>
         </div>
       </div>
