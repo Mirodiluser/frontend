@@ -35,18 +35,14 @@ import {
   ClipboardPaste, 
   Info,
   Clock,
-  ExternalLink,
   PartyPopper,
-  QrCode
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-// SIZNING KARTA RAQAMINGIZ VA TO'LOV SILKALARI
-const CARD_NUMBER = "5614688705522596";
-const CLICK_P2P_URL = "https://my.click.uz/clickp2p/AD55BA719ACF0C31B5F5452F1E1BA7E74AF221A3E8877AB23189C4C8743368B6";
-const PAYME_P2P_URL = "https://payme.uz/fallback/pay?card=" + CARD_NUMBER;
+// TOʻLOV QABUL QILUVCHI KARTA
+const CARD_NUMBER = "9860012110051468";
 
 // Запрос к API с JWT-токеном пользователя
 function authFetch(url: string, init: RequestInit = {}) {
@@ -1586,7 +1582,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* TO'LOV JARAYONI VA REKVIZITLAR MODALI (CLICK VA PAYME BILAN) */}
+      {/* TOʻLOV JARAYONI VA KARTA REKVIZITLARI */}
       <AnimatePresence>
         {activeOrder && (
           <div 
@@ -1644,21 +1640,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Click QR-kodi */}
-              <div className="mt-3 p-3.5 rounded-2xl bg-[#0B0806] border border-[#2A1F1A] flex flex-col items-center justify-center text-center shadow-inner relative group">
-                <div className="w-44 h-44 bg-white p-2 rounded-2xl shadow-xl flex items-center justify-center border-2 border-[#D4A373]/40">
-                  <img 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=1&data=${encodeURIComponent(CLICK_P2P_URL)}`}
-                    alt="Click P2P QR Code" 
-                    className="w-full h-full object-contain rounded-lg"
-                  />
-                </div>
-                <div className="flex items-center gap-1.5 mt-2.5 text-[11px] text-[#E0A96D] font-medium">
-                  <QrCode className="w-3.5 h-3.5 text-[#D4A373]" />
-                  <span>Kamerangiz orqali QR kodni skanerlang</span>
-                </div>
-              </div>
-
               {/* Muhim ogohlantirish */}
               <div className="mt-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-amber-600/15 to-amber-500/20 border-2 border-amber-500/70 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.15)] flex items-start gap-3 relative overflow-hidden">
                 <div className="w-8 h-8 rounded-xl bg-amber-500/30 border border-amber-400/50 flex items-center justify-center shrink-0 mt-0.5 text-amber-300">
@@ -1691,44 +1672,10 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* TO'LOV ILOVALARINI TANLASH (CLICK VA PAYME) */}
-              <div className="mt-3 space-y-2">
-                <p className="text-[11px] text-[#A89485] font-medium text-center mb-1">Toʻlov qilish uchun ilovani tanlang:</p>
-                
-                {/* Click Up tugmasi */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                    if (isMobile) {
-                      window.location.href = CLICK_P2P_URL;
-                    } else {
-                      addToast('warning', 'Kompyuter rejimi', 'Kompyuterda Click ilovasi ishlamaydi! Iltimos, ekrandagi QR kodni telefoningiz orqali skanerlang.');
-                    }
-                  }}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#0073FF] via-[#0062DB] to-[#0052B8] hover:from-[#0066E6] hover:to-[#004BB0] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-600/25 transition-all text-center cursor-pointer active:scale-[0.99]"
-                >
-                  <span>Click Up orqali toʻlash</span>
-                  <ExternalLink className="w-4 h-4" />
-                </button>
-
-                {/* Payme tugmasi */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                    if (isMobile) {
-                      window.location.href = PAYME_P2P_URL;
-                    } else {
-                      addToast('warning', 'Kompyuter rejimi', 'Kompyuterda Payme ilovasi ishlamaydi! Iltimos, ekrandagi QR kodni telefoningiz orqali skanerlang.');
-                    }
-                  }}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#00A699] via-[#008F83] to-[#007369] hover:from-[#00998D] hover:to-[#006259] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-600/25 transition-all text-center cursor-pointer active:scale-[0.99]"
-                >
-                  <span>Payme orqali toʻlash</span>
-                  <ExternalLink className="w-4 h-4" />
-                </button>
-              </div>
+              {/* Bank ilovasi orqali toʻlov, faqat koʻrsatilgan karta uchun. */}
+              <p className="mt-3 text-center text-[11px] text-[#A89485]">
+                Toʻlovni bank ilovangiz orqali yuqoridagi kartaga oʻtkazing.
+              </p>
 
               {/* Kutish indikatori */}
               <div className="mt-3 pt-2.5 border-t border-[#291E18] flex items-center justify-between text-xs text-[#8C7A6B]">
