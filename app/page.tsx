@@ -155,16 +155,6 @@ export default function Home() {
   const [direction, setDirection] = useState<'cyr2lat' | 'lat2cyr'>('cyr2lat');
   const translitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [grammarInput, setGrammarInput] = useState('');
-  const [grammarData, setGrammarData] = useState<{
-    hasErrors: boolean;
-    highlightedText?: string;
-    cleanText?: string;
-    message?: string;
-  } | null>(null);
-  const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
-  const [grammarCopied, setGrammarCopied] = useState(false);
-
   const [isProcessingDoc, setIsProcessingDoc] = useState(false);
 
   const resetSession = useCallback(() => {
@@ -453,44 +443,6 @@ export default function Home() {
     setInputText(newIn);
     setOutputText('');
     if (newIn.trim()) requestTransliteration(newIn, newDirection);
-  };
-
-  const handleCheckGrammar = async () => {
-    if (!grammarInput.trim()) return;
-    
-    setIsCheckingGrammar(true);
-    setGrammarData(null);
-    
-    try {
-      const res = await fetch(`${API_URL}/api/check-grammar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: grammarInput })
-      });
-      const data = await res.json();
-      
-      if (data.result) {
-        try {
-          const parsed = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
-          setGrammarData(parsed);
-        } catch {
-          setGrammarData({ hasErrors: false, message: data.result, cleanText: grammarInput });
-        }
-      }
-    } catch {
-      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi');
-    } finally {
-      setIsCheckingGrammar(false);
-    }
-  };
-
-  const copyGrammarResult = () => {
-    const textToCopy = grammarData?.cleanText || grammarInput;
-    if (!textToCopy) return;
-    navigator.clipboard.writeText(textToCopy);
-    setGrammarCopied(true);
-    addToast('success', 'Nusxalandi', 'Tuzatilgan matn nusxalandi');
-    setTimeout(() => setGrammarCopied(false), 2000);
   };
 
   const processSelectedFile = async (selectedFile: File) => {
@@ -1013,80 +965,6 @@ export default function Home() {
                 transition={{ duration: 0.25 }}
                 className="max-w-4xl mx-auto space-y-6 text-left"
               >
-                <div className="bg-[#120D0A]/85 border border-[#D4A373]/20 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl focus-within:border-[#D4A373]/60 transition-all">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-base font-medium text-[#FBF5F0] flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[#D4A373]" />
-                      Matn imlosini tekshirish
-                    </h3>
-                    <span className="text-xs text-[#A89485] bg-[#1E1511] px-2 py-0.5 rounded-md border border-[#2A1F1A]">Gemini AI</span>
-                  </div>
-                  
-                  <textarea
-                    value={grammarInput}
-                    onChange={(e) => setGrammarInput(e.target.value)}
-                    placeholder="Tekshiriladigan qisqa matn, reja yoki tezisni kiriting..."
-                    className="w-full h-32 bg-[#0C0806]/90 border border-[#241A15] rounded-2xl p-3.5 text-xs sm:text-sm text-[#FBF5F0] placeholder-[#7A6A5E] outline-none focus:border-[#D4A373]/50 transition-all resize-none leading-relaxed"
-                  />
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-xs text-[#A89485]">{grammarInput.length} belgi</span>
-                    <motion.button
-                      onClick={handleCheckGrammar}
-                      disabled={!grammarInput.trim() || isCheckingGrammar}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4A373] to-[#8C6239] text-[#0A0706] font-bold text-xs shadow-lg shadow-[#D4A373]/15 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                    >
-                      {isCheckingGrammar ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>AI tekshirmoqda...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Zap className="w-3.5 h-3.5" />
-                          <span>Imloni tuzatish</span>
-                        </>
-                      )}
-                    </motion.button>
-                  </div>
-
-                  <AnimatePresence>
-                    {grammarData && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-4 bg-[#0C0806]/90 border border-[#241A15] rounded-2xl p-4 relative overflow-hidden"
-                      >
-                        <div className="flex justify-between items-center pb-2 mb-3 border-b border-[#231914]">
-                          <span className="text-xs font-bold tracking-wider text-[#E0A96D]">
-                            {grammarData.hasErrors ? '✨ TUZATILGAN MATN' : '✅ NATIJA'}
-                          </span>
-                          {(grammarData.cleanText || grammarData.highlightedText) && (
-                            <button 
-                              onClick={copyGrammarResult}
-                              className="flex items-center gap-1.5 text-xs text-[#E0A96D] hover:text-[#FFF] bg-[#1E1511] px-2.5 py-1 rounded-lg border border-[#3A2B23] cursor-pointer"
-                            >
-                              {grammarCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                              <span>{grammarCopied ? 'Nusxalandi!' : 'Nusxa'}</span>
-                            </button>
-                          )}
-                        </div>
-                        {grammarData.hasErrors && grammarData.highlightedText ? (
-                          <div 
-                            className="text-xs sm:text-sm text-[#EFE5DC] leading-relaxed whitespace-pre-wrap"
-                            dangerouslySetInnerHTML={{ __html: grammarData.highlightedText }}
-                          />
-                        ) : (
-                          <p className="text-xs sm:text-sm text-[#EFE5DC] leading-relaxed">{grammarData.message || grammarData.cleanText}</p>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
                 <div className="bg-[#120D0A]/85 border border-[#D4A373]/20 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-base font-medium text-[#FBF5F0] flex items-center gap-2">
