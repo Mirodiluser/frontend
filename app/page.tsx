@@ -38,6 +38,7 @@ import {
   PartyPopper,
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
+import GuideTour from './components/GuideTour';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -81,6 +82,21 @@ interface Toast {
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
+  const [guideOpen, setGuideOpen] = useState(false);
+
+  // Birinchi tashrifda Qoʻllanma oʻzi ochiladi; keyin sarlavhadagi tugma orqali qayta ochiladi
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('tahrir_guide_seen') || localStorage.getItem('tahrir_pending_order')) return;
+    } catch { return; }
+    const id = window.setTimeout(() => setGuideOpen(true), 1600);
+    return () => window.clearTimeout(id);
+  }, []);
+
+  const closeGuide = useCallback(() => {
+    setGuideOpen(false);
+    try { localStorage.setItem('tahrir_guide_seen', '1'); } catch { /* ixtiyoriy */ }
+  }, []);
   const [isDragging, setIsDragging] = useState(false);
   const [isConverterDragging, setIsConverterDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -732,6 +748,20 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2.5 sm:gap-3.5"
           >
+            <motion.button
+              data-guide="guide-btn"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setGuideOpen(true)}
+              title="Qoʻllanma"
+              aria-label="Qoʻllanma"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[#140E0B]/70 border border-[#D4A373]/20 text-xs font-semibold text-[#CDB8A5] hover:text-[#E0A96D] hover:border-[#D4A373]/50 transition-all cursor-pointer backdrop-blur-md"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-[#D4A373]" />
+              <span className="hidden sm:inline">Qoʻllanma</span>
+            </motion.button>
+
+            <div data-guide="account" className="flex items-center gap-2.5 sm:gap-3.5">
             {user ? (
               <>
                 <motion.button 
@@ -779,9 +809,12 @@ export default function Home() {
               <Coins className="w-3.5 h-3.5" />
               <span>Doʻkon</span>
             </motion.button>
+            </div>
           </motion.div>
         </div>
       </header>
+
+      {guideOpen && <GuideTour onClose={closeGuide} onTabChange={setActiveTab} />}
 
       {/* ASOSIY QISM */}
       <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-10 pb-24 text-center">
@@ -816,7 +849,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-10 flex justify-center"
         >
-          <div className="p-1.5 rounded-2xl bg-[#120D0A]/85 border border-[#D4A373]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+          <div data-guide="tabs" className="p-1.5 rounded-2xl bg-[#120D0A]/85 border border-[#D4A373]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
             {[
               { id: 'translit', label: 'Kirill ↔ Latin', icon: RefreshCw, badge: 'Cheksiz' },
               { id: 'corrector', label: 'Imlo Tahrirchi', icon: Sparkles, badge: 'AI Pro' },
@@ -863,6 +896,7 @@ export default function Home() {
             {activeTab === 'translit' && (
               <motion.div 
                 key="tab-translit"
+                data-guide="translit"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -959,6 +993,7 @@ export default function Home() {
             {activeTab === 'corrector' && (
               <motion.div 
                 key="tab-corrector"
+                data-guide="corrector"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -1075,6 +1110,7 @@ export default function Home() {
             {activeTab === 'converter' && (
               <motion.div 
                 key="tab-converter"
+                data-guide="converter"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
