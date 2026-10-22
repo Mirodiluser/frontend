@@ -46,9 +46,10 @@ export const GUIDE_STEPS: Step[] = [
     tab: 'translit',
     icon: RefreshCw,
     title: 'Kirill ↔ Latin',
-    text: 'Matnni qoʻyasiz, natija darhol chiqadi. Foydalanish cheksiz.',
+    text: 'Matnni qoʻyasiz, natija darhol chiqadi. Tizimga kirgan foydalanuvchilar uchun bepul va cheksiz.',
     bullets: [
       'Tepadagi almashtirish tugmasi yoʻnalishni oʻzgartiradi: Kirill → Lotin yoki Lotin → Kirill',
+      'Shubhali soʻz chiqsa, “AI bilan aniqlash” tugmasi paydo boʻladi (200 soʻzgacha)',
       '“Buferdan qoʻyish” nusxalangan matnni bir bosishda joylaydi',
       '“Nusxa olish” tayyor natijani nusxalaydi',
     ],

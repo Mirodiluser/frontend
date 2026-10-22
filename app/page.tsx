@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, useDeferredValue } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -39,6 +39,10 @@ import {
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import GuideTour from './components/GuideTour';
+import { analyzeLatin, cyrillicToLatin, countWords } from './lib/uzTranslit';
+
+// Pulli AI tekshiruvi faqat shu soʻz sonigacha (server ham tekshiradi)
+const AI_MAX_WORDS = 200;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -165,13 +169,24 @@ export default function Home() {
   const [isConverting, setIsConverting] = useState(false);
 
   const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
   const [copied, setCopied] = useState(false);
-  const [isTransliterating, setIsTransliterating] = useState(false);
   const [direction, setDirection] = useState<'cyr2lat' | 'lat2cyr'>('cyr2lat');
-  const translitTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // AI aniqlashtirgan soʻzlar (kalit → kirill) va soʻrov holati
+  const [aiOverrides, setAiOverrides] = useState<Record<string, string>>({});
+  const [isAiRefining, setIsAiRefining] = useState(false);
 
   const [isProcessingDoc, setIsProcessingDoc] = useState(false);
+
+  // Transliteratsiya brauzerning oʻzida, bir zumda (serversiz). Faqat tizimga kirgan foydalanuvchi uchun.
+  const deferredInput = useDeferredValue(inputText);
+  const translit = useMemo(() => {
+    if (!user || !deferredInput) return { result: '', uncertain: [] as string[] };
+    return direction === 'cyr2lat'
+      ? { result: cyrillicToLatin(deferredInput), uncertain: [] as string[] }
+      : analyzeLatin(deferredInput, aiOverrides);
+  }, [user, deferredInput, direction, aiOverrides]);
+  const outputText = translit.result;
+  const translitWords = useMemo(() => countWords(inputText), [inputText]);
 
   const resetSession = useCallback(() => {
     localStorage.removeItem('tahrir_user');
@@ -405,45 +420,23 @@ export default function Home() {
     addToast('info', 'Chiqildi', 'Hisobdan chiqdingiz');
   };
 
-  const requestTransliteration = async (text: string, currentDirection: 'cyr2lat' | 'lat2cyr') => {
-    if (!text.trim()) {
-      setOutputText('');
-      setIsTransliterating(false);
-      return;
-    }
-
-    setIsTransliterating(true);
-    try {
-      const res = await fetch(`${API_URL}/api/transliterate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, direction: currentDirection })
-      });
-      const data = await res.json();
-      if (data.result) setOutputText(data.result);
-    } catch {
-      console.error('Transliteratsiya xatosi');
-    } finally {
-      setIsTransliterating(false);
-    }
+  const requireLoginForTranslit = () => {
+    addToast('warning', 'Avtorizatsiya kerak', 'Kirill ↔ Latin vositasidan foydalanish uchun tizimga kiring');
+    setAuthMode('login');
+    setShowAuthModal(true);
   };
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value;
-    setInputText(text);
-
-    if (translitTimeoutRef.current) clearTimeout(translitTimeoutRef.current);
-    translitTimeoutRef.current = setTimeout(() => {
-      requestTransliteration(text, direction);
-    }, 280);
+    if (!user) { requireLoginForTranslit(); return; }
+    setInputText(e.target.value);
   };
 
   const handlePasteToTranslit = async () => {
+    if (!user) { requireLoginForTranslit(); return; }
     try {
       const text = await navigator.clipboard.readText();
       if (text) {
         setInputText(text);
-        requestTransliteration(text, direction);
         addToast('info', 'Qoʻyildi', 'Matn buferdan joylandi');
       }
     } catch {
@@ -452,13 +445,48 @@ export default function Home() {
   };
 
   const toggleDirection = () => {
-    if (translitTimeoutRef.current) clearTimeout(translitTimeoutRef.current);
-    const newDirection = direction === 'cyr2lat' ? 'lat2cyr' : 'cyr2lat';
-    setDirection(newDirection);
-    const newIn = outputText;
-    setInputText(newIn);
-    setOutputText('');
-    if (newIn.trim()) requestTransliteration(newIn, newDirection);
+    if (!user) { requireLoginForTranslit(); return; }
+    setDirection(direction === 'cyr2lat' ? 'lat2cyr' : 'cyr2lat');
+    setInputText(outputText);
+    setAiOverrides({});
+  };
+
+  // Pulli Gemini: faqat qoidalar hal qila olmagan soʻzlar uchun, matn <= AI_MAX_WORDS soʻz
+  const handleAiRefine = async () => {
+    if (!user) { requireLoginForTranslit(); return; }
+    if (translitWords > AI_MAX_WORDS) {
+      addToast('warning', 'Matn uzun', `AI tekshiruvi ${AI_MAX_WORDS} soʻzgacha matn uchun`);
+      return;
+    }
+    setIsAiRefining(true);
+    try {
+      const res = await authFetch(`${API_URL}/api/transliterate/ai`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: inputText }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        resetSession();
+        requireLoginForTranslit();
+        return;
+      }
+      if (!res.ok) {
+        addToast('error', 'AI tekshiruvi', data.error || 'Xatolik yuz berdi. Qoidalar asosidagi natija qoldirildi.');
+        return;
+      }
+      const found = Object.keys(data.overrides || {}).length;
+      if (found > 0) {
+        setAiOverrides((prev) => ({ ...prev, ...data.overrides }));
+        addToast('success', 'Aniqlashtirildi', `${found} ta soʻz AI yordamida tekshirildi`);
+      } else {
+        addToast('info', 'AI tekshiruvi', 'Qoidalar asosidagi natija toʻgʻri deb topildi');
+      }
+    } catch {
+      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi.');
+    } finally {
+      setIsAiRefining(false);
+    }
   };
 
   const processSelectedFile = async (selectedFile: File) => {
@@ -637,7 +665,7 @@ export default function Home() {
     if (!outputText) return;
     navigator.clipboard.writeText(outputText);
     setCopied(true);
-    addToast('success', 'Nusxalandi', 'Lotin alifbosidagi matn nusxalandi');
+    addToast('success', 'Nusxalandi', direction === 'cyr2lat' ? 'Lotin alifbosidagi matn nusxalandi' : 'Kirill alifbosidagi matn nusxalandi');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -922,7 +950,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div className="bg-[#120D0A]/85 border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl focus-within:border-[#D4A373]/60 transition-all">
+                  <div className="relative bg-[#120D0A]/85 border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl focus-within:border-[#D4A373]/60 transition-all">
                     <div className="flex justify-between items-center pb-3 border-b border-[#231914] text-xs font-bold text-[#E0A96D]">
                       <span className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#D4A373] shadow-[0_0_8px_#D4A373]" />
@@ -938,17 +966,32 @@ export default function Home() {
                         </button>
                         {inputText && (
                           <button 
-                            onClick={() => { setInputText(''); setOutputText(''); }} 
+                            onClick={() => { setInputText(''); setAiOverrides({}); }} 
                             className="text-[#A89485] hover:text-rose-400 text-xs transition-colors flex items-center gap-1 bg-[#1E1511] px-2 py-0.5 rounded-md border border-[#2A1F1A] cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}
                         <span className="text-[#A89485] bg-[#1E1511] px-2 py-0.5 rounded-md border border-[#2A1F1A] text-[11px]">
-                          {inputText.length} belgi ({inputText.trim() ? inputText.trim().split(/\s+/).length : 0} soʻz)
+                          {inputText.length} belgi ({translitWords} soʻz)
                         </span>
                       </div>
                     </div>
+                    {!user && (
+                      <div className="absolute inset-0 z-10 rounded-3xl bg-[#0A0706]/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 px-6 text-center" data-testid="translit-login-gate">
+                        <div className="w-11 h-11 rounded-2xl bg-[#1E1511] border border-[#3A2B23] flex items-center justify-center">
+                          <Lock className="w-5 h-5 text-[#E0A96D]" />
+                        </div>
+                        <p className="text-sm font-semibold text-[#FBF5F0]">Avtorizatsiya kerak</p>
+                        <p className="text-xs text-[#A89485] max-w-[260px] leading-relaxed">Kirill ↔ Latin vositasidan foydalanish uchun tizimga kiring yoki roʻyxatdan oʻting.</p>
+                        <button
+                          onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
+                          className="mt-1 px-5 py-2 rounded-xl bg-gradient-to-r from-[#D4A373] to-[#8C6239] text-[#0A0706] text-xs font-bold cursor-pointer hover:shadow-[0_8px_24px_rgba(212,163,115,0.3)] transition-all"
+                        >
+                          Kirish
+                        </button>
+                      </div>
+                    )}
                     <textarea
                       value={inputText}
                       onChange={handleTextChange}
@@ -975,16 +1018,28 @@ export default function Home() {
                         </motion.button>
                       )}
                     </div>
-                    <div className="w-full h-full overflow-y-auto mt-3 text-xs sm:text-sm text-[#EAE0D5] leading-relaxed whitespace-pre-wrap">
-                      {isTransliterating ? (
-                        <div className="flex items-center gap-2.5 text-[#A89485] h-full justify-center text-xs">
-                          <Loader2 className="w-4 h-4 animate-spin text-[#D4A373]" />
-                          <span>Oʻgirilmoqda...</span>
-                        </div>
-                      ) : (
-                        outputText || <span className="text-[#7A6A5E] italic">Natija bu yerda aks etadi...</span>
-                      )}
+                    <div className="w-full flex-1 min-h-0 overflow-y-auto mt-3 text-xs sm:text-sm text-[#EAE0D5] leading-relaxed whitespace-pre-wrap">
+                      {outputText || <span className="text-[#7A6A5E] italic">Natija bu yerda aks etadi...</span>}
                     </div>
+                    {direction === 'lat2cyr' && user && translit.uncertain.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-[#231914] flex items-center justify-between gap-3" data-testid="translit-ai-strip">
+                        <p className="text-[11px] text-[#A89485] leading-snug min-w-0">
+                          <span className="text-[#E0A96D] font-semibold">{translit.uncertain.length} ta shubhali soʻz: </span>
+                          <span className="break-words">{translit.uncertain.slice(0, 4).join(', ')}{translit.uncertain.length > 4 ? '…' : ''}</span>
+                          {translitWords > AI_MAX_WORDS && (
+                            <span className="block text-[#8C7A6B]">AI tekshiruvi {AI_MAX_WORDS} soʻzgacha matn uchun ({translitWords} ta)</span>
+                          )}
+                        </p>
+                        <button
+                          onClick={handleAiRefine}
+                          disabled={isAiRefining || translitWords > AI_MAX_WORDS}
+                          className="shrink-0 flex items-center gap-1.5 text-[11px] font-bold text-[#E0A96D] bg-[#1E1511] px-3 py-1.5 rounded-lg border border-[#3A2B23] hover:border-[#D4A373]/60 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                          {isAiRefining ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                          AI bilan aniqlash
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
