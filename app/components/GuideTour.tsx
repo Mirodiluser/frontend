@@ -1,25 +1,18 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import {
-  ArrowRight,
-  BookOpen,
-  Coins,
-  FileType,
-  PartyPopper,
-  RefreshCw,
-  Sparkles,
-  X,
-} from 'lucide-react';
+import { ArrowRight, Check, Coins, Feather, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
+import { GUIDE_CSS } from './guideStyles';
+import { DEMOS } from './GuideDemos';
 
 export type GuideTab = 'translit' | 'corrector' | 'converter';
 
 interface Step {
   id: string;
-  /** Qaysi data-guide elementi yoritiladi (yoʻq bo'lsa, markazda ko'rsatiladi) */
+  /** Qaysi data-guide elementi yoritiladi (yoʻq boʻlsa, markazda koʻrsatiladi) */
   target?: string;
-  /** Qoʻllanma shu qadamga o'tganda ochiladigan tab */
+  /** Qoʻllanma shu qadamga oʻtganda ochiladigan tab */
   tab?: GuideTab;
   icon: LucideIcon;
   title: string;
@@ -30,14 +23,9 @@ interface Step {
 export const GUIDE_STEPS: Step[] = [
   {
     id: 'welcome',
-    icon: BookOpen,
+    icon: Feather,
     title: 'Tahrir.AI ga xush kelibsiz',
     text: 'Bu qisqa qoʻllanma sayt imkoniyatlarini bosqichma-bosqich koʻrsatadi. Taxminan bir daqiqa vaqt oladi.',
-    bullets: [
-      'Har bir boʻlim alohida tushuntiriladi',
-      '“Keyingisi” tugmasi yoki klaviaturadagi → bilan davom eting',
-      'Istalgan payt “Oʻtkazib yuborish” mumkin',
-    ],
   },
   {
     id: 'tabs',
@@ -106,7 +94,7 @@ export const GUIDE_STEPS: Step[] = [
   {
     id: 'done',
     target: 'guide-btn',
-    icon: PartyPopper,
+    icon: Check,
     title: 'Tayyor!',
     text: 'Qoʻllanmani istalgan payt shu tugma orqali qayta koʻrishingiz mumkin.',
   },
@@ -117,99 +105,132 @@ interface GuideTourProps {
   onTabChange: (tab: GuideTab) => void;
 }
 
-const PAD = 10; // yoritilgan elementdan tashqaridagi boʻsh joy
-const GAP = 18; // yoritilgan element va kartochka orasidagi masofa
-const EDGE = 16; // ekran chetidan minimal masofa
+const PAD = 10;
+const GAP = 18;
+const EDGE = 16;
 const BP_MOBILE = 640;
+const N = GUIDE_STEPS.length;
+const CHIPS = ['Kirill ↔ Latin', 'Imlo Tahrirchi', 'Fayl Konverter', 'Tangalar'];
 
-const STYLES = `
-.tg-root{position:fixed;inset:0;z-index:120;opacity:0;transition:opacity .45s ease}
-.tg-root.tg-on{opacity:1}
-.tg-block{position:absolute;inset:0}
-.tg-blur{position:absolute;inset:0;pointer-events:none;background:rgba(8,5,3,.58);
-  -webkit-backdrop-filter:blur(7px) saturate(.85);backdrop-filter:blur(7px) saturate(.85)}
-.tg-ring{position:absolute;left:0;top:0;pointer-events:none;box-sizing:border-box;
-  border:1.5px solid rgba(226,177,128,.85);transition:opacity .35s ease;opacity:0;
-  animation:tg-pulse 2.4s ease-in-out infinite}
-@keyframes tg-pulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(212,163,115,.35),0 0 28px rgba(212,163,115,.25)}
-  50%{box-shadow:0 0 0 7px rgba(212,163,115,0),0 0 44px rgba(212,163,115,.4)}}
-.tg-card{position:absolute;left:0;top:0;box-sizing:border-box;width:min(92vw,392px);
-  background:linear-gradient(160deg,rgba(28,19,14,.97),rgba(14,9,7,.97));
-  border:1px solid rgba(212,163,115,.38);border-radius:22px;padding:20px 20px 16px;color:#FBF5F0;
-  box-shadow:0 30px 70px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,235,210,.06);
-  font-family:inherit;text-align:left;will-change:transform}
-.tg-card:focus{outline:none}
-.tg-step{animation:tg-in .5s cubic-bezier(.22,.8,.3,1) both}
-@keyframes tg-in{from{opacity:0;transform:translateY(12px);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
-.tg-li{opacity:0;animation:tg-li .45s cubic-bezier(.22,.8,.3,1) forwards}
-@keyframes tg-li{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
-.tg-icon{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,rgba(226,177,128,.22),rgba(140,98,57,.18));
-  border:1px solid rgba(212,163,115,.4);animation:tg-float 3.2s ease-in-out infinite}
-@keyframes tg-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.tg-dot{height:6px;border-radius:99px;background:rgba(212,163,115,.28);width:6px;
-  transition:width .4s cubic-bezier(.22,.8,.3,1),background .3s ease}
-.tg-dot.tg-act{width:22px;background:linear-gradient(90deg,#E2B180,#BA8A59)}
-.tg-btn{cursor:pointer;border:none;font:inherit;font-size:13px;font-weight:700;border-radius:12px;
-  padding:9px 16px;transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease,background .2s ease}
-.tg-btn:active{transform:scale(.97)}
-.tg-next{display:inline-flex;align-items:center;gap:7px;color:#0A0706;
-  background:linear-gradient(90deg,#D4A373,#BA8A59 55%,#8C6239);box-shadow:0 6px 20px rgba(212,163,115,.25)}
-.tg-next:hover{box-shadow:0 8px 26px rgba(212,163,115,.42)}
-.tg-next:focus-visible,.tg-back:focus-visible,.tg-skip:focus-visible,.tg-x:focus-visible{outline:2px solid #E2B180;outline-offset:2px}
-.tg-back{background:rgba(255,255,255,.06);color:#E8D9C8;border:1px solid rgba(212,163,115,.22)}
-.tg-back:hover:not(:disabled){background:rgba(255,255,255,.1)}
-.tg-back:disabled{opacity:.35;cursor:default}
-.tg-skip{background:none;color:#A89485;font-weight:600;padding:9px 4px}
-.tg-skip:hover{color:#E0A96D}
-.tg-x{position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:10px;border:none;cursor:pointer;
-  background:transparent;color:#8C7A6B;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
-.tg-x:hover{background:rgba(255,255,255,.08);color:#E0A96D}
-@media (prefers-reduced-motion:reduce){
-  .tg-root{transition:none}.tg-step,.tg-li,.tg-icon,.tg-ring{animation:none!important}
-  .tg-li{opacity:1}.tg-dot{transition:none}}
-`;
+/* ---------- pruzhina (semi-implicit Euler, kichik qadamlar bilan barqaror) ---------- */
+interface Sp { p: number; v: number }
+const mk = (p = 0): Sp => ({ p, v: 0 });
+function spring(s: Sp, t: number, k: number, c: number, dt: number) {
+  const n = Math.max(1, Math.ceil(dt / 0.008));
+  const h = dt / n;
+  for (let i = 0; i < n; i++) {
+    s.v += (k * (t - s.p) - c * s.v) * h;
+    s.p += s.v * h;
+  }
+}
+function snap(s: Sp, t: number) { s.p = t; s.v = 0; }
 
-interface Anim {
-  x: number; y: number; w: number; h: number; r: number; ring: number;
-  cx: number; cy: number;
+/* ---------- kursor yoʻlboshchi nuqtalari ---------- */
+type Pt = { x: number; y: number };
+const q = (sel: string) => document.querySelector<HTMLElement>(sel);
+const mid = (el: Element | null | undefined): Pt | null => {
+  if (!el) return null;
+  const r = el.getBoundingClientRect();
+  return r.width > 0 && r.height > 0 ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null;
+};
+const WAYPOINTS: Record<string, (() => Pt | null)[]> = {
+  tabs: [0, 1, 2].map((i) => () => mid(document.querySelectorAll('[data-guide="tabs"] button')[i])),
+  translit: [
+    () => mid(q('[data-guide="translit"] button[title="Almashtirish"]')),
+    () => mid(q('[data-guide="translit"] textarea')),
+  ],
+  corrector: [() => mid(q('[data-guide="corrector"] #fileInput')?.parentElement) ?? mid(q('[data-guide="corrector"]'))],
+  converter: [
+    () => mid(q('[data-guide="converter"] input[type="file"]')?.parentElement) ?? mid(q('[data-guide="converter"]')),
+  ],
+  account: [() => mid(q('[data-guide="account"] > :last-child')) ?? mid(q('[data-guide="account"]'))],
+  done: [() => mid(q('[data-guide="guide-btn"]'))],
+};
+
+/* ---------- konfetti ---------- */
+interface Part { x: number; y: number; vx: number; vy: number; r: number; vr: number; w: number; h: number; t: number; c: string; round: boolean }
+const COLORS = ['#F7D8B5', '#E2B180', '#FFF3E3', '#C99562', '#fff', '#f5c542', '#d98a5a'];
+
+function pad2(n: number) { return String(n).padStart(2, '0'); }
+
+function Words({ text, base, step }: { text: string; base: number; step: number }) {
+  return (
+    <>
+      {text.split(' ').map((w, i) => (
+        <span key={i} className="tg-w" style={{ ['--d' as string]: base + i * step } as React.CSSProperties}>
+          {w + ' '}
+        </span>
+      ))}
+    </>
+  );
 }
 
 export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
   const [index, setIndex] = useState(0);
   const [on, setOn] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [ripple, setRipple] = useState(0);
 
+  const holeRef = useRef<HTMLDivElement>(null);
   const blurRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const glassRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const anim = useRef<Anim | null>(null);
+  const ctaRef = useRef<HTMLButtonElement>(null);
+
   const indexRef = useRef(0);
   const scrolledFor = useRef(-1);
   const closing = useRef(false);
+  const busy = useRef(false);
+  const reduced = useRef(false);
+  const parts = useRef<Part[]>([]);
+  const cur = useRef({ wi: 0, arrived: 0, startAt: 0 });
+  const sp = useRef({
+    x: mk(), y: mk(), w: mk(), h: mk(), r: mk(), ho: mk(),
+    cx: mk(), cy: mk(), px: mk(), py: mk(), po: mk(),
+    init: false,
+  });
 
   const step = GUIDE_STEPS[index];
-  const isLast = index === GUIDE_STEPS.length - 1;
+  const isLast = index === N - 1;
+  const Demo = DEMOS[step.id];
+
+  const dust = useMemo(
+    () =>
+      Array.from({ length: 28 }, (_, i) => {
+        const a = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+        const b = (Math.sin(i * 78.233) * 12345.678) % 1;
+        const r = Math.abs(a);
+        const s = Math.abs(b);
+        return {
+          left: `${r * 100}%`,
+          size: 2 + s * 4,
+          dur: 11 + r * 14,
+          delay: -s * 20,
+          o: 0.25 + s * 0.5,
+          dx: (a - 0.5) * 120,
+        };
+      }),
+    [],
+  );
 
   useEffect(() => {
     indexRef.current = index;
-  }, [index]);
+    cur.current = { wi: 0, arrived: 0, startAt: performance.now() };
+    scrolledFor.current = -1;
+    const tab = GUIDE_STEPS[index].tab;
+    if (tab) onTabChange(tab);
+    const id = window.setTimeout(() => (index === 0 ? ctaRef : nextRef).current?.focus({ preventScroll: true }), 120);
+    return () => window.clearTimeout(id);
+  }, [index, onTabChange]);
 
-  // Ochilganda yumshoq paydo boʻladi
   useEffect(() => {
+    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const id = requestAnimationFrame(() => setOn(true));
     return () => cancelAnimationFrame(id);
   }, []);
-
-  // Qadamga mos tabni ochamiz
-  useEffect(() => {
-    const tab = GUIDE_STEPS[index].tab;
-    if (tab) onTabChange(tab);
-    scrolledFor.current = -1;
-    const id = window.setTimeout(() => nextRef.current?.focus({ preventScroll: true }), 80);
-    return () => window.clearTimeout(id);
-  }, [index, onTabChange]);
 
   const finish = useCallback(() => {
     if (closing.current) return;
@@ -217,17 +238,26 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
     setOn(false);
     onTabChange('translit');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    window.setTimeout(onClose, 420);
+    window.setTimeout(onClose, 650);
   }, [onClose, onTabChange]);
 
+  const go = useCallback((to: number) => {
+    if (busy.current || closing.current || to < 0 || to >= N || to === indexRef.current) return;
+    busy.current = true;
+    setLeaving(true);
+    window.setTimeout(() => {
+      setIndex(to);
+      setLeaving(false);
+      busy.current = false;
+    }, reduced.current ? 0 : 230);
+  }, []);
+
   const next = useCallback(() => {
-    if (indexRef.current >= GUIDE_STEPS.length - 1) finish();
-    else setIndex((i) => Math.min(GUIDE_STEPS.length - 1, i + 1));
-  }, [finish]);
+    if (indexRef.current >= N - 1) finish();
+    else go(indexRef.current + 1);
+  }, [finish, go]);
+  const back = useCallback(() => go(indexRef.current - 1), [go]);
 
-  const back = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
-
-  // Klaviatura
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { e.preventDefault(); finish(); }
@@ -238,49 +268,70 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
     return () => window.removeEventListener('keydown', onKey);
   }, [finish, next, back]);
 
-  // Asosiy animatsiya sikli: yoritilgan joy va kartochka silliq harakatlanadi
+  // Konfetti: yakuniy qadamda
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!isLast || reduced.current) return;
+    const fire = (ox: number, oy: number, n: number, spread: number, power: number) => {
+      for (let i = 0; i < n; i++) {
+        const ang = -Math.PI / 2 + (Math.random() - 0.5) * spread;
+        const v = power * (0.45 + Math.random() * 0.75);
+        parts.current.push({
+          x: ox, y: oy, vx: Math.cos(ang) * v, vy: Math.sin(ang) * v,
+          r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 14,
+          w: 5 + Math.random() * 6, h: 3 + Math.random() * 5, t: 0,
+          c: COLORS[(Math.random() * COLORS.length) | 0], round: Math.random() < 0.3,
+        });
+      }
+    };
+    const t1 = window.setTimeout(() => {
+      const r = cardRef.current?.getBoundingClientRect();
+      if (r) fire(r.left + r.width / 2, r.top + 40, 90, 2.4, 900);
+    }, 450);
+    const t2 = window.setTimeout(() => {
+      const p = mid(q('[data-guide="guide-btn"]'));
+      if (p) fire(p.x, p.y, 70, 3.6, 640);
+    }, 850);
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+  }, [isLast]);
+
+  // Asosiy sikl: pruzhinalar, kursor, konfetti
+  useEffect(() => {
     let raf = 0;
     let last = performance.now();
+    const S = sp.current;
 
     const loop = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
+      const dt = Math.min(0.034, (now - last) / 1000);
       last = now;
+      const rm = reduced.current;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const mobile = vw < BP_MOBILE;
-      const s = GUIDE_STEPS[indexRef.current];
+      const idx = indexRef.current;
+      const s = GUIDE_STEPS[idx];
 
       let hole = { x: vw / 2, y: vh / 2, w: 0, h: 0, r: 0 };
-      let ring = 0;
+      let ho = 0;
       let found: Element | null = null;
       if (s.target) {
-        const el = document.querySelector(`[data-guide="${s.target}"]`);
+        const el = q(`[data-guide="${s.target}"]`);
         if (el) {
           const rc = el.getBoundingClientRect();
           if (rc.width > 0 && rc.height > 0) {
             found = el;
             const br = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
-            hole = {
-              x: rc.left - PAD, y: rc.top - PAD,
-              w: rc.width + PAD * 2, h: rc.height + PAD * 2,
-              r: Math.min(30, br + PAD),
-            };
-            ring = 1;
+            hole = { x: rc.left - PAD, y: rc.top - PAD, w: rc.width + PAD * 2, h: rc.height + PAD * 2, r: Math.min(32, br + PAD) };
+            ho = 1;
           }
         }
       }
 
-      // Nishon topilgach, qadam uchun bir marta silliq aylantiramiz
-      if (found && scrolledFor.current !== indexRef.current) {
-        scrolledFor.current = indexRef.current;
+      if (found && scrolledFor.current !== idx) {
+        scrolledFor.current = idx;
         const rc = found.getBoundingClientRect();
         const inHeader = !!found.closest('header');
         const top = inHeader ? 0 : Math.max(0, window.scrollY + rc.top - (mobile ? 96 : 104));
-        if (Math.abs(top - window.scrollY) > 4) {
-          window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
-        }
+        if (Math.abs(top - window.scrollY) > 4) window.scrollTo({ top, behavior: rm ? 'auto' : 'smooth' });
       }
 
       const card = cardRef.current;
@@ -288,7 +339,7 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
       const ch = card ? card.offsetHeight : 0;
       let cx: number;
       let cy: number;
-      if (!found) {
+      if (!found || !card) {
         cx = (vw - cw) / 2;
         cy = (vh - ch) / 2;
       } else if (mobile) {
@@ -303,126 +354,263 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
         else cy = vh - ch - 24;
       }
 
-      let a = anim.current;
-      if (!a) {
-        a = anim.current = { x: vw / 2, y: vh / 2, w: 0, h: 0, r: 0, ring: 0, cx: (vw - cw) / 2, cy: (vh - ch) / 2 };
+      if (!S.init) {
+        S.init = true;
+        snap(S.x, vw / 2); snap(S.y, vh / 2); snap(S.w, 0); snap(S.h, 0); snap(S.r, 0);
+        snap(S.cx, cx); snap(S.cy, cy + 24); snap(S.px, vw * 0.62); snap(S.py, vh * 0.7);
       }
-      const k = reduced ? 1 : 1 - Math.exp(-dt * 7.5);
-      a.x += (hole.x - a.x) * k;
-      a.y += (hole.y - a.y) * k;
-      a.w += (hole.w - a.w) * k;
-      a.h += (hole.h - a.h) * k;
-      a.r += (hole.r - a.r) * k;
-      a.ring += (ring - a.ring) * (reduced ? 1 : 1 - Math.exp(-dt * 6));
-      a.cx += (cx - a.cx) * (reduced ? 1 : 1 - Math.exp(-dt * 6));
-      a.cy += (cy - a.cy) * (reduced ? 1 : 1 - Math.exp(-dt * 6));
 
-      const w = Math.max(0, a.w);
-      const h = Math.max(0, a.h);
-      const r = Math.max(0, Math.min(a.r, w / 2, h / 2));
+      // Kursor nishoni
+      const wps = WAYPOINTS[s.id];
+      let cp: Pt | null = null;
+      if (wps && now - cur.current.startAt > 700) cp = wps[cur.current.wi % wps.length]?.() ?? null;
+      const cu = cur.current;
+      if (cp && cursorRef.current) {
+        const dx = cp.x - S.px.p;
+        const dy = cp.y - S.py.p;
+        if (Math.hypot(dx, dy) < 5 && Math.abs(S.px.v) + Math.abs(S.py.v) < 40) {
+          if (!cu.arrived) {
+            cu.arrived = now;
+            const el = cursorRef.current;
+            el.classList.add('tg-press');
+            window.setTimeout(() => el.classList.remove('tg-press'), 170);
+            setRipple((v) => v + 1);
+          } else if (now - cu.arrived > 1500) {
+            cu.wi += 1;
+            cu.arrived = 0;
+          }
+        }
+      }
+
+      const set = (sv: Sp, t: number, k: number, c: number) => (rm ? snap(sv, t) : spring(sv, t, k, c, dt));
+      set(S.x, hole.x, 170, 22);
+      set(S.y, hole.y, 170, 22);
+      set(S.w, hole.w, 170, 22);
+      set(S.h, hole.h, 170, 22);
+      set(S.r, hole.r, 170, 22);
+      set(S.ho, ho, 90, 18);
+      set(S.cx, cx, 150, 20);
+      set(S.cy, cy, 150, 20);
+      if (cp) { set(S.px, cp.x, 120, 17); set(S.py, cp.y, 120, 17); }
+      set(S.po, cp ? 1 : 0, 80, 16);
+
+      const w = Math.max(0, S.w.p);
+      const h = Math.max(0, S.h.p);
+      const r = Math.max(0, Math.min(S.r.p, w / 2, h / 2));
       if (blurRef.current) {
         const d =
           `M0 0H${vw}V${vh}H0Z` +
-          `M${a.x + r} ${a.y}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}` +
+          `M${S.x.p + r} ${S.y.p}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}` +
           `a${r} ${r} 0 0 1 ${-r} ${r}h${-(w - 2 * r)}a${r} ${r} 0 0 1 ${-r} ${-r}` +
           `v${-(h - 2 * r)}a${r} ${r} 0 0 1 ${r} ${-r}Z`;
         blurRef.current.style.clipPath = `path(evenodd, "${d}")`;
       }
-      if (ringRef.current) {
-        const rs = ringRef.current.style;
-        rs.width = `${w}px`;
-        rs.height = `${h}px`;
-        rs.borderRadius = `${r}px`;
-        rs.transform = `translate3d(${a.x}px, ${a.y}px, 0)`;
-        rs.opacity = String(Math.min(1, Math.max(0, a.ring)));
+      if (holeRef.current) {
+        const hs = holeRef.current.style;
+        hs.width = `${w}px`;
+        hs.height = `${h}px`;
+        hs.borderRadius = `${r}px`;
+        hs.transform = `translate3d(${S.x.p}px, ${S.y.p}px, 0)`;
+        hs.opacity = String(Math.min(1, Math.max(0, S.ho.p)));
       }
       if (card) {
-        card.style.transform = `translate3d(${a.cx}px, ${a.cy}px, 0)`;
-        if (mobile) card.style.width = `${vw - 24}px`;
-        else card.style.width = '';
+        card.style.transform = `translate3d(${S.cx.p}px, ${S.cy.p}px, 0)`;
+        card.style.width = mobile ? `${vw - 24}px` : '';
       }
+      if (cursorRef.current) {
+        const cs = cursorRef.current.style;
+        cs.transform = `translate3d(${S.px.p}px, ${S.py.p}px, 0)`;
+        cs.opacity = String(Math.min(1, Math.max(0, S.po.p)));
+      }
+
+      // Konfetti
+      const cv = canvasRef.current;
+      if (cv) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        if (cv.width !== Math.round(vw * dpr) || cv.height !== Math.round(vh * dpr)) {
+          cv.width = Math.round(vw * dpr);
+          cv.height = Math.round(vh * dpr);
+        }
+        const g = cv.getContext('2d');
+        if (g) {
+          g.setTransform(dpr, 0, 0, dpr, 0, 0);
+          g.clearRect(0, 0, vw, vh);
+          const ps = parts.current;
+          for (let i = ps.length - 1; i >= 0; i--) {
+            const p = ps[i];
+            p.t += dt;
+            p.vy += 1100 * dt;
+            p.vx *= 1 - 1.4 * dt;
+            p.vy *= 1 - 0.6 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.r += p.vr * dt;
+            if (p.y > vh + 30 || p.t > 4.2) { ps.splice(i, 1); continue; }
+            g.save();
+            g.globalAlpha = Math.max(0, Math.min(1, (4.2 - p.t) * 1.2));
+            g.translate(p.x, p.y);
+            g.rotate(p.r);
+            g.scale(1, Math.cos(p.t * 9 + p.r));
+            g.fillStyle = p.c;
+            if (p.round) { g.beginPath(); g.arc(0, 0, p.w / 2, 0, 6.283); g.fill(); }
+            else g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            g.restore();
+          }
+        }
+      }
+
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // Karta: 3D qiyalik va yorugʻlik izi
+  const onGlassMove = (e: React.MouseEvent) => {
+    const g = glassRef.current;
+    if (!g || reduced.current) return;
+    const r = g.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    g.style.setProperty('--ry', `${(px - 0.5) * 6}deg`);
+    g.style.setProperty('--rx', `${-(py - 0.5) * 6}deg`);
+    g.style.setProperty('--mx', `${px * 100}%`);
+    g.style.setProperty('--my', `${py * 100}%`);
+  };
+  const onGlassLeave = () => {
+    const g = glassRef.current;
+    if (!g) return;
+    g.style.setProperty('--ry', '0deg');
+    g.style.setProperty('--rx', '0deg');
+  };
+  // Magnit effektli tugma
+  const onMag = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (reduced.current) return;
+    const b = e.currentTarget;
+    const r = b.getBoundingClientRect();
+    b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.16}px, ${(e.clientY - r.top - r.height / 2) * 0.25}px)`;
+  };
+  const onMagOut = (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.transform = ''; };
+
+  const cursorPos = useMemo(() => ripple, [ripple]);
+
   return (
     <div className={`tg-root${on ? ' tg-on' : ''}`} role="presentation" data-testid="guide-root">
-      <style>{STYLES}</style>
+      <style>{GUIDE_CSS}</style>
       <div className="tg-block" onClick={(e) => e.stopPropagation()} />
-      <div ref={blurRef} className="tg-blur" />
-      <div ref={ringRef} className="tg-ring" />
-
-      <div
-        ref={cardRef}
-        className="tg-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tg-title"
-        tabIndex={-1}
-      >
-        <button className="tg-x" onClick={finish} aria-label="Yopish" type="button">
-          <X size={16} />
-        </button>
-
-        <div key={step.id} className="tg-step">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingRight: 26 }}>
-            <div className="tg-icon">
-              <step.icon size={21} color="#E2B180" strokeWidth={1.8} />
-            </div>
-            <div>
-              <div style={{ fontSize: 11, letterSpacing: '.08em', color: '#A89485', fontWeight: 700 }}>
-                QOʻLLANMA · {index + 1} / {GUIDE_STEPS.length}
-              </div>
-              <h3 id="tg-title" style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 700, color: '#FBF5F0', lineHeight: 1.25 }}>
-                {step.title}
-              </h3>
-            </div>
-          </div>
-
-          <p style={{ margin: '14px 0 0', fontSize: 13.5, lineHeight: 1.6, color: '#E4D6C7' }} aria-live="polite">
-            {step.text}
-          </p>
-
-          {step.bullets && (
-            <ul style={{ margin: '12px 0 0', padding: 0, listStyle: 'none', display: 'grid', gap: 8 }}>
-              {step.bullets.map((b, i) => (
-                <li
-                  key={b}
-                  className="tg-li"
-                  style={{ display: 'flex', gap: 9, fontSize: 12.5, lineHeight: 1.5, color: '#CDB8A5', animationDelay: `${140 + i * 90}ms` }}
-                >
-                  <span style={{ marginTop: 6, width: 5, height: 5, borderRadius: 99, background: '#D4A373', flex: '0 0 auto' }} />
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, margin: '18px 0 14px' }} aria-hidden="true">
-          {GUIDE_STEPS.map((s, i) => (
-            <span key={s.id} className={`tg-dot${i === index ? ' tg-act' : ''}`} />
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <button className="tg-btn tg-skip" onClick={finish} type="button">
-            {isLast ? 'Yopish' : 'Oʻtkazib yuborish'}
-          </button>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="tg-btn tg-back" onClick={back} disabled={index === 0} type="button">
-              Orqaga
-            </button>
-            <button ref={nextRef} className="tg-btn tg-next" onClick={next} type="button">
-              {isLast ? 'Tugatish' : 'Keyingisi'}
-              {!isLast && <ArrowRight size={15} strokeWidth={2.4} />}
-            </button>
-          </div>
-        </div>
+      <div ref={blurRef} className="tg-blur">
+        <div className="tg-blob b1" />
+        <div className="tg-blob b2" />
+        <div className="tg-blob b3" />
       </div>
+      <div className="tg-dust" aria-hidden="true">
+        {dust.map((d, i) => (
+          <i
+            key={i}
+            style={{
+              left: d.left, width: d.size, height: d.size, animationDuration: `${d.dur}s`, animationDelay: `${d.delay}s`,
+              ['--o' as string]: d.o, ['--dx' as string]: `${d.dx}px`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* Yoritilgan joy: porlash, aylanuvchi halqa, skaner, toʻlqin */}
+      <div ref={holeRef} className="tg-hole" aria-hidden="true">
+        <div className="tg-glow" />
+        <div className="tg-ring" />
+        <div key={`s${index}`} className="tg-scan" />
+        <div key={`w${index}`} className="tg-wave" />
+      </div>
+
+      {index === 0 ? (
+        <div key="hero" className={`tg-hero-wrap${leaving ? ' tg-out' : ''}`} style={{ position: 'absolute', inset: 0 }}>
+          <div ref={cardRef} className="tg-hero" role="dialog" aria-modal="true" aria-labelledby="tg-title" tabIndex={-1}>
+            <div className="tg-hb hb1" />
+            <div className="tg-hb hb2" />
+            <button className="tg-x" onClick={finish} aria-label="Yopish" type="button"><X size={16} /></button>
+            <div style={{ position: 'relative' }}>
+              <div className="tg-mark" aria-hidden="true">
+                <span className="pr" /><span className="pr" /><span className="pr" />
+                <div className="core"><div><Feather size={34} color="#F2C99A" strokeWidth={1.7} /></div></div>
+              </div>
+              <h2 id="tg-title" className="tg-title" aria-label="Tahrir.AI">
+                {Array.from('TAHRIR').map((c, i) => (
+                  <span key={i} className="ch" style={{ ['--i' as string]: i } as React.CSSProperties}>{c}</span>
+                ))}
+                <span className="ch">.</span>
+                {Array.from('AI').map((c, i) => (
+                  <span key={i} className="ai" style={{ ['--i' as string]: i + 7 } as React.CSSProperties}>{c}</span>
+                ))}
+              </h2>
+              <p className="tg-sub">Qisqa qoʻllanma: saytning barcha imkoniyatlari bir daqiqada. Har bir boʻlimni jonli koʻrsatamiz.</p>
+              <div className="tg-chips">
+                {CHIPS.map((c, i) => (
+                  <span key={c} className="tg-chip" style={{ ['--i' as string]: i } as React.CSSProperties}>
+                    <Sparkles size={12} color="#E2B180" /> {c}
+                  </span>
+                ))}
+              </div>
+              <div className="tg-cta">
+                <button ref={ctaRef} className="tg-btn tg-next tg-big" onClick={next} type="button" onMouseMove={onMag} onMouseLeave={onMagOut}>
+                  Boshlash <ArrowRight size={17} strokeWidth={2.4} />
+                </button>
+                <div><button className="tg-btn tg-skip" onClick={finish} type="button" style={{ marginTop: 6 }}>Oʻtkazib yuborish</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div key="card" ref={cardRef} className="tg-card" role="dialog" aria-modal="true" aria-labelledby="tg-title" tabIndex={-1}>
+          <div ref={glassRef} className="tg-glass" onMouseMove={onGlassMove} onMouseLeave={onGlassLeave}>
+            <button className="tg-x" onClick={finish} aria-label="Yopish" type="button"><X size={16} /></button>
+            <div className="tg-stage" key={`st${step.id}`}>
+              <span className="tg-ghost" aria-hidden="true">{pad2(index)}</span>
+              {Demo && <Demo />}
+            </div>
+            <div className={`tg-body${leaving ? ' tg-out' : ''}`}>
+              <div key={step.id}>
+                <div className="tg-kicker">Qoʻllanma · {pad2(index)} / {pad2(N - 1)}</div>
+                <h3 id="tg-title" className="tg-h"><Words text={step.title} base={40} step={60} /></h3>
+                <p className="tg-p" aria-live="polite"><Words text={step.text} base={200} step={22} /></p>
+                {step.bullets && (
+                  <ul className="tg-ul">
+                    {step.bullets.map((b, i) => (
+                      <li key={b} className="tg-li" style={{ animationDelay: `${480 + i * 130}ms` }}>
+                        <span className="tg-tick"><Check size={10} color="#1a0f08" strokeWidth={3.4} /></span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="tg-seg" aria-hidden="true">
+                {GUIDE_STEPS.slice(1).map((s, i) => <i key={s.id} className={i < index ? 'on' : ''} />)}
+              </div>
+              <div className="tg-foot">
+                <button className="tg-btn tg-skip" onClick={finish} type="button">{isLast ? 'Yopish' : 'Oʻtkazib yuborish'}</button>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button className="tg-btn tg-back" onClick={back} disabled={index <= 1} type="button">Orqaga</button>
+                  <button ref={nextRef} className="tg-btn tg-next" onClick={next} type="button" onMouseMove={onMag} onMouseLeave={onMagOut}>
+                    {isLast ? 'Tugatish' : 'Keyingisi'}
+                    {!isLast && <ArrowRight size={15} strokeWidth={2.4} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Virtual kursor */}
+      <div ref={cursorRef} className="tg-cursor" aria-hidden="true">
+        <svg width="26" height="30" viewBox="0 0 26 30" fill="none">
+          <path d="M3 2 L3 23 L8.6 18 L12.4 27 L16 25.4 L12.3 16.7 L20 16.4 Z" fill="#FFF8EF" stroke="#2a1a10" strokeWidth="1.6" strokeLinejoin="round" />
+        </svg>
+        {ripple > 0 && <span key={cursorPos} className="tg-ripple" style={{ left: -14, top: -14 }} />}
+      </div>
+
+      <canvas ref={canvasRef} className="tg-confetti" aria-hidden="true" />
     </div>
   );
 }
-
