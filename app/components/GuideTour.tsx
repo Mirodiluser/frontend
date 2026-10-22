@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Check, Coins, Feather, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
 import { GUIDE_CSS } from './guideStyles';
@@ -157,7 +158,7 @@ function Words({ text, base, step }: { text: string; base: number; step: number 
   return (
     <>
       {text.split(' ').map((w, i) => (
-        <span key={i} className="tg-w" style={{ ['--d' as string]: base + i * step } as React.CSSProperties}>
+        <span key={i} className="tg-w" style={{ ['--d' as string]: base + i * step } as CSSProperties}>
           {w + ' '}
         </span>
       ))}
@@ -466,7 +467,7 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
   }, []);
 
   // Karta: 3D qiyalik va yorugʻlik izi
-  const onGlassMove = (e: React.MouseEvent) => {
+  const onGlassMove = (e: ReactMouseEvent) => {
     const g = glassRef.current;
     if (!g || reduced.current) return;
     const r = g.getBoundingClientRect();
@@ -484,13 +485,13 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
     g.style.setProperty('--rx', '0deg');
   };
   // Magnit effektli tugma
-  const onMag = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onMag = (e: ReactMouseEvent<HTMLButtonElement>) => {
     if (reduced.current) return;
     const b = e.currentTarget;
     const r = b.getBoundingClientRect();
     b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.16}px, ${(e.clientY - r.top - r.height / 2) * 0.25}px)`;
   };
-  const onMagOut = (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.style.transform = ''; };
+  const onMagOut = (e: ReactMouseEvent<HTMLButtonElement>) => { e.currentTarget.style.transform = ''; };
 
   const cursorPos = useMemo(() => ripple, [ripple]);
 
@@ -510,7 +511,7 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
             style={{
               left: d.left, width: d.size, height: d.size, animationDuration: `${d.dur}s`, animationDelay: `${d.delay}s`,
               ['--o' as string]: d.o, ['--dx' as string]: `${d.dx}px`,
-            } as React.CSSProperties}
+            } as CSSProperties}
           />
         ))}
       </div>
@@ -536,17 +537,17 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
               </div>
               <h2 id="tg-title" className="tg-title" aria-label="Tahrir.AI">
                 {Array.from('TAHRIR').map((c, i) => (
-                  <span key={i} className="ch" style={{ ['--i' as string]: i } as React.CSSProperties}>{c}</span>
+                  <span key={i} className="ch" style={{ ['--i' as string]: i } as CSSProperties}>{c}</span>
                 ))}
                 <span className="ch">.</span>
                 {Array.from('AI').map((c, i) => (
-                  <span key={i} className="ai" style={{ ['--i' as string]: i + 7 } as React.CSSProperties}>{c}</span>
+                  <span key={i} className="ai" style={{ ['--i' as string]: i + 7 } as CSSProperties}>{c}</span>
                 ))}
               </h2>
               <p className="tg-sub">Qisqa qoʻllanma: saytning barcha imkoniyatlari bir daqiqada. Har bir boʻlimni jonli koʻrsatamiz.</p>
               <div className="tg-chips">
                 {CHIPS.map((c, i) => (
-                  <span key={c} className="tg-chip" style={{ ['--i' as string]: i } as React.CSSProperties}>
+                  <span key={c} className="tg-chip" style={{ ['--i' as string]: i } as CSSProperties}>
                     <Sparkles size={12} color="#E2B180" /> {c}
                   </span>
                 ))}

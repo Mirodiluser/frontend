@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import type { ReactElement } from 'react';
 import { Check, Coins, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
 
 /** Qadamlar uchun kichik jonli sahnalar (stage). Hammasi CSS + yengil React. */
@@ -144,7 +145,7 @@ export function DoneDemo() {
   );
 }
 
-export const DEMOS: Record<string, () => JSX.Element> = {
+export const DEMOS: Record<string, () => ReactElement> = {
   tabs: TabsDemo,
   translit: TranslitDemo,
   corrector: CorrectorDemo,
