@@ -51,7 +51,18 @@ const CYR_VOWELS = 'аеёиоуўэюя';
 const CYR_CONS = 'бвгджзйклмнпрстфхцчшқғҳ';
 
 /** Rasmiy yozuvda -tsiya, -tsion kabi qoʻshimcha/boʻlaklar: bu yerda "ts" aniq «ц» */
-const TS_SAFE = /^ts(?:iya|iy|ion|ient|ikl|irk|ink|ement|itat|ex|el|ent|enz|ik)/;
+const TS_SAFE = /^ts(?:iya|iy|ion|ient|ikl|irk|ink|ement|itat|ex|el|ent|enz|ik|ert|iv)/;
+
+/**
+ * Lotinda «s» bilan yoziladigan, lekin kirillda «ц» boʻladigan oʻzlashma soʻzlar
+ * (sivilizatsiya → цивилизация, sirk → цирк, funksiya → функция, konferensiya → конференция).
+ * «s» → «ц» faqat shu aniq qoliplarda; oddiy soʻzlar (sirka, inson, versiya...) oʻzgarmaydi.
+ */
+const S_TO_TS_START = /^(?:sivil|sirk(?![ao])|sikl|sitat|sifr|sement|sentr|sentner|seremon|sellyul|sezar)/;
+const S_TO_TS_MID: RegExp[] = [/(?<=k)s(?=iya|ion|ial)/g, /(?<=prin)s(?=ip)/g, /(?<=kon)s(?=ert)/g, /(?<=en)s(?=iya|ial)/g, /(?<=fran)s(?=iya)/g];
+/** -ksiya yunoncha (-ксия): ц emas, с */
+const KS_GREEK = /(?:aleks|anoks|anorek|apopleks|asfiks|ataks|ataraks|apraks|epitaks|oks|kaxeks|refleks|fleks|xronaks)(?=iya)/;
+
 
 function applyCase(src: string, out: string): string {
   return isUpper(src) ? out.toUpperCase() : out;
@@ -65,6 +76,15 @@ function latinWord(word: string, uncertain: string[]): string {
   const lower = word.toLowerCase().replace(APOS_ALL, "'");
   let out = '';
   let flagged = false;
+  // «s» → «ц» boʻladigan joylar (indeks)
+  const sToTs = new Set<number>();
+  if (S_TO_TS_START.test(lower)) sToTs.add(0);
+  for (const re of S_TO_TS_MID) {
+    for (const m of lower.matchAll(re)) {
+      if (re === S_TO_TS_MID[0] && KS_GREEK.test(lower)) continue;
+      sToTs.add(m.index as number);
+    }
+  }
   const lastOut = () => out[out.length - 1];
   const prevIsVowelOrStart = () => {
     const p = lastOut();
@@ -91,6 +111,7 @@ function latinWord(word: string, uncertain: string[]): string {
     }
     // yoʻl → й + ў  (y + oʻ)
     if (l === 'y' && n === 'o' && isApos(n2) && !isTutuq(n2)) { emit('й'); i++; continue; }
+    if (l === 's' && sToTs.has(i)) { emit('ц'); i++; continue; }
     if (l === 's' && n === 'h') { emit('ш'); i += 2; continue; }
     if (l === 'c' && n === 'h') { emit('ч'); i += 2; continue; }
     if (l === 'y' && (n === 'o' || n === 'u' || n === 'a')) {
