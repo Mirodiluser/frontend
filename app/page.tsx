@@ -91,7 +91,7 @@ interface Toast {
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
   const [guideOpen, setGuideOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark'|'light'>('light');
+  const [theme, setTheme] = useState<'dark'|'light'>('dark');
   useEffect(()=>{try{const value=localStorage.getItem('tahrir-theme');if(value==='light'||value==='dark')setTheme(value);}catch{}},[]);
   const toggleTheme=(event?:React.MouseEvent<HTMLButtonElement>)=>{
     const next=theme==='dark'?'light':'dark';
@@ -881,7 +881,7 @@ export default function Home() {
             ))}
           </h1>
 
-          <p className="mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
+          <p className="tahrir-lead mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
         </motion.div>
@@ -948,7 +948,7 @@ export default function Home() {
                 className="text-left"
               >
                 <div className="flex items-center justify-center gap-3 mb-5">
-                  <span className={`text-xs font-bold tracking-wider uppercase transition-all drop-shadow-sm ${direction === 'cyr2lat' ? 'text-[var(--gold-text)]' : 'text-[var(--text-muted)]'}`}>
+                  <span className={`text-xs font-bold tracking-wider uppercase transition-all drop-shadow-sm ${direction === 'cyr2lat' ? 'tahrir-onbg font-extrabold' : 'tahrir-onbg opacity-70'}`}>
                     KIRILL
                   </span>
                   <motion.button
@@ -960,7 +960,7 @@ export default function Home() {
                   >
                     <ArrowLeftRight className="w-4 h-4" />
                   </motion.button>
-                  <span className={`text-xs font-bold tracking-wider uppercase transition-all drop-shadow-sm ${direction === 'lat2cyr' ? 'text-[var(--gold-text)]' : 'text-[var(--text-muted)]'}`}>
+                  <span className={`text-xs font-bold tracking-wider uppercase transition-all drop-shadow-sm ${direction === 'lat2cyr' ? 'tahrir-onbg font-extrabold' : 'tahrir-onbg opacity-70'}`}>
                     LOTIN
                   </span>
                 </div>
@@ -1345,7 +1345,7 @@ export default function Home() {
         </div>
 
         {/* KAFOLATLAR */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-[var(--text-muted)]">
+        <div className="tahrir-onbg mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
             <span>Format imkon qadar saqlanadi</span>
