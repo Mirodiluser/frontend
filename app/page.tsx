@@ -163,7 +163,8 @@ export default function Home() {
     { id: 'pkg_1200', amount: 1000, bonus: 150, priceUzs: '309 900 soʻm', priceUsd: '$26.25', numericPrice: 309900, badge: '👑 VIP Cheksiz (-25%)', iconType: 'vip' },
   ];
 
-  const [pageInfo, setPageInfo] = useState<{ pages: number; requiredCoins: number } | null>(null);
+  const [pageInfo, setPageInfo] = useState<{ pages: number; requiredCoins: number; processingMode?: 'instant' | 'background' } | null>(null);
+  const [spellJob, setSpellJob] = useState<{id:string; filename:string;status:'queued'|'processing'|'ready'|'downloading'|'failed';progress:number;error?:string}|null>(null);
   const [isCountingPages, setIsCountingPages] = useState(false);
 
   const [converterFile, setConverterFile] = useState<File | null>(null);
@@ -550,7 +551,8 @@ export default function Home() {
         addToast('warning', 'Fayl qabul qilinmadi', message);
         return;
       }
-      setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
+      setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins,
+        processingMode: data.processingMode === 'background' ? 'background' : 'instant' });
       setFileFormatError('');
     } catch {
       setPageInfo(null);
@@ -562,6 +564,67 @@ export default function Home() {
     }
   };
 
+
+  // Large documents run as bounded server jobs. Polling is separate from
+  // uploading; interruption of the browser never causes a coin charge.
+  useEffect(() => {
+    if (!spellJob || !['queued','processing'].includes(spellJob.status)) return;
+    let disposed = false;
+    let polling = false;
+    const poll = async () => {
+      if (polling || disposed) return;
+      polling = true;
+      try {
+        const r = await authFetch(`${API_URL}/api/check-file/jobs/${spellJob.id}`);
+        const data = await r.json().catch(() => ({}));
+        if (disposed) return;
+        if (!r.ok) {
+          setSpellJob(j => j?.id===spellJob.id?{...j,status:'failed',error:data.error||'Serverdagi jarayon topilmadi. Tangalar yechilmadi.'}:j);
+          return;
+        }
+        if (['queued','processing','ready','failed'].includes(data.status)) {
+          setSpellJob(j => j?.id===spellJob.id ? {
+            ...j,status:data.status,progress:Number(data.progress)||0,error:data.error||undefined
+          }:j);
+        }
+      } catch {
+        // Temporary network issues never create a new charge or duplicate job.
+      } finally { polling=false; }
+    };
+    void poll();
+    const timer=window.setInterval(()=>{void poll();},2800);
+    return ()=>{disposed=true;window.clearInterval(timer);};
+  }, [spellJob?.id,spellJob?.status]);
+
+  const downloadSpellJob = async () => {
+    if (!spellJob || spellJob.status!=='ready') return;
+    const job=spellJob;
+    setSpellJob(prev=>prev?.id===job.id?{...prev,status:'downloading'}:prev);
+    try {
+      const res=await authFetch(`${API_URL}/api/check-file/jobs/${job.id}/download`);
+      if (!res.ok) {
+        const data=await res.json().catch(()=>({}));
+        throw new Error(data.error||'Natijani yuklab boʻlmadi. Tangalar yechilmadi.');
+      }
+      const blob=await res.blob();
+      if(!blob.size)throw new Error('Natija fayli boʻsh');
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='tahrirlangan_'+job.filename;
+      document.body.appendChild(a);a.click();a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),60000);
+      setSpellJob(null);
+      addToast('success','DOCX tayyor!','Hujjat yuklandi. Toʻlov fayl yuborilgach hisoblanadi.');
+      await loadUserWallet();
+      window.setTimeout(()=>{void loadUserWallet();},1200);
+    } catch (e) {
+      const message=e instanceof Error?e.message:'Serverga ulanib boʻlmadi';
+      setSpellJob(j=>j?.id===job.id?{...j,status:'ready',error:message}:j);
+      addToast('error','Yuklash xatoligi',message);
+    }
+  };
+
   const handleProcessDocx = async () => {
     if (!user) {
       setAuthMode('login');
@@ -570,6 +633,7 @@ export default function Home() {
     }
 
     if (!file || !pageInfo) return;
+    if (spellJob && spellJob.status!=='failed') return;
 
     if (userCoins < pageInfo.requiredCoins) {
       addToast('error', 'Yetarli tanga yoʻq!', `Kerak: ${pageInfo.requiredCoins} tanga, sizda: ${userCoins} tanga.`);
@@ -583,6 +647,24 @@ export default function Home() {
     formData.append('document', file);
 
     try {
+      if (pageInfo.processingMode === 'background') {
+        formData.append('expectedCoins',String(pageInfo.requiredCoins));
+        const res=await authFetch(`${API_URL}/api/check-file/jobs`,{
+          method:'POST',body:formData
+        });
+        const data=await res.json().catch(()=>({}));
+        if(!res.ok){
+          if(res.status===402)setShowShop(true);
+          if(res.status===409&&data.jobId){
+            setSpellJob({id:data.jobId,filename:file.name,status:'queued',progress:0});
+            return;
+          }
+          throw new Error(data.error||'Katta DOCX tekshiruvi boshlanmadi');
+        }
+        setSpellJob({id:data.jobId,filename:file.name,status:'queued',progress:0});
+        addToast('info','Katta hujjat qabul qilindi','Hujjat serverda navbat bilan tekshiriladi. Tangalar hozircha yechilmadi.');
+        return;
+      }
       const res = await authFetch(`${API_URL}/api/check-file`, {
         method: 'POST',
         body: formData,
@@ -605,8 +687,8 @@ export default function Home() {
         const errorData = await res.json().catch(() => ({}));
         addToast('error', 'Xatolik', errorData.error || 'Hujjatni qayta ishlashda xatolik yuz berdi.');
       }
-    } catch {
-      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi.');
+    } catch (e) {
+      addToast('error', 'Xatolik', e instanceof Error?e.message:'Serverga ulanib boʻlmadi.');
     } finally {
       setIsProcessingDoc(false);
     }
@@ -1137,8 +1219,14 @@ export default function Home() {
                             <span>Sahifalar soni hisoblanmoqda...</span>
                           </div>
                         ) : pageInfo && (
-                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#C79A3E]/10 border border-[#C79A3E]/30 text-xs text-[var(--gold-text)] font-medium">
-                            <span>💰 Narxi: <b>{pageInfo.requiredCoins} tanga</b></span>
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#C79A3E]/10 border border-[#C79A3E]/30 text-xs text-[var(--gold-text)] font-medium">
+                              <span>💰 Narxi: <b>{pageInfo.requiredCoins} tanga</b></span>
+                            </div>
+                            {pageInfo.processingMode==='background'&&
+                              <p className="text-xs font-medium text-[#765339]">
+                                Katta hujjat — bosqichma-bosqich tekshiriladi, tayyor boʻlgach yuklab olinadi.
+                              </p>}
                           </div>
                         )}
                       </div>
@@ -1149,6 +1237,41 @@ export default function Home() {
                         </h4>
                         <p className="mt-1 text-xs text-[var(--text-muted)]">Faqat .DOCX formatidagi Word fayli qabul qilinadi.</p>
                       </>
+                    )}
+
+                    {spellJob && (
+                      <div className="tahrir-spell-job mt-4 w-full max-w-[480px] p-4 rounded-2xl text-left"
+                        onClick={e=>e.stopPropagation()} role="status" aria-live="polite">
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <span className="text-sm font-bold text-[#412918]">
+                            {spellJob.status==='queued'?'Navbatda':spellJob.status==='processing'?'Hujjat tekshirilmoqda':
+                             spellJob.status==='ready'?'Hujjat tayyor':spellJob.status==='downloading'?'Yuklanmoqda':'Tekshiruv yakunlanmadi'}
+                          </span>
+                          <span className="text-xs text-[#765033] font-bold tabular-nums">{spellJob.progress}%</span>
+                        </div>
+                        <div className="h-2 rounded-full bg-[#CBA277]/40 overflow-hidden">
+                          <motion.div className="h-full rounded-full bg-gradient-to-r from-[#986039] to-[#C79654]"
+                            animate={{width:`${spellJob.progress}%`}}
+                            transition={{duration:.65,ease:'easeOut'}} />
+                        </div>
+                        {spellJob.error&&<p className="text-xs text-[#984437] mt-2">{spellJob.error}</p>}
+                        <p className="text-xs text-[#765033] mt-2">
+                          {spellJob.status==='ready'?'Tayyor DOCX-ni yuklab oling — toʻlov faqat yuborish tugagach hisoblanadi.':
+                          'Tekshiruv fon rejimida davom etadi. Jarayon muvaffaqiyatsiz boʻlsa, tangalar yechilmaydi.'}
+                        </p>
+                        {spellJob.status==='ready'&&(
+                          <button type="button" onClick={e=>{e.stopPropagation();void downloadSpellJob();}}
+                            className="mt-3 w-full rounded-xl bg-[#754127] text-[#FFF2DC] font-bold px-4 py-3 hover:bg-[#925536] transition cursor-pointer">
+                            Tayyor DOCX-ni yuklab olish
+                          </button>
+                        )}
+                        {spellJob.status==='failed'&&(
+                          <button type="button" onClick={e=>{e.stopPropagation();setSpellJob(null);}}
+                            className="mt-3 rounded-xl border border-[#AD774B] text-[#56341F] px-4 py-2 cursor-pointer">
+                            Qayta urinib koʻrish
+                          </button>
+                        )}
+                      </div>
                     )}
 
                     {fileFormatError && (
@@ -1168,7 +1291,7 @@ export default function Home() {
 
                     <motion.button
                       onClick={(e) => { e.stopPropagation(); handleProcessDocx(); }}
-                      disabled={!file || !pageInfo || isProcessingDoc || isCountingPages}
+                      disabled={!file || !pageInfo || isProcessingDoc || isCountingPages || !!(spellJob && spellJob.status!=='failed')}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="tahrir-primary mt-6 px-7 py-3 rounded-xl bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] font-bold text-xs sm:text-sm shadow-lg shadow-[#C79A3E]/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
