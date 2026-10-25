@@ -180,6 +180,10 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   transition: transform .25s,color .25s;
 }
 .tahrir-tab:hover { transform: translateY(-1px); }
+.tahrir-tab:has(> .absolute.inset-0) { color: #FFF2DE !important; }
+.tahrir-tab:not(:has(> .absolute.inset-0)) { color: #51331E; }
+.tahrir-tabs .tahrir-tab .relative.z-10 { white-space: nowrap; }
+
 .tahrir-tabs .absolute.inset-0 {
   background: linear-gradient(180deg,#986036 0%,#764321 52%,#5A311B 100%) !important;
   box-shadow: 0 6px 15px rgba(93,46,18,.25), inset 0 1px 0 rgba(255,214,162,.40) !important;
