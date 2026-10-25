@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowRight, Check, Coins, Feather, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, Coins, Feather, FileText, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
 import { GUIDE_CSS } from './guideStyles';
 import { DEMOS } from './GuideDemos';
 
@@ -55,6 +55,20 @@ export const GUIDE_STEPS: Step[] = [
     ],
   },
   {
+    id: 'docxpro',
+    target: 'docx-pro',
+    tab: 'translit',
+    icon: FileText,
+    title: 'DOCX Transliteration PRO',
+    text: 'Word hujjatini Kirill ↔ Lotin yoʻnalishida, shriftlar va jadvallar tuzilishini saqlagan holda oʻgiring.',
+    bullets: [
+      'Kirill → Lotin yoki Lotin → Kirill yoʻnalishini tanlang',
+      '25 MB gacha boʻlgan .DOCX faylni shu yerga yuklang',
+      'Narx avtomatik tangada chiqadi; balans yetmasa Doʻkon ochiladi',
+      'Fayl yuborilishi yakunlanmasa, tangalar yechilmaydi',
+    ],
+  },
+  {
     id: 'corrector',
     target: 'corrector',
     tab: 'corrector',
@@ -86,7 +100,7 @@ export const GUIDE_STEPS: Step[] = [
     target: 'account',
     icon: Coins,
     title: 'Hisob va tangalar',
-    text: 'Imlo Tahrirchi tangalar bilan ishlaydi. Balans va doʻkon shu yerda.',
+    text: 'Imlo Tahrirchi va DOCX Transliteration PRO tangalar bilan ishlaydi. Balans va Doʻkon shu yerda.',
     bullets: [
       '“Kirish” orqali hisobingizga kirasiz yoki roʻyxatdan oʻtasiz',
       '“Doʻkon”da kerakli tanga miqdorini tanlab, kartaga aynan koʻrsatilgan summani oʻtkazasiz',
@@ -112,7 +126,7 @@ const GAP = 18;
 const EDGE = 16;
 const BP_MOBILE = 640;
 const N = GUIDE_STEPS.length;
-const CHIPS = ['Kirill ↔ Latin', 'Imlo Tahrirchi', 'Fayl Konverter', 'Tangalar'];
+const CHIPS = ['Kirill ↔ Latin', 'DOCX PRO', 'Imlo Tahrirchi', 'Konverter', 'Tangalar'];
 
 /* ---------- pruzhina (semi-implicit Euler, kichik qadamlar bilan barqaror) ---------- */
 interface Sp { p: number; v: number }
@@ -140,6 +154,10 @@ const WAYPOINTS: Record<string, (() => Pt | null)[]> = {
   translit: [
     () => mid(q('[data-guide="translit"] button[title="Almashtirish"]')),
     () => mid(q('[data-guide="translit"] textarea')),
+  ],
+  docxpro: [
+    () => mid(q('[data-guide="docx-pro"] .tahrir-docxpro-upload-icon')) ?? mid(q('[data-guide="docx-pro"]')),
+    () => mid(q('[data-guide="docx-pro"]')),
   ],
   corrector: [() => mid(q('[data-guide="corrector"] #fileInput')?.parentElement) ?? mid(q('[data-guide="corrector"]'))],
   converter: [

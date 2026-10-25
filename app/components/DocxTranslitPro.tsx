@@ -161,6 +161,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
             onDragOver={e=>{e.preventDefault();if(!working)setDragging(true);}}
             onDragLeave={()=>setDragging(false)}
             onDrop={e=>{e.preventDefault();setDragging(false);selectFile(e.dataTransfer.files?.[0]||null);}}
+            data-guide="docx-pro"
             className={'tahrir-docxpro-dropzone '+(dragging?'dragging':'')}>
             <input ref={input} type="file" accept=".docx" className="hidden"
               onChange={e=>{const selected=e.currentTarget.files?.[0];e.currentTarget.value='';if(selected)selectFile(selected);}}/>

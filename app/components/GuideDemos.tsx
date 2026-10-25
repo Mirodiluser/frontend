@@ -57,6 +57,49 @@ export function TranslitDemo() {
   );
 }
 
+/**
+ * Animated, illustrative DOCX conversion. This is intentionally a miniature
+ * visual demo: no file is uploaded, processed or charged while touring.
+ */
+export function DocxProDemo() {
+  const [latin, setLatin] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const id = window.setInterval(() => setLatin((prev) => !prev), 2700);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <div className="tg-d-pro" aria-hidden="true">
+      <span className="tg-d-pro-halo" />
+      <div className="tg-d-pro-paper">
+        <div className="tg-d-pro-head">
+          <span className="tg-d-pro-file-icon"><FileText size={16} strokeWidth={2} /></span>
+          <span className="tg-d-pro-filename">hujjat.docx</span>
+          <span className="tg-d-pro-filedot" />
+        </div>
+        <div className="tg-d-pro-script" key={latin ? 'latin' : 'cyr'}>
+          {latin ? 'Salom, dunyo!' : 'Салом, дунё!'}
+        </div>
+        <span className="tg-d-pro-underline" />
+        <span className="tg-d-pro-underline short" />
+        <div className="tg-d-pro-lang">{latin ? 'LOTIN' : 'KIRILL'}</div>
+      </div>
+      <div className="tg-d-pro-side">
+        <div className="tg-d-pro-arrows">
+          <RefreshCw size={20} strokeWidth={1.9} />
+          <span>Kirill ↔ Lotin</span>
+        </div>
+        <div className="tg-d-pro-price">
+          <Coins size={15} strokeWidth={2} />
+          <span><strong>3</strong> tanga</span>
+        </div>
+        <small className="tg-d-pro-example">namuna</small>
+      </div>
+    </div>
+  );
+}
+
 export function CorrectorDemo() {
   return (
     <div style={{ position: 'relative' }} aria-hidden="true">
@@ -148,6 +191,7 @@ export function DoneDemo() {
 export const DEMOS: Record<string, () => ReactElement> = {
   tabs: TabsDemo,
   translit: TranslitDemo,
+  docxpro: DocxProDemo,
   corrector: CorrectorDemo,
   converter: ConverterDemo,
   account: CoinsDemo,
