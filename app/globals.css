@@ -707,8 +707,8 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
 }
 .honey-bronze-right-light {animation-delay:-14s;}
 @keyframes honey-atmosphere-breathe {
-  0% {transform:translate3d(-.3%,0,0) scale(1.018);filter:brightness(.985) saturate(1.00);}
-  100% {transform:translate3d(.35%,-.3%,0) scale(1.029);filter:brightness(1.025) saturate(1.025);}
+  0% {transform:translate3d(-.3%,0,0) scale(1.018);}
+  100% {transform:translate3d(.35%,-.3%,0) scale(1.029);}
 }
 @keyframes honey-light-wander {
   0% {transform:translate3d(-.8%,.4%,0);opacity:.28;}
@@ -719,8 +719,8 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   100% {transform:translate3d(.35%,-.15%,0) scale(1.012);}
 }
 @keyframes honey-feather-gleam {
-  0% {opacity:.91;filter:brightness(.97);}
-  100% {opacity:1;filter:brightness(1.06);}
+  0% {opacity:.91;}
+  100% {opacity:1;}
 }
 @keyframes honey-ambient-glow {
   0% {opacity:.29;transform:translate3d(0,0,0);}
