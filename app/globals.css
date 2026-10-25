@@ -1,88 +1,312 @@
 @import "tailwindcss";
-:root { --background:#47301a; --foreground:#34210f; }
-@theme inline { --color-background:var(--background);--color-foreground:var(--foreground);--font-sans:var(--font-geist-sans);--font-mono:var(--font-geist-mono); }
-body { background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif; }
 
-/* ===== Tahrir.AI — "Iliq nur": yagona, yumshoq, yorugʻ mavzu =====
-   Fon toʻliq xira (blur) iliq gradient; yozuvlar toʻq jigarrang, kontrast yumshoq va aniq. */
+:root {
+  --background: #58483b;
+  --foreground: #30231b;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/*
+ * TAHRIR.AI — Quiet Premium Library
+ * The original library is atmospheric, not an image behind legible text.
+ * No flat white and no full-screen dark overlay: a warm central reading light
+ * separates the editorial header and practical workspace from the backdrop.
+ */
 .tahrir-ui {
-  --page-bg:#c9923f;
-  --surface:rgba(243,224,180,.84); --surface-alt:rgba(234,207,152,.92); --input-bg:rgba(247,233,201,.92);
-  --text-main:#2a1a0b; --text-secondary:#47311a; --text-muted:#64481f;
-  --gold-text:#7a440c; --accent:#a8600f; --tab-active:#2a1a0b;
-  --line:rgba(112,68,20,.34); --header-bg:rgba(226,190,120,.62);
-  --modal-bg:#f2dfb8; --modal-shadow:0 30px 90px rgba(52,28,6,.48);
-  --panel-shadow:0 18px 50px rgba(70,38,8,.30),0 2px 0 rgba(255,222,150,.35) inset;
-  --hero-text:#2a1a0b; --hero-sub:#3f2a14; --onbg:#3f2a14;
-  color-scheme:light; isolation:isolate;
+  --page-bg: #6b5849;
+  --surface: rgba(231, 215, 192, .97);
+  --surface-alt: rgba(221, 202, 177, .96);
+  --input-bg: rgba(243, 232, 214, .98);
+  --text-main: #30231a;
+  --text-secondary: #4c3829;
+  --text-muted: #66503d;
+  --gold-text: #86511e;
+  --accent: #9b622a;
+  --tab-active: #2f2116;
+  --line: rgba(111, 78, 47, .30);
+  --header-bg: rgba(226, 209, 185, .93);
+  --modal-bg: #e9d9c4;
+  --modal-shadow: 0 28px 70px rgba(28, 18, 11, .32);
+  --panel-shadow: 0 20px 52px rgba(32, 20, 13, .22), 0 1px 0 rgba(255, 250, 238, .65) inset;
+  --hero-text: #2e231c;
+  --hero-sub: #483627;
+  --onbg: #422f22;
+  isolation: isolate;
+  color-scheme: light;
 }
 
-/* --- Fon: boy, yumshoq "eski oltin va yongʻoq" gradient (pushti rangsiz), jonli --- */
-.tahrir-paper { position:absolute;inset:0;background:
-  radial-gradient(62% 52% at 50% 24%,#f0cf86 0%,rgba(240,207,134,0) 72%),
-  radial-gradient(55% 55% at 8% 82%,#b87a2c 0%,rgba(184,122,44,0) 72%),
-  radial-gradient(50% 50% at 94% 14%,#d49a42 0%,rgba(212,154,66,0) 70%),
-  linear-gradient(180deg,#dcae5a 0%,#c58d3d 52%,#8f5a22 100%); }
-.tahrir-paper::after { content:"";position:absolute;inset:0;opacity:.16;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .18  0 0 0 0 .06  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-.tahrir-aurora { position:absolute;border-radius:9999px;filter:blur(80px);will-change:transform; }
-.tahrir-aurora-a { width:58vmax;height:46vmax;left:-14vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(255,216,128,.85),transparent);animation:tahrir-drift-a 24s ease-in-out infinite alternate; }
-.tahrir-aurora-b { width:50vmax;height:42vmax;right:-14vmax;top:6vmax;background:radial-gradient(closest-side,rgba(196,116,40,.6),transparent);animation:tahrir-drift-b 29s ease-in-out infinite alternate; }
-.tahrir-aurora-c { width:56vmax;height:40vmax;left:18vmax;bottom:-18vmax;background:radial-gradient(closest-side,rgba(110,64,20,.62),transparent);animation:tahrir-drift-c 33s ease-in-out infinite alternate; }
-.tahrir-bokeh { position:absolute;border-radius:9999px;filter:blur(16px);background:radial-gradient(circle,rgba(255,222,150,.6),rgba(240,184,96,.22) 55%,transparent 72%);animation:tahrir-float var(--d,18s) ease-in-out infinite alternate;opacity:var(--o,.6); }
-.tahrir-vignette { position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(18,9,3,.42) 100%); }
-.tahrir-hero { color:var(--hero-text)!important;text-shadow:0 2px 18px rgba(24,12,4,.5),0 1px 2px rgba(24,12,4,.35); }
-.tahrir-lead { color:var(--hero-sub)!important;text-shadow:0 1px 12px rgba(24,12,4,.5); }
-.tahrir-onbg { color:var(--onbg)!important;text-shadow:0 1px 10px rgba(24,12,4,.5); }
-
-/* --- Shapka --- */
-.tahrir-header { background:var(--header-bg);border-color:var(--line);box-shadow:0 6px 30px rgba(90,66,20,.10);position:sticky;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px); }
-.tahrir-header::after { content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#d9b35c,#a87d22,#f1dc9c);transform-origin:0 50%;transform:scaleX(0);animation:tahrir-progress linear both;animation-timeline:scroll(root block);pointer-events:none; }
-
-/* --- Sarlavha --- */
-.tahrir-word { display:inline-block;opacity:0;transform:translateY(.5em) scale(.96);filter:blur(10px);animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards; }
-.tahrir-shimmer { text-shadow:none;background:linear-gradient(100deg,#5e3006 0%,#8f4c0c 30%,#b8721a 48%,#8f4c0c 68%,#5e3006 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards,tahrir-shine 5.5s ease-in-out 1.4s infinite; }
-
-/* --- Panellar, tablar --- */
-.tahrir-panel,.tahrir-tabs { position:relative;isolation:isolate;background:var(--surface)!important;border-color:var(--line)!important;box-shadow:var(--panel-shadow)!important;backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15); }
-.tahrir-panel { animation:tahrir-rise .8s cubic-bezier(.2,.8,.2,1) backwards;transition:background .5s,border-color .4s,box-shadow .4s,transform .5s cubic-bezier(.2,.7,.2,1); }
-.tahrir-panel:hover { transform:translateY(-3px); }
-.tahrir-panel::before,.tahrir-tabs::before { content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,236,190,.6),transparent 60%); }
-.tahrir-panel:hover::before,.tahrir-tabs:hover::before { opacity:1; }
-.tahrir-tab { min-height:52px;transition:color .25s,transform .3s; }
-.tahrir-tab:hover { transform:translateY(-2px); }
-.tahrir-tabs .absolute.inset-0 { background:rgba(214,176,86,.32);box-shadow:inset 0 0 0 1px rgba(143,101,20,.38); }
-.tahrir-dropzone { background:var(--input-bg)!important;border-color:var(--line);transition:transform .35s,background .35s,border-color .35s,box-shadow .35s; }
-.tahrir-dropzone:hover { transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 35px rgba(150,112,30,.16); }
-.tahrir-primary { min-height:54px;font-size:1rem!important;box-shadow:0 10px 26px rgba(150,112,30,.28);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s; }
-.tahrir-primary:hover { transform:translateY(-2px);box-shadow:0 16px 36px rgba(150,112,30,.38); }
-.tahrir-primary::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 25%,rgba(255,236,170,.5) 50%,transparent 75%);transform:translateX(-130%);transition:transform .9s ease; }
-.tahrir-primary:hover::after { transform:translateX(130%); }
-.tahrir-ui textarea { font-size:clamp(.95rem,1.5vw,1.05rem)!important;line-height:1.75; }
-.tahrir-ui :is(button,input,textarea,select):focus-visible { outline:3px solid #b98a26!important;outline-offset:3px; }
-.tahrir-ui button:disabled { cursor:not-allowed; }
-.tahrir-ui ::placeholder { color:#8a7a5c; }
-.tahrir-ui ::selection { background:rgba(214,176,86,.45); }
-
-@keyframes tahrir-drift-a { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(9vmax,6vmax,0) scale(1.18);} }
-@keyframes tahrir-drift-b { from{transform:translate3d(0,0,0) scale(1.1);}to{transform:translate3d(-10vmax,8vmax,0) scale(.92);} }
-@keyframes tahrir-drift-c { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(-8vmax,-6vmax,0) scale(1.2);} }
-@keyframes tahrir-float { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(3vmax,-4vmax,0) scale(1.12);} }
-@keyframes tahrir-word { to{opacity:1;transform:none;filter:blur(0);} }
-@keyframes tahrir-shine { 0%,18%{background-position:130% 0;}60%,100%{background-position:-60% 0;} }
-@keyframes tahrir-rise { from{opacity:0;transform:translateY(26px) scale(.985);}to{opacity:1;transform:none;} }
-@keyframes tahrir-progress { to{transform:scaleX(1);} }
-
-@media(max-width:640px){
-  .tahrir-header>div{padding-left:12px;padding-right:12px;height:68px;gap:6px;}
-  .tahrir-header .font-serif{white-space:nowrap;font-size:1.05rem;letter-spacing:.02em;}
-  .tahrir-nav{gap:5px!important;}.tahrir-nav button{padding-left:9px!important;padding-right:9px!important;}.tahrir-nav button span{font-size:.72rem;}
-  .tahrir-ui .tahrir-hero{font-size:clamp(2.1rem,8vw,3rem);line-height:1.12;}
-  .tahrir-tabs{width:100%;}.tahrir-tabs .tahrir-tab{flex:1 1 auto;justify-content:center;padding:12px 10px;font-size:.9rem;}
-  .tahrir-aurora{filter:blur(50px);}
+/* Genuine restored library photograph, desaturated to avoid visual noise. */
+.tahrir-ambient { contain: layout paint; }
+.tahrir-library-photo {
+  position: absolute;
+  inset: -14px;
+  background: #554639 url('/dark-library.jpg') center center / cover no-repeat;
+  filter: blur(3.5px) brightness(1.12) saturate(.69);
+  transform: scale(1.045);
 }
-@media(prefers-reduced-motion:reduce){
-  .tahrir-aurora,.tahrir-bokeh,.tahrir-header::after{animation:none!important;}
-  .tahrir-word,.tahrir-shimmer{opacity:1!important;transform:none!important;filter:none!important;animation:none!important;}
-  .tahrir-panel{animation:none!important;}
-  .tahrir-ui *,.tahrir-ui *::before,.tahrir-ui *::after{transition-duration:.01ms!important;}
+
+/* The image remains visible at the sides; in the reading zone it almost disappears. */
+.tahrir-library-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      rgba(39, 29, 24, .23) 0%,
+      rgba(195, 176, 154, .58) 12%,
+      rgba(224, 210, 192, .90) 29%,
+      rgba(231, 218, 199, .96) 47%,
+      rgba(231, 218, 199, .96) 53%,
+      rgba(224, 210, 192, .90) 71%,
+      rgba(195, 176, 154, .58) 88%,
+      rgba(39, 29, 24, .23) 100%),
+    linear-gradient(180deg,
+      rgba(229, 211, 187, .53),
+      rgba(228, 211, 190, .24) 46%,
+      rgba(74, 54, 40, .16) 100%);
 }
+.tahrir-focus-light {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 54% 52% at 50% 23%, rgba(250, 237, 215, .46), transparent 82%),
+    radial-gradient(ellipse 60% 52% at 50% 84%, rgba(233, 215, 190, .28), transparent 85%);
+}
+.tahrir-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 94% 92% at 50% 42%, transparent 59%, rgba(43, 30, 24, .25) 100%);
+}
+.tahrir-ambient-edge {
+  position: absolute;
+  width: 28vw;
+  height: 48vh;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: .3;
+  filter: blur(76px);
+  animation: tahrir-edge-breathe 24s ease-in-out infinite alternate;
+}
+.tahrir-ambient-edge-left {
+  left: -20vw;
+  top: 10%;
+  background: rgba(222, 160, 87, .29);
+}
+.tahrir-ambient-edge-right {
+  right: -20vw;
+  bottom: 2%;
+  background: rgba(232, 177, 101, .27);
+  animation-delay: -12s;
+}
+
+/* Invisible reading-light halo under the central content (not a visible box). */
+.tahrir-focus-stage { isolation: isolate; }
+.tahrir-focus-stage::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -18px -25px 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 71% 53% at 50% 18%, rgba(238, 225, 206, .47), transparent 84%);
+}
+
+.tahrir-hero {
+  color: var(--hero-text) !important;
+  text-shadow: 0 2px 16px rgba(240, 226, 205, .65);
+}
+.tahrir-lead {
+  color: var(--hero-sub) !important;
+  text-shadow: 0 1px 12px rgba(239, 224, 200, .35);
+}
+.tahrir-onbg {
+  color: var(--onbg) !important;
+}
+
+/* Header is readable irrespective of the bookshelves behind it. */
+.tahrir-header {
+  background: var(--header-bg);
+  border-color: var(--line);
+  box-shadow: 0 9px 30px rgba(31, 20, 13, .17), 0 1px 0 rgba(255, 249, 233, .4) inset;
+  -webkit-backdrop-filter: blur(24px) saturate(.85);
+  backdrop-filter: blur(24px) saturate(.85);
+}
+.tahrir-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c89b5c 27%, #a36f35 52%, #c89b5c 76%, transparent);
+  pointer-events: none;
+  opacity: .8;
+}
+
+/* An entrance and a single, restrained gold glint. No perpetual word shimmer. */
+.tahrir-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(.32em);
+  filter: blur(5px);
+  animation: tahrir-word .78s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.tahrir-shimmer {
+  background: linear-gradient(100deg, #704423 0%, #8c561c 32%, #b77b3b 51%, #8c561c 70%, #704423 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tahrir-word .78s cubic-bezier(.2,.8,.2,1) forwards, tahrir-shine 2.1s ease-in-out 1.4s 1 both;
+}
+
+/* Warm opaque work surfaces are what the eye follows. */
+.tahrir-panel,
+.tahrir-tabs {
+  position: relative;
+  isolation: isolate;
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  box-shadow: var(--panel-shadow) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(.9);
+  backdrop-filter: blur(22px) saturate(.9);
+}
+.tahrir-panel {
+  animation: tahrir-rise .68s cubic-bezier(.2,.8,.2,1) backwards;
+  transition: background .35s, border-color .3s, box-shadow .35s, transform .42s cubic-bezier(.2,.7,.2,1);
+}
+.tahrir-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 60px rgba(32,20,13,.25), 0 0 0 1px rgba(164,114,61,.20) !important;
+}
+.tahrir-panel:focus-within {
+  border-color: rgba(155, 98, 42, .57) !important;
+}
+.tahrir-panel::before,
+.tahrir-tabs::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .4s;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255,248,230,.35), transparent 68%);
+}
+@media(hover:hover) {
+  .tahrir-panel:hover::before, .tahrir-tabs:hover::before { opacity: .75; }
+}
+.tahrir-tabs {
+  background: rgba(227,210,188,.98) !important;
+  max-width: 100%;
+}
+.tahrir-tabs .absolute.inset-0 {
+  background: rgba(171, 119, 61, .25);
+  box-shadow: inset 0 0 0 1px rgba(131,83,38,.27), 0 3px 12px rgba(108,67,29,.10);
+}
+.tahrir-tab {
+  min-height: 52px;
+  transition: color .24s, transform .26s;
+}
+.tahrir-tab:hover { transform: translateY(-1px); }
+
+.tahrir-login-gate {
+  background: rgba(234, 220, 201, .96);
+  color: var(--text-main);
+  border: 1px solid var(--line);
+}
+.tahrir-login-gate p { text-shadow: none; }
+
+/* File drop areas have a calm, paper-like fill, separate from the photograph. */
+.tahrir-dropzone {
+  background: var(--input-bg) !important;
+  border-color: var(--line);
+  transition: background .3s, border-color .3s, box-shadow .32s, transform .32s;
+}
+.tahrir-dropzone:hover {
+  transform: translateY(-1px);
+  border-color: rgba(155, 98, 42, .68);
+  box-shadow: 0 10px 30px rgba(80,50,28,.12);
+}
+.tahrir-ui .tahrir-panel h3 { font-size: clamp(1.05rem, 1.35vw, 1.2rem); font-weight: 650; line-height: 1.45; }
+.tahrir-ui .tahrir-dropzone h4 { font-size: 1.02rem; font-weight: 600; line-height: 1.55; }
+.tahrir-ui .tahrir-dropzone > p { font-size: .86rem; }
+.tahrir-ui textarea { font-size: clamp(1rem, 1.45vw, 1.07rem) !important; line-height: 1.78; }
+.tahrir-ui ::placeholder { color: #76604a; }
+.tahrir-ui ::selection { background: rgba(190,146,89,.33); }
+
+/* Give actions the wow factor, rather than making the background move. */
+.tahrir-primary {
+  position: relative;
+  overflow: hidden;
+  min-height: 56px;
+  font-size: 1rem !important;
+  letter-spacing: .008em;
+  box-shadow: 0 10px 25px rgba(138,89,38,.22);
+  transition: transform .27s, box-shadow .3s, filter .3s;
+}
+.tahrir-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 16px 35px rgba(138,89,38,.3);
+}
+.tahrir-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(-125%);
+  background: linear-gradient(110deg, transparent 25%, rgba(255,247,218,.32) 50%, transparent 75%);
+  transition: transform .85s cubic-bezier(.2,.7,.2,1);
+}
+.tahrir-primary:hover:not(:disabled)::after { transform: translateX(125%); }
+.tahrir-ui :is(button,input,textarea,select):focus-visible {
+  outline: 3px solid #b57e38 !important;
+  outline-offset: 3px;
+}
+.tahrir-ui button:disabled { cursor: not-allowed; }
+
+/* Better small-screen contrast: the bookshelves are a soft memory, not noise. */
+@media(max-width: 640px) {
+  .tahrir-header > div { padding-left: 12px; padding-right: 12px; height: 68px; gap: 6px; }
+  .tahrir-header .font-serif { white-space: nowrap; font-size: 1.05rem; letter-spacing: .02em; }
+  .tahrir-nav { gap: 5px !important; }
+  .tahrir-nav button { padding-left: 9px !important; padding-right: 9px !important; }
+  .tahrir-nav button span { font-size: .74rem; }
+  .tahrir-ui .tahrir-hero { font-size: clamp(2.1rem, 8vw, 3rem); line-height: 1.12; }
+  .tahrir-tabs { width: 100%; }
+  .tahrir-tabs .tahrir-tab { flex: 1 1 auto; justify-content: center; padding: 12px 10px; font-size: .9rem; }
+  .tahrir-library-photo { filter: blur(5px) brightness(1.17) saturate(.61); }
+  .tahrir-library-veil {
+    background: linear-gradient(90deg,
+      rgba(218,202,181,.86), rgba(233,220,201,.96) 24%,
+      rgba(233,220,201,.97) 76%, rgba(218,202,181,.86));
+  }
+  .tahrir-focus-stage::before { inset: 0 -10px; }
+  .tahrir-ambient-edge { display: none; }
+}
+
+/* Functionality first for reduced-motion and higher contrast needs. */
+@media(prefers-reduced-motion: reduce) {
+  .tahrir-ambient-edge, .tahrir-word, .tahrir-shimmer, .tahrir-panel { animation: none !important; }
+  .tahrir-word, .tahrir-shimmer { opacity: 1 !important; filter: none !important; transform: none !important; }
+  .tahrir-ui *, .tahrir-ui *::before, .tahrir-ui *::after { transition-duration: .01ms !important; }
+}
+@media(prefers-contrast: more) {
+  .tahrir-ui { --surface: #eadcc8; --surface-alt: #dfccb2; --input-bg: #f3e7d6; --text-muted: #4a3729; --line: rgba(60,39,25,.48); }
+  .tahrir-library-veil { background: rgba(234, 219, 199, .97); }
+}
+
+@keyframes tahrir-word { to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes tahrir-shine { from { background-position: 130% 0; } to { background-position: -60% 0; } }
+@keyframes tahrir-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes tahrir-edge-breathe { from { transform: translateY(0) scale(1); } to { transform: translateY(-3%) scale(1.09); } }

@@ -698,7 +698,7 @@ export default function Home() {
   return (
     <main className="tahrir-ui min-h-screen bg-[var(--page-bg)] text-[var(--text-main)] selection:bg-[#C79A3E]/35 selection:text-[#FFF] font-sans relative overflow-x-hidden">
       
-      {/* 1. JONLI FON: kutubxona teksturasi, nur va changlar */}
+      {/* Original library photo with a calm reading-light overlay; no distracting particles. */}
       <Ambient />
 
       {/* TOAST BILDIRISHNOMALARI (Z-INDEX 9999 BILAN OYNA USTIDA TURADI) */}
@@ -728,8 +728,8 @@ export default function Home() {
                 {toast.type === 'info' && <Info className="w-5 h-5 text-[var(--accent)]" />}
               </div>
               <div className="flex-1 text-left">
-                <p className="text-xs font-bold leading-tight">{toast.title}</p>
-                <p className="text-[11px] opacity-90 mt-0.5 leading-relaxed">{toast.message}</p>
+                <p className="text-sm font-bold leading-tight">{toast.title}</p>
+                <p className="text-[13px] opacity-90 mt-0.5 leading-relaxed">{toast.message}</p>
               </div>
               <button 
                 onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))} 
@@ -835,7 +835,7 @@ export default function Home() {
       {guideOpen && <GuideTour onClose={closeGuide} onTabChange={setActiveTab} />}
 
       {/* ASOSIY QISM */}
-      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-10 pb-24 text-center">
+      <div className="tahrir-focus-stage relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-10 pb-24 text-center">
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
@@ -970,7 +970,7 @@ export default function Home() {
                       </div>
                     </div>
                     {!user && (
-                      <div className="absolute inset-0 z-10 rounded-3xl bg-[var(--modal-bg)]/85 backdrop-blur-sm flex flex-col items-center justify-center gap-3 px-6 text-center" data-testid="translit-login-gate">
+                      <div className="tahrir-login-gate absolute inset-0 z-10 rounded-3xl backdrop-blur-sm flex flex-col items-center justify-center gap-3 px-6 text-center" data-testid="translit-login-gate">
                         <div className="w-11 h-11 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center">
                           <Lock className="w-5 h-5 text-[var(--gold-text)]" />
                         </div>
