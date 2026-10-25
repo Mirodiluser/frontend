@@ -2,7 +2,7 @@
 
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'framer-motion';
-import {ArrowRight,CheckCircle2,Coins,FileText,FileUp,Loader2,ShieldCheck,Sparkles,Trash2} from 'lucide-react';
+import {ArrowRight,CheckCircle2,Coins,FileText,FileUp,Loader2,Sparkles,Trash2} from 'lucide-react';
 
 type Direction='cyr2lat'|'lat2cyr';
 type Quote={pages:number;requiredCoins:number};
@@ -113,8 +113,9 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
       link.download=(direction==='cyr2lat'?'lotin_':'kirill_')+name+'.docx';
       document.body.appendChild(link);link.click();link.remove();
       window.setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('success','DOCX tayyor!',quote.requiredCoins+' tanga ishlatildi. Hujjat yuklandi.');
+      notify('success','DOCX tayyor!','Hujjat muvaffaqiyatli tayyorlandi va yuklandi.');
       await reloadWallet().catch(()=>{});
+      window.setTimeout(() => { void reloadWallet().catch(()=>{}); }, 1200);
     }catch(e){
       const message=e instanceof Error?e.message:'Serverga ulanib boʻlmadi';
       setError(message);
@@ -181,23 +182,18 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
           </div>
         </div>
 
-        <div className="tahrir-docxpro-quote" aria-live="polite">
-          <div>
-            <p className="text-xs">Hujjat hajmi</p>
-            <strong>{loadingQuote?<Loader2 className="inline animate-spin" size={16}/>:quote?quote.pages+' sahifa':'—'}</strong>
+        {file && !error && (
+          <div className="tahrir-docxpro-compact-price" role="status" aria-live="polite">
+            {loadingQuote ? (
+              <><Loader2 size={16} className="animate-spin" /><span>Narx hisoblanmoqda...</span></>
+            ) : quote ? (
+              <><Coins size={18}/><span>Narxi: <strong>{quote.requiredCoins} tanga</strong></span></>
+            ) : null}
           </div>
-          <span className="tahrir-docxpro-quote-line"/>
-          <div>
-            <p className="text-xs">Narxi (1 sahifa = 1 tanga)</p>
-            <strong>{loadingQuote?'Hisoblanmoqda':quote?quote.requiredCoins+' tanga':'—'}</strong>
-          </div>
-          <Coins className="tahrir-docxpro-quote-coin" size={27}/>
-        </div>
-        <p className="tahrir-docxpro-note"><ShieldCheck size={15}/> Sahifalar soni matn hajmi boʻyicha taxminiy hisoblanadi. Narx toʻlovdan oldin tekshiriladi. Murakkab joylashuvda sahifalar soni biroz oʻzgarishi mumkin.</p>
+        )}
         {error&&<p role="alert" className="tahrir-docxpro-error">{error}</p>}
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs tahrir-docxpro-hint">Gemini Pro faqat noaniq soʻzlarni tekshiradi. Boshqa matn Word tuzilmasida saqlanadi.</p>
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-3">
           <motion.button type="button" onClick={()=>void convert()}
             disabled={!file||!quote||loadingQuote||working}
             whileHover={reduceMotion?undefined:{y:-2}}

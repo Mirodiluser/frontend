@@ -989,28 +989,16 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   transition:background .2s;
 }
 .tahrir-docxpro-remove:hover{background:rgba(159,56,52,.19);}
-.tahrir-docxpro-quote{
-  display:flex;align-items:center;gap:20px;
-  padding:15px 19px;
-  border:1px solid rgba(180,116,66,.31);
-  border-radius:16px;
-  background:linear-gradient(135deg,#F0D3AB,#E5BC8B);
-  box-shadow:inset 0 1px 0 rgba(255,255,242,.92),0 6px 13px rgba(109,62,31,.09);
+.tahrir-docxpro-compact-price {
+  display:inline-flex;align-items:center;gap:9px;align-self:flex-start;
+  color:#664027;padding:9px 14px;border-radius:12px;
+  border:1px solid rgba(165,102,53,.29);
+  background:linear-gradient(145deg,rgba(255,245,228,.88),rgba(237,205,165,.9));
+  box-shadow:inset 0 1px 0 rgba(255,255,241,.92),0 4px 12px rgba(87,46,22,.08);
+  font-size:14px;font-weight:550;line-height:1.4;
 }
-.tahrir-docxpro-quote > div {flex:1;min-width:0;}
-.tahrir-docxpro-quote p{color:#65432C;margin-bottom:4px;}
-.tahrir-docxpro-quote strong{
-  color:#342115;display:block;font-size:clamp(16px,2vw,21px);
-  font-weight:780;line-height:1.22;white-space:nowrap;
-}
-.tahrir-docxpro-quote-line{height:35px;width:1px;background:rgba(119,72,36,.28);flex:0 0 auto;}
-.tahrir-docxpro-quote-coin{color:#965D30;filter:drop-shadow(0 0 6px rgba(250,207,142,.7));flex:0 0 auto;}
-.tahrir-docxpro-note{
-  display:flex;align-items:flex-start;gap:8px;
-  font-size:12px;line-height:1.55;color:#664831;
-}
-.tahrir-docxpro-note svg{color:#885A35;flex:0 0 auto;margin-top:2px;}
-.tahrir-docxpro-hint{color:#60432D;line-height:1.6;max-width:390px;}
+.tahrir-docxpro-compact-price svg{color:#955D2D;flex:0 0 auto;}
+.tahrir-docxpro-compact-price strong{color:#382113;font-weight:800;font-size:16px;}
 .tahrir-docxpro-error{
   border-radius:12px;padding:12px 13px;
   background:#F9E0DA;border:1px solid rgba(171,60,51,.35);
@@ -1039,8 +1027,6 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   .tahrir-docxpro-heading h3{font-size:1.08rem;}
   .tahrir-docxpro-badge{font-size:10px;}
   .tahrir-docxpro-dropzone{padding:12px;gap:10px;}
-  .tahrir-docxpro-quote{gap:11px;padding:12px 13px;}
-  .tahrir-docxpro-quote-coin{display:none;}
   .tahrir-docxpro-submit{min-width:100%;width:100%;}
 }
 @media(prefers-reduced-motion:reduce){
