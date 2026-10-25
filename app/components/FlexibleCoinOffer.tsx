@@ -77,14 +77,14 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
     finally {setSubmitting(false);}
   };
   return (
-    <section className="relative mx-auto w-full max-w-[440px] overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--surface-alt)] p-3.5 sm:p-4 shadow-[0_10px_28px_rgba(120,70,20,0.14)]">
+    <section className="tahrir-shop-custom-offer relative mx-auto w-full max-w-[440px] overflow-hidden rounded-[22px] border border-[var(--line)] bg-[var(--surface-alt)] p-3.5 sm:p-4 shadow-[0_10px_28px_rgba(120,70,20,0.14)]">
       <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-[#E8A850]/25 blur-3xl"/>
       <div className="relative flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#C79A3E]/25 bg-gradient-to-br from-[#C79A3E]/20 to-[#C79A3E]/[0.04] text-[var(--accent)]">
             <Coins className="h-[17px] w-[17px]"/>
           </span>
-          <h3 className="text-[13px] font-semibold tracking-wide text-[var(--text-main)]">Oʻzingizga mos tangalar</h3>
+          <h3 className="text-sm font-bold tracking-wide text-[var(--text-main)]">Oʻzingizga mos tangalar</h3>
         </div>
         <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#CDA074] shadow-[0_0_10px_rgba(199,154,62,0.55)]"/>
       </div>
@@ -106,7 +106,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
 
       <div className="relative mt-3 grid grid-cols-2 items-stretch gap-2">
         <label className="min-w-0 rounded-[12px] border border-[var(--line)] bg-[var(--input-bg)] px-3 py-2.5 transition-colors focus-within:border-[#C79A3E] focus-within:ring-1 focus-within:ring-[#C79A3E]/25">
-          <span className="block text-[10px] font-medium text-[var(--text-muted)]">
+          <span className="block text-xs font-semibold text-[var(--text-muted)]">
             {mode==='budget'?'Sizning summangiz':'Tangalar soni'}
           </span>
           <span className="mt-1 flex min-w-0 items-baseline gap-1">
@@ -116,26 +116,26 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
               aria-label={mode==='budget'?'Summa UZS':'Tanga soni'}
               className="w-full min-w-0 bg-transparent text-[16px] font-semibold leading-6 tabular-nums text-[var(--text-main)] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
-            <span className="shrink-0 text-[10px] font-medium text-[var(--gold-text)]">{mode==='budget'?'soʻm':'tanga'}</span>
+            <span className="shrink-0 text-xs font-medium text-[var(--gold-text)]">{mode==='budget'?'soʻm':'tanga'}</span>
           </span>
         </label>
 
         <div aria-live="polite" className="min-w-0 rounded-[12px] border border-[#C79A3E]/20 bg-gradient-to-b from-[#C79A3E]/[0.10] to-[#C79A3E]/[0.04] px-3 py-2.5">
-          <span className="block text-[10px] font-medium text-[var(--text-muted)]">{mode==='budget'?'Siz olasiz':'Toʻlov narxi'}</span>
+          <span className="block text-xs font-semibold text-[var(--text-muted)]">{mode==='budget'?'Siz olasiz':'Toʻlov narxi'}</span>
           <div className="mt-1 flex min-h-6 min-w-0 items-baseline gap-1">
             {loading
               ? <Loader2 className="h-4 w-4 animate-spin self-center text-[#C79A3E]"/>
               : ready
                 ? <>
                     <span className="min-w-0 text-[16px] font-bold leading-6 tabular-nums text-[var(--gold-text)]">{display(mode==='budget'?quote!.coins:quote!.price)}</span>
-                    <span className="shrink-0 text-[10px] font-medium text-[var(--gold-text)]">{mode==='budget'?'tanga':'soʻm'}</span>
+                    <span className="shrink-0 text-xs font-medium text-[var(--gold-text)]">{mode==='budget'?'tanga':'soʻm'}</span>
                   </>
                 : <span className="text-sm text-[var(--text-muted)]">0</span>}
           </div>
         </div>
       </div>
 
-      {error&&<p role="alert" className="relative mt-2 text-[11px] text-rose-700">{error}</p>}
+      {error&&<p role="alert" className="relative mt-2 text-xs font-semibold text-rose-800">{error}</p>}
 
       <button type="button" disabled={!ready||submitting}
         onClick={()=>void checkout()}
