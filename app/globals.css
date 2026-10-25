@@ -1,81 +1,87 @@
 @import "tailwindcss";
-:root { --background:#fbf3e6; --foreground:#2d2016; }
+:root { --background:#f7dfbc; --foreground:#3b2414; }
 @theme inline { --color-background:var(--background);--color-foreground:var(--foreground);--font-sans:var(--font-geist-sans);--font-mono:var(--font-geist-mono); }
 body { background:var(--background);color:var(--foreground);font-family:Arial,Helvetica,sans-serif; }
 
-/* ===== Tahrir.AI — "Tong nuri": issiq kunduzgi kutubxona (asosiy) va yumshoq kechki kutubxona ===== */
-.tahrir-ui { --page-bg:#1e130d;--surface:rgba(36,24,17,.86);--surface-alt:rgba(58,40,28,.90);--input-bg:rgba(26,17,12,.86);--text-main:#fff6ea;--text-secondary:#f0e0cc;--text-muted:#d9c4ad;--gold-text:#f6cd96;--accent:#e6b27a;--tab-active:#fff6ea;--line:rgba(238,190,130,.34);--header-bg:rgba(30,19,13,.78);--modal-bg:#251811;--panel-shadow:0 18px 56px rgba(14,8,3,.42);--modal-shadow:0 30px 90px rgba(10,5,2,.62);--hero-text:#fff7ec;--hero-sub:#f7e8d3;--onbg:#fbead2;--vignette:rgba(18,9,3,.38);color-scheme:dark;isolation:isolate;transition:background-color .6s,color .6s; }
-.tahrir-ui[data-theme="light"] { --page-bg:#f6ead6;--surface:rgba(255,251,243,.95);--surface-alt:#f8ecd8;--input-bg:#fffdf8;--text-main:#2a1b0f;--text-secondary:#4d3724;--text-muted:#65503b;--gold-text:#87501b;--accent:#a8601f;--tab-active:#4a280a;--line:rgba(120,74,28,.32);--header-bg:rgba(255,247,234,.92);--modal-bg:#fffaf1;--panel-shadow:0 18px 50px rgba(60,34,10,.30),0 2px 6px rgba(60,34,10,.12);--modal-shadow:0 30px 80px rgba(40,22,6,.5);--vignette:rgba(18,9,3,.32);color-scheme:light; }
+/* ===== Tahrir.AI — "Iliq nur": yagona, yumshoq, yorugʻ mavzu =====
+   Fon toʻliq xira (blur) iliq gradient; yozuvlar toʻq jigarrang, kontrast yumshoq va aniq. */
+.tahrir-ui {
+  --page-bg:#f7dfbc;
+  --surface:rgba(255,250,240,.74); --surface-alt:rgba(255,245,228,.88); --input-bg:rgba(255,253,247,.9);
+  --text-main:#3b2414; --text-secondary:#573e2b; --text-muted:#715844;
+  --gold-text:#85490f; --accent:#b0651a; --tab-active:#4a280a;
+  --line:rgba(150,95,40,.26); --header-bg:rgba(255,248,234,.66);
+  --modal-bg:#fff9ee; --modal-shadow:0 28px 80px rgba(110,64,20,.30);
+  --panel-shadow:0 16px 46px rgba(150,92,34,.17),inset 0 1px 0 rgba(255,255,255,.75);
+  --hero-text:#3b2414; --hero-sub:#573e2b; --onbg:#573e2b;
+  color-scheme:light; isolation:isolate;
+}
 
-/* --- Fon: oltin soatdagi kutubxona (kontrast saqlangan, atmosfera yorugʻroq) --- */
-.tahrir-paper { position:absolute;inset:0;background:url('/hall-library.jpg') center 42%/cover no-repeat;transform:scale(1.04);animation:tahrir-ambient 30s ease-in-out infinite alternate; }
-.tahrir-aurora,.tahrir-rays { display:none; }
-.tahrir-vignette { position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,transparent 62%,var(--vignette) 100%); }
-.tahrir-hero { color:var(--hero-text)!important;text-shadow:0 2px 22px rgba(20,9,2,.65),0 1px 3px rgba(20,9,2,.5); }
-.tahrir-lead { color:var(--hero-sub)!important;text-shadow:0 1px 14px rgba(20,9,2,.7),0 1px 2px rgba(20,9,2,.5); }
-.tahrir-hero,.tahrir-lead { position:relative;isolation:isolate; }
-.tahrir-hero::before,.tahrir-lead::before { content:"";position:absolute;inset:-18px -70px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(22,10,3,.58) 0%,rgba(22,10,3,.34) 45%,transparent 72%);filter:blur(6px); }
-.tahrir-onbg { color:var(--onbg)!important;text-shadow:0 1px 10px rgba(20,9,2,.8),0 1px 2px rgba(20,9,2,.6); }
+/* --- Fon: toʻliq blur iliq gradient, jonli --- */
+.tahrir-paper { position:absolute;inset:0;background:
+  radial-gradient(70% 55% at 50% 22%,#fff3d9 0%,rgba(255,243,217,0) 70%),
+  radial-gradient(60% 60% at 12% 78%,#f6bf85 0%,rgba(246,191,133,0) 72%),
+  radial-gradient(55% 55% at 92% 18%,#f4b79a 0%,rgba(244,183,154,0) 70%),
+  linear-gradient(180deg,#f9dcb3 0%,#f1c088 55%,#e2a468 100%); }
+.tahrir-aurora { position:absolute;border-radius:9999px;filter:blur(70px);will-change:transform; }
+.tahrir-aurora-a { width:58vmax;height:46vmax;left:-14vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(255,236,196,.95),transparent);animation:tahrir-drift-a 24s ease-in-out infinite alternate; }
+.tahrir-aurora-b { width:50vmax;height:42vmax;right:-14vmax;top:6vmax;background:radial-gradient(closest-side,rgba(247,170,130,.65),transparent);animation:tahrir-drift-b 29s ease-in-out infinite alternate; }
+.tahrir-aurora-c { width:56vmax;height:40vmax;left:18vmax;bottom:-18vmax;background:radial-gradient(closest-side,rgba(232,150,80,.6),transparent);animation:tahrir-drift-c 33s ease-in-out infinite alternate; }
+.tahrir-bokeh { position:absolute;border-radius:9999px;filter:blur(14px);background:radial-gradient(circle,rgba(255,250,236,.85),rgba(255,226,170,.35) 55%,transparent 72%);animation:tahrir-float var(--d,18s) ease-in-out infinite alternate;opacity:var(--o,.6); }
+.tahrir-vignette { position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 60%,rgba(190,120,55,.22) 100%); }
+.tahrir-hero { color:var(--hero-text)!important;text-shadow:0 1px 0 rgba(255,255,255,.55),0 6px 28px rgba(255,238,205,.7); }
+.tahrir-lead { color:var(--hero-sub)!important; }
+.tahrir-onbg { color:var(--onbg)!important; }
 
 /* --- Shapka --- */
-.tahrir-header { background:var(--header-bg);border-color:var(--line);box-shadow:0 6px 24px rgba(60,32,10,.18);position:sticky;backdrop-filter:blur(12px); }
+.tahrir-header { background:var(--header-bg);border-color:var(--line);box-shadow:0 6px 30px rgba(150,92,34,.10);position:sticky;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px); }
 .tahrir-header::after { content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,#e8b87d,#c9884a,#f6d4a3);transform-origin:0 50%;transform:scaleX(0);animation:tahrir-progress linear both;animation-timeline:scroll(root block);pointer-events:none; }
-
-/* --- Mavzu tugmasi: quyosh <-> oy --- */
-.tahrir-theme-toggle { min-height:44px;color:var(--gold-text);background:var(--surface-alt);border:1px solid var(--line);font-size:.92rem;font-weight:650;transition:transform .3s,box-shadow .3s,background .4s; }
-.tahrir-theme-toggle:hover { transform:translateY(-2px);box-shadow:0 8px 26px rgba(214,152,70,.28); }
-.tahrir-orb { position:relative;display:inline-block;width:20px;height:20px; }
-.tahrir-orb svg { position:absolute;inset:0;transition:transform .7s cubic-bezier(.3,1.4,.4,1),opacity .45s; }
-.tahrir-ui[data-theme="light"] .tahrir-sun { transform:rotate(0) scale(1);opacity:1; }
-.tahrir-ui[data-theme="light"] .tahrir-moon { transform:rotate(-100deg) scale(.2);opacity:0; }
-.tahrir-ui[data-theme="dark"] .tahrir-sun { transform:rotate(100deg) scale(.2);opacity:0; }
-.tahrir-ui[data-theme="dark"] .tahrir-moon { transform:rotate(0) scale(1);opacity:1; }
-.tahrir-theme-toggle:hover .tahrir-orb { animation:tahrir-spin 1.6s linear infinite; }
 
 /* --- Sarlavha --- */
 .tahrir-word { display:inline-block;opacity:0;transform:translateY(.5em) scale(.96);filter:blur(10px);animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards; }
-.tahrir-shimmer { text-shadow:none;background:linear-gradient(100deg,#f0b062 0%,#ffd493 28%,#fff6dc 48%,#ffd493 68%,#f0b062 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards,tahrir-shine 5.5s ease-in-out 1.4s infinite; }
+.tahrir-shimmer { text-shadow:none;background:linear-gradient(100deg,#7a400a 0%,#b0600f 30%,#d98a26 48%,#b0600f 68%,#7a400a 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards,tahrir-shine 5.5s ease-in-out 1.4s infinite; }
 
 /* --- Panellar, tablar --- */
-.tahrir-panel,.tahrir-tabs { position:relative;isolation:isolate;background:var(--surface)!important;border-color:var(--line)!important;box-shadow:var(--panel-shadow)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px); }
+.tahrir-panel,.tahrir-tabs { position:relative;isolation:isolate;background:var(--surface)!important;border-color:var(--line)!important;box-shadow:var(--panel-shadow)!important;backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15); }
 .tahrir-panel { animation:tahrir-rise .8s cubic-bezier(.2,.8,.2,1) backwards;transition:background .5s,border-color .4s,box-shadow .4s,transform .5s cubic-bezier(.2,.7,.2,1); }
 .tahrir-panel:hover { transform:translateY(-3px); }
-.tahrir-panel::before,.tahrir-tabs::before { content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(236,170,92,.22),transparent 60%); }
+.tahrir-panel::before,.tahrir-tabs::before { content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .4s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.55),transparent 60%); }
 .tahrir-panel:hover::before,.tahrir-tabs:hover::before { opacity:1; }
 .tahrir-tab { min-height:52px;transition:color .25s,transform .3s; }
 .tahrir-tab:hover { transform:translateY(-2px); }
-.tahrir-ui[data-theme="light"] .tahrir-tabs .absolute.inset-0 { background:rgba(214,152,70,.22);box-shadow:inset 0 0 0 1px rgba(178,105,42,.3); }
+.tahrir-tabs .absolute.inset-0 { background:rgba(222,160,80,.28);box-shadow:inset 0 0 0 1px rgba(176,101,26,.32); }
 .tahrir-dropzone { background:var(--input-bg)!important;border-color:var(--line);transition:transform .35s,background .35s,border-color .35s,box-shadow .35s; }
-.tahrir-dropzone:hover { transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 35px rgba(190,120,50,.18); }
-.tahrir-primary { min-height:54px;font-size:1rem!important;box-shadow:0 12px 30px rgba(200,130,60,.30);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s; }
-.tahrir-primary:hover { transform:translateY(-2px);box-shadow:0 18px 40px rgba(200,130,60,.42); }
-.tahrir-primary::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.38) 50%,transparent 75%);transform:translateX(-130%);transition:transform .9s ease; }
+.tahrir-dropzone:hover { transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 35px rgba(190,120,50,.16); }
+.tahrir-primary { min-height:54px;font-size:1rem!important;box-shadow:0 10px 26px rgba(190,120,50,.28);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s; }
+.tahrir-primary:hover { transform:translateY(-2px);box-shadow:0 16px 36px rgba(190,120,50,.38); }
+.tahrir-primary::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.4) 50%,transparent 75%);transform:translateX(-130%);transition:transform .9s ease; }
 .tahrir-primary:hover::after { transform:translateX(130%); }
 .tahrir-ui textarea { font-size:clamp(.95rem,1.5vw,1.05rem)!important;line-height:1.75; }
 .tahrir-ui :is(button,input,textarea,select):focus-visible { outline:3px solid #d99a4e!important;outline-offset:3px; }
 .tahrir-ui button:disabled { cursor:not-allowed; }
-.tahrir-ui[data-theme="light"] .tahrir-panel .text-white { color:var(--text-main); }
-.tahrir-ui[data-theme="light"] ::placeholder { color:#8a735c; }
+.tahrir-ui ::placeholder { color:#8d7560; }
+.tahrir-ui ::selection { background:rgba(222,160,80,.4); }
 
-/* --- Mavzu almashinuv animatsiyasi (doira yoyilishi) --- */
-::view-transition-old(root),::view-transition-new(root) { animation:none;mix-blend-mode:normal; }
-::view-transition-new(root) { animation:tahrir-reveal .95s cubic-bezier(.65,0,.2,1) both; }
-::view-transition-old(root) { z-index:0; }
-::view-transition-new(root) { z-index:1; }
-
-@keyframes tahrir-ambient { from{transform:scale(1.04) translate3d(0,0,0);}to{transform:scale(1.09) translate3d(-.8%,.6%,0);} }
+@keyframes tahrir-drift-a { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(9vmax,6vmax,0) scale(1.18);} }
+@keyframes tahrir-drift-b { from{transform:translate3d(0,0,0) scale(1.1);}to{transform:translate3d(-10vmax,8vmax,0) scale(.92);} }
+@keyframes tahrir-drift-c { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(-8vmax,-6vmax,0) scale(1.2);} }
+@keyframes tahrir-float { from{transform:translate3d(0,0,0) scale(1);}to{transform:translate3d(3vmax,-4vmax,0) scale(1.12);} }
 @keyframes tahrir-word { to{opacity:1;transform:none;filter:blur(0);} }
 @keyframes tahrir-shine { 0%,18%{background-position:130% 0;}60%,100%{background-position:-60% 0;} }
 @keyframes tahrir-rise { from{opacity:0;transform:translateY(26px) scale(.985);}to{opacity:1;transform:none;} }
 @keyframes tahrir-progress { to{transform:scaleX(1);} }
-@keyframes tahrir-spin { to{transform:rotate(360deg);} }
-@keyframes tahrir-reveal { from{clip-path:circle(0 at var(--vt-x,95%) var(--vt-y,40px));}to{clip-path:circle(150vmax at var(--vt-x,95%) var(--vt-y,40px));} }
 
-@media(max-width:640px){.tahrir-header>div{padding-left:12px;padding-right:12px;height:68px;gap:6px;}.tahrir-header .font-serif{white-space:nowrap;}.tahrir-nav{gap:5px!important;}.tahrir-nav button{padding-left:9px!important;padding-right:9px!important;}.tahrir-nav button span{font-size:.72rem;}.tahrir-theme-toggle{min-width:40px;justify-content:center;}.tahrir-ui .tahrir-hero{font-size:clamp(2.1rem,8vw,3rem);line-height:1.12;}.tahrir-tabs{width:100%;}.tahrir-tabs .tahrir-tab{flex:1 1 auto;justify-content:center;padding:12px 10px;font-size:.9rem;}.tahrir-theme-toggle{padding:10px;}}
+@media(max-width:640px){
+  .tahrir-header>div{padding-left:12px;padding-right:12px;height:68px;gap:6px;}
+  .tahrir-header .font-serif{white-space:nowrap;font-size:1.05rem;letter-spacing:.02em;}
+  .tahrir-nav{gap:5px!important;}.tahrir-nav button{padding-left:9px!important;padding-right:9px!important;}.tahrir-nav button span{font-size:.72rem;}
+  .tahrir-ui .tahrir-hero{font-size:clamp(2.1rem,8vw,3rem);line-height:1.12;}
+  .tahrir-tabs{width:100%;}.tahrir-tabs .tahrir-tab{flex:1 1 auto;justify-content:center;padding:12px 10px;font-size:.9rem;}
+  .tahrir-aurora{filter:blur(50px);}
+}
 @media(prefers-reduced-motion:reduce){
-  .tahrir-paper,.tahrir-header::after{animation:none!important;}
+  .tahrir-aurora,.tahrir-bokeh,.tahrir-header::after{animation:none!important;}
   .tahrir-word,.tahrir-shimmer{opacity:1!important;transform:none!important;filter:none!important;animation:none!important;}
   .tahrir-panel{animation:none!important;}
   .tahrir-ui *,.tahrir-ui *::before,.tahrir-ui *::after{transition-duration:.01ms!important;}
-  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important;}
 }
