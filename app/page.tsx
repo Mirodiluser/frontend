@@ -36,13 +36,10 @@ import {
   Info,
   Clock,
   PartyPopper,
-  Sun,
-  Moon,
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import GuideTour from './components/GuideTour';
 import Ambient from './components/Ambient';
-import { flushSync } from 'react-dom';
 import { analyzeLatin, cyrillicToLatin, countWords } from './lib/uzTranslit';
 
 // Pulli AI tekshiruvi faqat shu soʻz sonigacha (server ham tekshiradi)
@@ -91,23 +88,6 @@ interface Toast {
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
   const [guideOpen, setGuideOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark'|'light'>('dark');
-  useEffect(()=>{try{const value=localStorage.getItem('tahrir-theme');if(value==='light'||value==='dark')setTheme(value);}catch{}},[]);
-  const toggleTheme=(event?:React.MouseEvent<HTMLButtonElement>)=>{
-    const next=theme==='dark'?'light':'dark';
-    const apply=()=>{setTheme(next);try{localStorage.setItem('tahrir-theme',next);}catch{}};
-    const doc=document as Document&{startViewTransition?:(cb:()=>void)=>unknown};
-    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!doc.startViewTransition||reduce){apply();return;}
-    // Mavzu almashishi tugma joyidan doira shaklida yoyiladi
-    const rect=event?.currentTarget.getBoundingClientRect();
-    const x=rect?rect.left+rect.width/2:window.innerWidth-60;
-    const y=rect?rect.top+rect.height/2:40;
-    const root=document.documentElement;
-    root.style.setProperty('--vt-x',x+'px');
-    root.style.setProperty('--vt-y',y+'px');
-    doc.startViewTransition(()=>{flushSync(apply);});
-  };
 
   // Birinchi tashrifda Qoʻllanma oʻzi ochiladi; keyin sarlavhadagi tugma orqali qayta ochiladi
   useEffect(() => {
@@ -716,10 +696,10 @@ export default function Home() {
   };
 
   return (
-    <main data-theme={theme} className="tahrir-ui min-h-screen bg-[var(--page-bg)] text-[var(--text-main)] selection:bg-[#D4A373]/35 selection:text-[#FFF] font-sans relative overflow-x-hidden">
+    <main className="tahrir-ui min-h-screen bg-[var(--page-bg)] text-[var(--text-main)] selection:bg-[#D4A373]/35 selection:text-[#FFF] font-sans relative overflow-x-hidden">
       
       {/* 1. JONLI FON: kutubxona teksturasi, nur va changlar */}
-      <Ambient theme={theme} />
+      <Ambient />
 
       {/* TOAST BILDIRISHNOMALARI (Z-INDEX 9999 BILAN OYNA USTIDA TURADI) */}
       <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm pointer-events-none">
@@ -733,18 +713,18 @@ export default function Home() {
               transition={{ duration: 0.22 }}
               className={`p-4 rounded-2xl border shadow-[var(--modal-shadow)] backdrop-blur-2xl pointer-events-auto flex items-start gap-3 ${
                 toast.type === 'success' 
-                  ? 'bg-[#0E1610]/95 border-emerald-500/40 text-[#E3F2E7]' 
+                  ? 'bg-[#f1faf2]/95 border-emerald-600/35 text-emerald-950' 
                   : toast.type === 'error' 
-                  ? 'bg-[#180A0A]/95 border-rose-500/40 text-[#FCEBEB]' 
+                  ? 'bg-[#fff1ef]/95 border-rose-600/35 text-rose-950' 
                   : toast.type === 'warning'
-                  ? 'bg-[#1A1208]/95 border-amber-500/60 text-[#FFF5E6] ring-1 ring-amber-500/30'
+                  ? 'bg-[#fff7e3]/95 border-amber-600/45 text-amber-950 ring-1 ring-amber-500/20'
                   : 'bg-[var(--surface)] border-[#D4A373]/35 text-[var(--text-main)]'
               }`}
             >
               <div className="shrink-0 mt-0.5">
-                {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
-                {toast.type === 'error' && <AlertTriangle className="w-5 h-5 text-rose-400" />}
-                {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-400 animate-pulse" />}
+                {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-700" />}
+                {toast.type === 'error' && <AlertTriangle className="w-5 h-5 text-rose-700" />}
+                {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-700 animate-pulse" />}
                 {toast.type === 'info' && <Info className="w-5 h-5 text-[var(--accent)]" />}
               </div>
               <div className="flex-1 text-left">
@@ -785,10 +765,6 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             className="tahrir-nav flex items-center gap-2.5 sm:gap-3.5"
           >
-            <button type="button" onClick={toggleTheme} aria-label={theme=== "dark"?"Yorugʻ mavzuga oʻtish":"Tungi mavzuga oʻtish"} title={theme==="dark"?"Yorugʻ mavzu":"Tungi mavzu"} className="tahrir-theme-toggle flex items-center gap-2 rounded-xl px-3 py-2 cursor-pointer">
-              <span className="tahrir-orb" aria-hidden><Sun className="tahrir-sun w-5 h-5"/><Moon className="tahrir-moon w-5 h-5"/></span>
-              <span className="hidden md:inline">{theme==="dark"?"Yorugʻ":"Tungi"}</span>
-            </button>
             <motion.button
               data-guide="guide-btn"
               whileHover={{ scale: 1.04 }}
@@ -823,7 +799,7 @@ export default function Home() {
                   <button 
                     onClick={handleLogout} 
                     title="Chiqish"
-                    className="text-[var(--text-muted)] hover:text-rose-400 p-1 transition-colors rounded-md hover:bg-rose-500/10 ml-1 cursor-pointer"
+                    className="text-[var(--text-muted)] hover:text-rose-700 p-1 transition-colors rounded-md hover:bg-rose-500/10 ml-1 cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
@@ -983,7 +959,7 @@ export default function Home() {
                         {inputText && (
                           <button 
                             onClick={() => { setInputText(''); setAiOverrides({}); }} 
-                            className="text-[var(--text-muted)] hover:text-rose-400 text-xs transition-colors flex items-center gap-1 bg-[var(--surface-alt)] px-2 py-0.5 rounded-md border border-[var(--line)] cursor-pointer"
+                            className="text-[var(--text-muted)] hover:text-rose-700 text-xs transition-colors flex items-center gap-1 bg-[var(--surface-alt)] px-2 py-0.5 rounded-md border border-[var(--line)] cursor-pointer"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1029,7 +1005,7 @@ export default function Home() {
                           onClick={copyToClipboard}
                           className="flex items-center gap-1.5 text-xs text-[var(--gold-text)] hover:text-[var(--text-main)] bg-[var(--surface-alt)] px-2.5 py-1 rounded-lg border border-[var(--line)] transition-all shadow-sm cursor-pointer"
                         >
-                          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copied ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5" />}
                           <span>{copied ? 'Nusxalandi!' : 'Nusxa olish'}</span>
                         </motion.button>
                       )}
@@ -1121,7 +1097,7 @@ export default function Home() {
                           </div>
                           <button 
                             onClick={(e) => { e.stopPropagation(); setFile(null); setPageInfo(null); }}
-                            className="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 ml-2 cursor-pointer"
+                            className="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 ml-2 cursor-pointer"
                             title="Oʻchirish"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1149,7 +1125,7 @@ export default function Home() {
                     )}
 
                     {fileFormatError && (
-                      <p role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-300">
+                      <p role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-700">
                         {fileFormatError}
                       </p>
                     )}
@@ -1194,7 +1170,7 @@ export default function Home() {
                       <FileType className="w-4 h-4 text-[var(--accent)]" />
                       Universal Fayl Konverter
                     </h3>
-                    <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-semibold">
+                    <span className="text-xs text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-semibold">
                       Cheksiz Bepul
                     </span>
                   </div>
@@ -1242,7 +1218,7 @@ export default function Home() {
                           </div>
                           <button 
                             onClick={(e) => { e.stopPropagation(); setConverterFile(null); }}
-                            className="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 cursor-pointer"
+                            className="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 cursor-pointer"
                             title="Oʻchirish"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1362,7 +1338,7 @@ export default function Home() {
       <AnimatePresence>
         {showShop && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xl p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#5a3818]/40 backdrop-blur-xl p-4"
             onClick={() => setShowShop(false)}
           >
             <motion.div 
@@ -1402,7 +1378,7 @@ export default function Home() {
                       </p>
                     </div>
                   </div>
-                  <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
+                  <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">
                     Faol hisob
                   </span>
                 </div>
@@ -1455,7 +1431,7 @@ export default function Home() {
                           </div>
 
                           {pkg.bonus && (
-                            <p className="text-[10px] text-emerald-400 font-semibold mt-0.5">
+                            <p className="text-[10px] text-emerald-700 font-semibold mt-0.5">
                               +{pkg.bonus} bonus <span className="text-[var(--text-muted)]">({totalCoins} jami)</span>
                             </p>
                           )}
@@ -1501,7 +1477,7 @@ export default function Home() {
       <AnimatePresence>
         {selectedPackage && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xl p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#5a3818]/40 backdrop-blur-xl p-4"
             onClick={() => setSelectedPackage(null)}
           >
             <motion.div 
@@ -1528,7 +1504,7 @@ export default function Home() {
                 {selectedPackage.bonus && (
                   <div className="flex justify-between items-center">
                     <span className="text-[var(--text-muted)]">Bonus:</span>
-                    <span className="font-bold text-emerald-400">+{selectedPackage.bonus} tanga</span>
+                    <span className="font-bold text-emerald-700">+{selectedPackage.bonus} tanga</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center pt-1.5 border-t border-[var(--line)]">
@@ -1571,7 +1547,7 @@ export default function Home() {
       <AnimatePresence>
         {activeOrder && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-2xl p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#5a3818]/50 backdrop-blur-xl p-4 overflow-y-auto"
             onClick={() => setActiveOrder(null)}
           >
             <motion.div 
@@ -1600,7 +1576,7 @@ export default function Home() {
                   </span>
                   <span className="text-xs font-bold text-[var(--gold-text)] uppercase tracking-wider">Toʻlov kutilmoqda</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-amber-300 font-mono bg-[var(--surface-alt)] px-3 py-1 rounded-xl border border-[#D4A373]/20 shadow-inner">
+                <div className="flex items-center gap-1.5 text-xs text-amber-700 font-mono bg-[var(--surface-alt)] px-3 py-1 rounded-xl border border-[#D4A373]/20 shadow-inner">
                   <Clock className="w-3.5 h-3.5 text-[var(--accent)]" />
                   <span>{Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</span>
                 </div>
@@ -1620,22 +1596,22 @@ export default function Home() {
                     className="p-1.5 rounded-xl bg-[var(--surface-alt)] hover:bg-[#D4A373]/25 text-[var(--gold-text)] border border-[var(--line)] hover:border-[#D4A373]/50 transition-all cursor-pointer ml-1 shadow-sm active:scale-95"
                     title="Summani nusxalash"
                   >
-                    {amountCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    {amountCopied ? <Check className="w-4 h-4 text-emerald-700" /> : <Copy className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
               {/* Muhim ogohlantirish */}
-              <div className="mt-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-amber-600/15 to-amber-500/20 border-2 border-amber-500/70 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.15)] flex items-start gap-3 relative overflow-hidden">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/30 border border-amber-400/50 flex items-center justify-center shrink-0 mt-0.5 text-amber-300">
-                  <AlertTriangle className="w-4 h-4 text-amber-300 animate-pulse" />
+              <div className="mt-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-400/25 via-amber-400/15 to-amber-400/25 border-2 border-amber-600/50 text-amber-900 shadow-[0_8px_24px_rgba(217,119,6,0.15)] flex items-start gap-3 relative overflow-hidden">
+                <div className="w-8 h-8 rounded-xl bg-amber-400/30 border border-amber-600/40 flex items-center justify-center shrink-0 mt-0.5 text-amber-700">
+                  <AlertTriangle className="w-4 h-4 text-amber-700 animate-pulse" />
                 </div>
                 <div className="text-left text-xs leading-relaxed">
-                  <p className="font-extrabold text-amber-300 tracking-wide uppercase text-[11px]">
+                  <p className="font-extrabold text-amber-700 tracking-wide uppercase text-[11px]">
                     ⚠️ MUHIM OGOHLANTIRISH:
                   </p>
-                  <p className="mt-0.5 text-amber-100/90 text-[11.5px]">
-                    Hisobingizga tangalar avtomatik tarzda tushishi uchun aynan <b className="text-white underline decoration-amber-400 underline-offset-2">{formatPrice(activeOrder.exactAmount)} so‘m</b> to‘lov qiling!
+                  <p className="mt-0.5 text-amber-900 text-[11.5px]">
+                    Hisobingizga tangalar avtomatik tarzda tushishi uchun aynan <b className="text-[var(--text-main)] underline decoration-amber-600 underline-offset-2">{formatPrice(activeOrder.exactAmount)} so‘m</b> to‘lov qiling!
                   </p>
                 </div>
               </div>
@@ -1652,7 +1628,7 @@ export default function Home() {
                   onClick={copyCard}
                   className="flex items-center gap-1 text-xs text-[var(--gold-text)] bg-[var(--input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--line)] hover:border-[#D4A373]/50 hover:text-[var(--text-main)] transition-all cursor-pointer active:scale-95"
                 >
-                  {cardCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {cardCopied ? <Check className="w-3.5 h-3.5 text-emerald-700" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{cardCopied ? 'Nusxalandi' : 'Nusxa'}</span>
                 </button>
               </div>
@@ -1670,7 +1646,7 @@ export default function Home() {
                 </div>
                 <button 
                   onClick={() => setActiveOrder(null)} 
-                  className="text-[var(--text-muted)] hover:text-rose-400 underline text-[11px] cursor-pointer"
+                  className="text-[var(--text-muted)] hover:text-rose-700 underline text-[11px] cursor-pointer"
                 >
                   Bekor qilish
                 </button>
@@ -1684,7 +1660,7 @@ export default function Home() {
       <AnimatePresence>
         {paymentSuccess && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xl p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#5a3818]/45 backdrop-blur-xl p-4"
             onClick={() => setPaymentSuccess(false)}
           >
             <motion.div 
@@ -1692,29 +1668,29 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.85, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.4 }}
-              className="bg-[#121A14] border border-emerald-500/50 rounded-3xl p-6 sm:p-8 w-full max-w-sm shadow-[0_30px_90px_rgba(16,185,129,0.2)] text-center relative"
+              className="bg-[var(--modal-bg)] border border-emerald-600/40 rounded-3xl p-6 sm:p-8 w-full max-w-sm shadow-[var(--modal-shadow)] text-center relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-16 h-16 rounded-3xl bg-emerald-500/20 border border-emerald-500/40 mx-auto flex items-center justify-center text-emerald-400 mb-4 shadow-lg shadow-emerald-500/20">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-500/15 border border-emerald-600/35 mx-auto flex items-center justify-center text-emerald-700 mb-4 shadow-lg shadow-emerald-500/20">
                 <PartyPopper className="w-8 h-8 animate-bounce" />
               </div>
 
-              <h3 className="text-xl font-serif font-bold text-white">
+              <h3 className="text-xl font-serif font-bold text-[var(--text-main)]">
                 Toʻlov muvaffaqiyatli!
               </h3>
               
-              <p className="mt-2 text-xs text-emerald-200/80 leading-relaxed">
+              <p className="mt-2 text-xs text-emerald-800 leading-relaxed">
                 Hisobingiz muvaffaqiyatli toʻldirildi. Tizim avtomatik tarzda tangalarni faollashtirdi.
               </p>
 
-              <div className="mt-5 p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 flex items-center justify-center gap-2">
-                <Coins className="w-5 h-5 text-emerald-400" />
-                <span className="text-lg font-bold text-white">+{successCoins} tanga qoʻshildi</span>
+              <div className="mt-5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-600/30 flex items-center justify-center gap-2">
+                <Coins className="w-5 h-5 text-emerald-700" />
+                <span className="text-lg font-bold text-[var(--text-main)]">+{successCoins} tanga qoʻshildi</span>
               </div>
 
               <button
                 onClick={() => setPaymentSuccess(false)}
-                className="mt-6 w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
+                className="mt-6 w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 transition-all cursor-pointer"
               >
                 Ajoyib, davom etish
               </button>
@@ -1727,7 +1703,7 @@ export default function Home() {
       <AnimatePresence>
         {showAuthModal && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xl p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#5a3818]/40 backdrop-blur-xl p-4"
             onClick={() => !isAuthLoading && setShowAuthModal(false)}
           >
             <motion.div 
@@ -1821,7 +1797,7 @@ export default function Home() {
                 </div>
 
                 {authError && (
-                  <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 text-xs font-semibold text-center">
+                  <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 text-xs font-semibold text-center">
                     {authError}
                   </div>
                 )}

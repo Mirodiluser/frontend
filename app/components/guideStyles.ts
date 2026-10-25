@@ -220,4 +220,53 @@ export const GUIDE_CSS = `
   .tg-w,.tg-li,.tg-glass,.tg-hero-wrap,.tg-title .ch,.tg-sub,.tg-cta,.tg-chip{animation-duration:.01ms!important;animation-delay:0s!important}
   .tg-d-wr::before{transform:scaleX(1)}
 }
+
+/* ---------- Iliq nur mavzusi: qoʻllanma saytning yumshoq yorugʻ uslubiga moslashadi ---------- */
+.tg-root{color:#3b2414}
+.tg-blur{background:radial-gradient(120% 95% at 50% 38%,rgba(255,236,205,.30),rgba(120,70,28,.50));
+  -webkit-backdrop-filter:blur(12px) saturate(1.05);backdrop-filter:blur(12px) saturate(1.05)}
+.tg-blob{mix-blend-mode:normal;opacity:.45}
+.tg-hero{background:radial-gradient(90% 60% at 50% 0%,rgba(255,255,255,.7),transparent 70%),linear-gradient(165deg,rgba(255,250,240,.97),rgba(252,236,212,.97));
+  border:1px solid rgba(176,101,26,.3);box-shadow:0 40px 100px rgba(100,58,18,.38),inset 0 1px 0 rgba(255,255,255,.9)}
+.tg-hero .hb1{background:radial-gradient(circle,rgba(246,176,96,.55),transparent 68%);mix-blend-mode:normal}
+.tg-hero .hb2{background:radial-gradient(circle,rgba(244,160,140,.45),transparent 68%);mix-blend-mode:normal}
+.tg-mark .core>div{background:linear-gradient(160deg,#6b4021,#3c2210)}
+.tg-title{color:#3b2414}
+.tg-title .ai{background:linear-gradient(100deg,#7a400a 10%,#b0600f 45%,#e0952f 52%,#b0600f 60%,#7a400a 90%);background-size:240% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tg-sub{color:#573e2b}
+.tg-chip{color:#4f3926;background:rgba(255,255,255,.6);border:1px solid rgba(150,95,40,.3)}
+.tg-glass{background:linear-gradient(165deg,rgba(255,250,241,.97),rgba(252,238,216,.97));border:1px solid rgba(176,101,26,.3);
+  box-shadow:0 36px 90px rgba(100,58,18,.36),inset 0 1px 0 rgba(255,255,255,.9)}
+.tg-glass::before{background:radial-gradient(380px circle at var(--mx,50%) var(--my,-10%),rgba(255,255,255,.55),transparent 62%)}
+.tg-stage{background:radial-gradient(120% 150% at 50% 0%,rgba(246,190,120,.38),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.5),transparent);
+  border-bottom:1px solid rgba(150,95,40,.18)}
+.tg-ghost{-webkit-text-stroke:1px rgba(176,101,26,.22)}
+.tg-kicker{color:#86654a}
+.tg-h{color:#3b2414}
+.tg-p{color:#4f3926}
+.tg-li{color:#5a4130}
+.tg-seg i{background:rgba(150,95,40,.2)}
+.tg-seg i::after{background:linear-gradient(90deg,#c9822c,#ebb15f)}
+.tg-back{background:rgba(176,101,26,.10);color:#5a3c20;border:1px solid rgba(150,95,40,.3)}
+.tg-back:hover:not(:disabled){background:rgba(176,101,26,.18)}
+.tg-skip{color:#7a5a3e}.tg-skip:hover{color:#a05a14}
+.tg-x{background:rgba(120,70,25,.10);color:#7a5a3e}
+.tg-x:hover{background:rgba(120,70,25,.18);color:#4a280a}
+.tg-next:focus-visible,.tg-back:focus-visible,.tg-skip:focus-visible,.tg-x:focus-visible{outline-color:#b0651a}
+.tg-d-tabs{background:rgba(255,255,255,.6);border:1px solid rgba(150,95,40,.28);box-shadow:inset 0 2px 8px rgba(150,95,40,.12)}
+.tg-d-pill{background:linear-gradient(135deg,rgba(236,170,90,.5),rgba(214,140,60,.38));border:1px solid rgba(176,101,26,.5);box-shadow:0 6px 20px rgba(214,140,60,.3)}
+.tg-d-tab{color:#7a604a}
+@keyframes tg-d-lit{0%,28%{color:#4a280a}38%,100%{color:#7a604a}}
+.tg-d-tag{color:#86654a}
+.tg-d-tag b{background:rgba(214,140,60,.2);border:1px solid rgba(176,101,26,.4);color:#6a3a0c}
+.tg-d-text{color:#3b2414}
+.tg-d-doc{box-shadow:0 14px 34px rgba(100,58,18,.28)}
+.tg-d-file{background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,244,226,.7));border:1px solid rgba(176,101,26,.35);color:#6a3a0c;box-shadow:0 10px 24px rgba(100,58,18,.2)}
+.tg-d-flow i{background:#c9822c}
+.tg-d-num{color:#6a3a0c}
+.tg-d-num small{color:#86654a}
+.tg-d-drop{background:radial-gradient(circle at 30% 30%,#fff3dc,#e0952f)}
+.tg-d-done svg .r{stroke:rgba(176,101,26,.5)}
+.tg-d-done svg .c{stroke:#c9822c}
 `;
