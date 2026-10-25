@@ -41,6 +41,8 @@ import {
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import GuideTour from './components/GuideTour';
+import Ambient from './components/Ambient';
+import { flushSync } from 'react-dom';
 import { analyzeLatin, cyrillicToLatin, countWords } from './lib/uzTranslit';
 
 // Pulli AI tekshiruvi faqat shu soʻz sonigacha (server ham tekshiradi)
@@ -89,9 +91,23 @@ interface Toast {
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
   const [guideOpen, setGuideOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark'|'light'>('dark');
+  const [theme, setTheme] = useState<'dark'|'light'>('light');
   useEffect(()=>{try{const value=localStorage.getItem('tahrir-theme');if(value==='light'||value==='dark')setTheme(value);}catch{}},[]);
-  const toggleTheme=()=>setTheme(previous=>{const value=previous==='dark'?'light':'dark';try{localStorage.setItem('tahrir-theme',value);}catch{}return value;});
+  const toggleTheme=(event?:React.MouseEvent<HTMLButtonElement>)=>{
+    const next=theme==='dark'?'light':'dark';
+    const apply=()=>{setTheme(next);try{localStorage.setItem('tahrir-theme',next);}catch{}};
+    const doc=document as Document&{startViewTransition?:(cb:()=>void)=>unknown};
+    const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!doc.startViewTransition||reduce){apply();return;}
+    // Mavzu almashishi tugma joyidan doira shaklida yoyiladi
+    const rect=event?.currentTarget.getBoundingClientRect();
+    const x=rect?rect.left+rect.width/2:window.innerWidth-60;
+    const y=rect?rect.top+rect.height/2:40;
+    const root=document.documentElement;
+    root.style.setProperty('--vt-x',x+'px');
+    root.style.setProperty('--vt-y',y+'px');
+    doc.startViewTransition(()=>{flushSync(apply);});
+  };
 
   // Birinchi tashrifda Qoʻllanma oʻzi ochiladi; keyin sarlavhadagi tugma orqali qayta ochiladi
   useEffect(() => {
@@ -702,20 +718,8 @@ export default function Home() {
   return (
     <main data-theme={theme} className="tahrir-ui min-h-screen bg-[var(--page-bg)] text-[var(--text-main)] selection:bg-[#D4A373]/35 selection:text-[#FFF] font-sans relative overflow-x-hidden">
       
-      {/* 1. JONLI KUTUBXONA FON TUZILMASI */}
-      <div 
-        className="tahrir-library fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat transition-all"
-        style={{
-          backgroundImage: `
-            radial-gradient(ellipse at 50% 28%, rgba(10, 7, 5, 0.38) 0%, rgba(10, 7, 5, 0.25) 50%, transparent 75%),
-            linear-gradient(180deg, rgba(7, 5, 4, 0.15) 0%, rgba(7, 5, 4, 0.22) 50%, rgba(7, 5, 4, 0.48) 100%),
-            url('/dark-library.jpg')
-          `,
-          filter: 'contrast(108%) brightness(1.20) saturate(115%)'
-        }}
-      >
-        <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[850px] h-[450px] bg-[#D4A373]/12 blur-[150px] rounded-full" />
-      </div>
+      {/* 1. JONLI FON: kutubxona teksturasi, nur va changlar */}
+      <Ambient theme={theme} />
 
       {/* TOAST BILDIRISHNOMALARI (Z-INDEX 9999 BILAN OYNA USTIDA TURADI) */}
       <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-sm pointer-events-none">
@@ -727,7 +731,7 @@ export default function Home() {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.9 }}
               transition={{ duration: 0.22 }}
-              className={`p-4 rounded-2xl border shadow-[0_25px_60px_rgba(0,0,0,0.85)] backdrop-blur-2xl pointer-events-auto flex items-start gap-3 ${
+              className={`p-4 rounded-2xl border shadow-[var(--modal-shadow)] backdrop-blur-2xl pointer-events-auto flex items-start gap-3 ${
                 toast.type === 'success' 
                   ? 'bg-[#0E1610]/95 border-emerald-500/40 text-[#E3F2E7]' 
                   : toast.type === 'error' 
@@ -741,7 +745,7 @@ export default function Home() {
                 {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400" />}
                 {toast.type === 'error' && <AlertTriangle className="w-5 h-5 text-rose-400" />}
                 {toast.type === 'warning' && <AlertTriangle className="w-5 h-5 text-amber-400 animate-pulse" />}
-                {toast.type === 'info' && <Info className="w-5 h-5 text-[#D4A373]" />}
+                {toast.type === 'info' && <Info className="w-5 h-5 text-[var(--accent)]" />}
               </div>
               <div className="flex-1 text-left">
                 <p className="text-xs font-bold leading-tight">{toast.title}</p>
@@ -767,22 +771,22 @@ export default function Home() {
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E2B180] to-[#8C6239] p-[1px] shadow-lg shadow-[#D4A373]/20 transition-transform duration-300 group-hover:scale-105">
-              <div className="w-full h-full bg-[#120D0B] rounded-2xl flex items-center justify-center">
+              <div className="w-full h-full bg-[var(--modal-bg)] rounded-2xl flex items-center justify-center">
                 <Feather className="w-5 h-5 text-[var(--gold-text)] transition-transform duration-300 group-hover:rotate-12" />
               </div>
             </div>
             <span className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-[var(--text-main)] drop-shadow-sm">
-              TAHRIR<span className="text-[#D4A373] drop-shadow-[0_0_15px_rgba(212,163,115,0.4)]">.AI</span>
+              TAHRIR<span className="text-[var(--accent)] drop-shadow-[0_0_15px_rgba(212,163,115,0.4)]">.AI</span>
             </span>
           </motion.div>
 
           <motion.div 
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2.5 sm:gap-3.5"
+            className="tahrir-nav flex items-center gap-2.5 sm:gap-3.5"
           >
             <button type="button" onClick={toggleTheme} aria-label={theme=== "dark"?"Yorugʻ mavzuga oʻtish":"Tungi mavzuga oʻtish"} title={theme==="dark"?"Yorugʻ mavzu":"Tungi mavzu"} className="tahrir-theme-toggle flex items-center gap-2 rounded-xl px-3 py-2 cursor-pointer">
-              {theme==="dark"?<Sun className="w-5 h-5"/>:<Moon className="w-5 h-5"/>}
+              <span className="tahrir-orb" aria-hidden><Sun className="tahrir-sun w-5 h-5"/><Moon className="tahrir-moon w-5 h-5"/></span>
               <span className="hidden md:inline">{theme==="dark"?"Yorugʻ":"Tungi"}</span>
             </button>
             <motion.button
@@ -792,13 +796,13 @@ export default function Home() {
               onClick={() => setGuideOpen(true)}
               title="Qoʻllanma"
               aria-label="Qoʻllanma"
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[var(--surface-alt)] border border-[#D4A373]/20 text-xs font-semibold text-[#CDB8A5] hover:text-[var(--gold-text)] hover:border-[#D4A373]/50 transition-all cursor-pointer backdrop-blur-md"
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[var(--surface-alt)] border border-[#D4A373]/20 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--gold-text)] hover:border-[#D4A373]/50 transition-all cursor-pointer backdrop-blur-md"
             >
-              <BookOpen className="w-3.5 h-3.5 text-[#D4A373]" />
+              <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
               <span className="hidden sm:inline">Qoʻllanma</span>
             </motion.button>
 
-            <div data-guide="account" className="flex items-center gap-2.5 sm:gap-3.5">
+            <div data-guide="account" className="tahrir-nav flex items-center gap-2.5 sm:gap-3.5">
             {user ? (
               <>
                 <motion.button 
@@ -807,15 +811,15 @@ export default function Home() {
                   onClick={() => setShowShop(true)}
                   className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-alt)] border border-[#D4A373]/30 shadow-inner hover:border-[#D4A373]/60 transition-all cursor-pointer backdrop-blur-md"
                 >
-                  <Coins className="w-4 h-4 text-[#D4A373] animate-pulse" />
+                  <Coins className="w-4 h-4 text-[var(--accent)] animate-pulse" />
                   <span className="text-xs sm:text-sm font-semibold text-[var(--gold-text)]">{userCoins} tanga</span>
                 </motion.button>
 
                 <div className="flex items-center gap-2 bg-[var(--surface-alt)] border border-[var(--line)] py-1.5 px-3 rounded-xl backdrop-blur-md">
-                  <div className="w-6 h-6 rounded-lg bg-[#271B16] flex items-center justify-center">
-                    <User className="w-3.5 h-3.5 text-[#D4A373]" />
+                  <div className="w-6 h-6 rounded-lg bg-[var(--surface-alt)] flex items-center justify-center">
+                    <User className="w-3.5 h-3.5 text-[var(--accent)]" />
                   </div>
-                  <span className="text-xs font-semibold text-[#EDE1D6] max-w-[100px] sm:max-w-[130px] truncate">{user.name}</span>
+                  <span className="text-xs font-semibold text-[var(--text-main)] max-w-[100px] sm:max-w-[130px] truncate">{user.name}</span>
                   <button 
                     onClick={handleLogout} 
                     title="Chiqish"
@@ -830,10 +834,11 @@ export default function Home() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
-                className="px-4 py-2 rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] text-xs font-bold text-[#EFE5DC] hover:border-[#D4A373]/50 hover:bg-[var(--surface-alt)] transition-all flex items-center gap-1.5 shadow-md backdrop-blur-md cursor-pointer"
+                aria-label="Kirish"
+                className="px-4 py-2 rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] text-xs font-bold text-[var(--text-main)] hover:border-[#D4A373]/50 hover:bg-[var(--surface-alt)] transition-all flex items-center gap-1.5 shadow-md backdrop-blur-md cursor-pointer"
               >
-                <LogIn className="w-3.5 h-3.5 text-[#D4A373]" />
-                <span>Kirish</span>
+                <LogIn className="w-3.5 h-3.5 text-[var(--accent)]" />
+                <span className="hidden min-[430px]:inline">Kirish</span>
               </motion.button>
             )}
 
@@ -861,20 +866,22 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--surface)] border border-[#D4A373]/35 text-xs font-medium text-[var(--gold-text)] mb-6 backdrop-blur-xl shadow-lg shadow-black/40">
-            <BookOpen className="w-3.5 h-3.5 text-[#D4A373]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--surface)] border border-[#D4A373]/35 text-xs font-medium text-[var(--gold-text)] mb-6 backdrop-blur-xl shadow-[var(--panel-shadow)]">
+            <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
             <span>O&lsquo;zbek filologiyasining akademik standarti</span>
             <div className="w-1.5 h-1.5 rounded-full bg-[#D4A373] animate-ping" />
           </div>
 
-          <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
-            Mukammal grammatika{' '}
-            <span className="italic bg-clip-text text-transparent bg-gradient-to-r from-[#F7D8B5] via-[#E2B180] to-[#B37E4C] drop-shadow-[0_0_30px_rgba(212,163,115,0.35)]">
-              va matn sofligi
-            </span>
+          <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight">
+            {['Mukammal','grammatika'].map((word,i)=>(
+              <span key={word} className="tahrir-word" style={{animationDelay:`${0.15+i*0.12}s`}}>{word}&nbsp;</span>
+            ))}
+            {['va','matn','sofligi'].map((word,i)=>(
+              <span key={word} className="tahrir-word italic tahrir-shimmer" style={{animationDelay:`${0.4+i*0.14}s`}}>{word}{i<2?'\u00a0':''}</span>
+            ))}
           </h1>
 
-          <p className="mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]">
+          <p className="mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
         </motion.div>
@@ -886,7 +893,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-10 flex justify-center"
         >
-          <div data-guide="tabs" className="tahrir-tabs p-1.5 rounded-2xl bg-[var(--surface)] border border-[#D4A373]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[0_20px_50px_rgba(0,0,0,0.7)]">
+          <div data-guide="tabs" className="tahrir-tabs p-1.5 rounded-2xl bg-[var(--surface)] border border-[#D4A373]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[var(--panel-shadow)]">
             {[
               { id: 'translit', label: 'Kirill ↔ Latin', icon: RefreshCw, badge: 'Cheksiz' },
               { id: 'corrector', label: 'Imlo Tahrirchi', icon: Sparkles, badge: 'AI Pro' },
@@ -899,7 +906,7 @@ export default function Home() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`tahrir-tab relative px-5 py-3 rounded-xl text-sm sm:text-base font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                    isActive ? 'text-[#FFF]' : 'text-[var(--text-muted)] hover:text-[var(--gold-text)]'
+                    isActive ? 'text-[var(--tab-active)]' : 'text-[var(--text-muted)] hover:text-[var(--gold-text)]'
                   }`}
                 >
                   {isActive && (
@@ -959,7 +966,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  <div className="relative tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl focus-within:border-[#D4A373]/60 transition-all">
+                  <div className="relative tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[var(--panel-shadow)] backdrop-blur-xl focus-within:border-[#D4A373]/60 transition-all">
                     <div className="flex justify-between items-center pb-3 border-b border-[var(--line)] text-xs font-bold text-[var(--gold-text)]">
                       <span className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#D4A373] shadow-[0_0_8px_#D4A373]" />
@@ -1009,7 +1016,7 @@ export default function Home() {
                     />
                   </div>
 
-                  <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl relative">
+                  <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-5 flex flex-col h-[360px] shadow-[var(--panel-shadow)] backdrop-blur-xl relative">
                     <div className="flex justify-between items-center pb-3 border-b border-[var(--line)] text-xs font-bold text-[var(--gold-text)]">
                       <span className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#8C6239]" />
@@ -1020,7 +1027,7 @@ export default function Home() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={copyToClipboard}
-                          className="flex items-center gap-1.5 text-xs text-[var(--gold-text)] hover:text-[#FFF] bg-[var(--surface-alt)] px-2.5 py-1 rounded-lg border border-[var(--line)] transition-all shadow-sm cursor-pointer"
+                          className="flex items-center gap-1.5 text-xs text-[var(--gold-text)] hover:text-[var(--text-main)] bg-[var(--surface-alt)] px-2.5 py-1 rounded-lg border border-[var(--line)] transition-all shadow-sm cursor-pointer"
                         >
                           {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           <span>{copied ? 'Nusxalandi!' : 'Nusxa olish'}</span>
@@ -1028,7 +1035,7 @@ export default function Home() {
                       )}
                     </div>
                     <div className="w-full flex-1 min-h-0 overflow-y-auto mt-3 text-xs sm:text-sm text-[var(--text-main)] leading-relaxed whitespace-pre-wrap">
-                      {outputText || <span className="text-[#7A6A5E] italic">Natija bu yerda aks etadi...</span>}
+                      {outputText || <span className="text-[var(--text-muted)] italic">Natija bu yerda aks etadi...</span>}
                     </div>
                     {direction === 'lat2cyr' && user && translit.uncertain.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-[var(--line)] flex items-center justify-between gap-3" data-testid="translit-ai-strip">
@@ -1064,10 +1071,10 @@ export default function Home() {
                 transition={{ duration: 0.25 }}
                 className="max-w-4xl mx-auto space-y-6 text-left"
               >
-                <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+                <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-6 shadow-[var(--panel-shadow)] backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-base font-medium text-[var(--text-main)] flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-[#D4A373]" />
+                      <FileText className="w-4 h-4 text-[var(--accent)]" />
                       Hujjatni tahrir qilish (Dissertatsiya, Maqola, Referat)
                     </h3>
                     <span className="text-xs text-[var(--text-muted)]">1 sahifa = 1 tanga</span>
@@ -1100,14 +1107,14 @@ export default function Home() {
                       }}
                     />
 
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
                       <UploadCloud className="w-6 h-6" />
                     </div>
 
                     {file ? (
                       <div className="flex flex-col items-center gap-3">
                         <div className="flex items-center gap-3 bg-[var(--surface-alt)] border border-[#D4A373]/40 px-4 py-2.5 rounded-xl">
-                          <CheckCircle2 className="w-4 h-4 text-[#D4A373]" />
+                          <CheckCircle2 className="w-4 h-4 text-[var(--accent)]" />
                           <div className="text-left">
                             <p className="text-xs sm:text-sm font-semibold text-[var(--text-main)]">{file.name}</p>
                             <p className="text-[10px] text-[var(--text-muted)]">{formatFileSize(file.size)}</p>
@@ -1123,7 +1130,7 @@ export default function Home() {
 
                         {isCountingPages ? (
                           <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                            <Loader2 className="w-3 h-3 animate-spin text-[#D4A373]" />
+                            <Loader2 className="w-3 h-3 animate-spin text-[var(--accent)]" />
                             <span>Sahifalar soni hisoblanmoqda...</span>
                           </div>
                         ) : pageInfo && (
@@ -1135,7 +1142,7 @@ export default function Home() {
                     ) : (
                       <>
                         <h4 className="text-sm sm:text-base font-medium text-[var(--text-main)]">
-                          Hujjatni bu yerga tashlang yoki <span className="text-[#D4A373] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
+                          Hujjatni bu yerga tashlang yoki <span className="text-[var(--accent)] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
                         </h4>
                         <p className="mt-1 text-xs text-[var(--text-muted)]">Faqat .DOCX formatidagi Word fayli qabul qilinadi.</p>
                       </>
@@ -1181,10 +1188,10 @@ export default function Home() {
                 transition={{ duration: 0.25 }}
                 className="max-w-4xl mx-auto text-left"
               >
-                <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+                <div className="tahrir-panel bg-[var(--surface)] border border-[#D4A373]/20 rounded-3xl p-6 shadow-[var(--panel-shadow)] backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base font-medium text-[var(--text-main)] flex items-center gap-2">
-                      <FileType className="w-4 h-4 text-[#D4A373]" />
+                      <FileType className="w-4 h-4 text-[var(--accent)]" />
                       Universal Fayl Konverter
                     </h3>
                     <span className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-semibold">
@@ -1219,7 +1226,7 @@ export default function Home() {
                       }}
                     />
                     
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
                       <UploadCloud className="w-6 h-6" />
                     </div>
 
@@ -1227,7 +1234,7 @@ export default function Home() {
                       <div className="flex flex-col items-center gap-4 w-full max-w-sm">
                         <div className="flex items-center justify-between w-full bg-[var(--surface-alt)] border border-[#D4A373]/40 px-4 py-2.5 rounded-xl">
                           <div className="flex items-center gap-2.5 text-left">
-                            <CheckCircle2 className="w-4 h-4 text-[#D4A373]" />
+                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)]" />
                             <div>
                               <p className="text-xs sm:text-sm font-semibold text-[var(--text-main)] truncate max-w-[200px]">{converterFile.name}</p>
                               <p className="text-[10px] text-[var(--text-muted)]">{formatFileSize(converterFile.size)}</p>
@@ -1272,15 +1279,15 @@ export default function Home() {
                         </div>
                         {converterFile.name.toLowerCase().endsWith('.pdf') && targetFormat==='docx' && (
                           <div className="mt-3 rounded-xl border border-[#D4A373]/25 bg-[var(--surface-alt)] p-2.5" onClick={e=>e.stopPropagation()}>
-                            <p className="mb-2 text-center text-[11px] font-medium text-[#DAB18A]">PDF → Word rejimi</p>
+                            <p className="mb-2 text-center text-[11px] font-medium text-[var(--gold-text)]">PDF → Word rejimi</p>
                             <div className="grid grid-cols-2 gap-1.5">
                               <button
                                 type="button"
                                 aria-pressed={pdfWordMode==='editable'}
                                 onClick={()=>setPdfWordMode('editable')}
                                 className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition ${pdfWordMode==='editable'
-                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[#F1C897]'
-                                  : 'border-[#37281E] bg-[#211712] text-[#B6A095] hover:border-[#D4A373]/50'}`}>
+                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[var(--gold-text)]'
+                                  : 'border-[var(--line)] bg-[var(--surface-alt)] text-[var(--text-muted)] hover:border-[#D4A373]/50'}`}>
                                 Tahrirlanadigan Word
                               </button>
                               <button
@@ -1288,12 +1295,12 @@ export default function Home() {
                                 aria-pressed={pdfWordMode==='visual'}
                                 onClick={()=>setPdfWordMode('visual')}
                                 className={`rounded-lg border px-2 py-2 text-[11px] font-semibold transition ${pdfWordMode==='visual'
-                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[#F1C897]'
-                                  : 'border-[#37281E] bg-[#211712] text-[#B6A095] hover:border-[#D4A373]/50'}`}>
+                                  ? 'border-[#D4A373] bg-[#D4A373]/20 text-[var(--gold-text)]'
+                                  : 'border-[var(--line)] bg-[var(--surface-alt)] text-[var(--text-muted)] hover:border-[#D4A373]/50'}`}>
                                 Asl koʻrinish
                               </button>
                             </div>
-                            <p className="mt-2 text-center text-[10px] leading-4 text-[#AB9587]">
+                            <p className="mt-2 text-center text-[10px] leading-4 text-[var(--text-muted)]">
                               {pdfWordMode==='editable'
                                 ? 'Matnni oʻzgartirish mumkin; murakkab bezak farq qilishi mumkin.'
                                 : 'Ramka, shrift va joylashuv rasm sifatida saqlanadi; matn tahrirlanmaydi.'}
@@ -1304,7 +1311,7 @@ export default function Home() {
                     ) : (
                       <>
                         <h4 className="text-sm sm:text-base font-medium text-[var(--text-main)]">
-                          Hujjat yoki rasmni bu yerga tashlang yoki <span className="text-[#D4A373] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
+                          Hujjat yoki rasmni bu yerga tashlang yoki <span className="text-[var(--accent)] underline decoration-[#D4A373]/40 underline-offset-4">faylni tanlang</span>
                         </h4>
                         <p className="mt-1 text-xs text-[var(--text-muted)]">PDF, Word, ODT, RTF, HTML, TXT va rasmlar qabul qilinadi.</p>
                       </>
@@ -1340,7 +1347,7 @@ export default function Home() {
         {/* KAFOLATLAR */}
         <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-[#D4A373]" />
+            <ShieldCheck className="w-4 h-4 text-[var(--accent)]" />
             <span>Format imkon qadar saqlanadi</span>
           </div>
           <div>•</div>
@@ -1363,19 +1370,19 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.94, opacity: 0, y: 15 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-[var(--surface)] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-7 w-full max-w-3xl shadow-[0_30px_90px_rgba(0,0,0,0.85)] backdrop-blur-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
+              className="bg-[var(--surface)] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-7 w-full max-w-3xl shadow-[var(--modal-shadow)] backdrop-blur-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between pb-3.5 border-b border-[var(--line)] shrink-0">
                 <div className="text-left">
                   <h2 className="text-lg sm:text-xl font-serif font-bold text-[var(--text-main)] flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-[#D4A373]" /> Tanga Doʻkoni
+                    <Coins className="w-5 h-5 text-[var(--accent)]" /> Tanga Doʻkoni
                   </h2>
                   <p className="text-[11px] text-[var(--text-muted)] mt-0.5">Kerakli sahifalar hajmiga mos eng qulay paketni tanlang</p>
                 </div>
                 <button 
                   onClick={() => setShowShop(false)} 
-                  className="w-8 h-8 rounded-xl bg-[var(--surface-alt)] border border-[#2E211B] flex items-center justify-center text-[var(--text-muted)] hover:text-[#FFF] transition-all cursor-pointer"
+                  className="w-8 h-8 rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1383,10 +1390,10 @@ export default function Home() {
 
               <div className="overflow-y-auto pr-1 py-4 space-y-3.5 flex-1 text-left">
                 
-                <div className="bg-gradient-to-r from-[#1E1511] via-[#160F0C] to-[#1E1511] border border-[#D4A373]/30 rounded-2xl p-3.5 flex items-center justify-between">
+                <div className="bg-[var(--surface-alt)] border border-[#D4A373]/30 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-[#D4A373]/15 border border-[#D4A373]/30 flex items-center justify-center">
-                      <Coins className="w-4 h-4 text-[#D4A373] animate-pulse" />
+                      <Coins className="w-4 h-4 text-[var(--accent)] animate-pulse" />
                     </div>
                     <div>
                       <p className="text-[10px] text-[var(--text-muted)]">Joriy balansingiz</p>
@@ -1414,9 +1421,9 @@ export default function Home() {
                         onClick={() => setSelectedPackage(pkg)}
                         className={`relative rounded-2xl p-4 border cursor-pointer transition-all flex flex-col justify-between group ${
                           pkg.popular
-                            ? 'bg-gradient-to-b from-[#241712] to-[#140E0B] border-[#D4A373] shadow-[0_5px_20px_rgba(212,163,115,0.15)]'
+                            ? 'bg-[var(--surface-alt)] border-[#D4A373] shadow-[0_5px_20px_rgba(212,163,115,0.25)]'
                             : pkg.bestValue
-                            ? 'bg-gradient-to-b from-[#20140E] to-[#140E0B] border-[#E0A96D]/80'
+                            ? 'bg-[var(--surface-alt)] border-[#E0A96D]/80'
                             : 'bg-[var(--surface-alt)] border-[var(--line)] hover:border-[#D4A373]/50'
                         }`}
                       >
@@ -1439,7 +1446,7 @@ export default function Home() {
                             {pkg.iconType === 'vip' ? (
                               <Crown className="w-4 h-4 text-[var(--gold-text)]" />
                             ) : pkg.iconType === 'popular' ? (
-                              <Flame className="w-4 h-4 text-[#D4A373]" />
+                              <Flame className="w-4 h-4 text-[var(--accent)]" />
                             ) : (
                               <Coins className="w-4 h-4 text-[var(--text-muted)]" />
                             )}
@@ -1454,12 +1461,12 @@ export default function Home() {
                           )}
                         </div>
 
-                        <div className="mt-3 pt-2.5 border-t border-[#241A15] flex items-center justify-between">
+                        <div className="mt-3 pt-2.5 border-t border-[var(--line)] flex items-center justify-between">
                           <div>
                             <p className="text-xs font-bold text-[var(--text-main)]">{pkg.priceUzs}</p>
                             <p className="text-[9px] text-[var(--text-muted)]">{pkg.priceUsd}</p>
                           </div>
-                          <div className="w-6 h-6 rounded-lg bg-[#D4A373]/10 border border-[#D4A373]/30 flex items-center justify-center text-[#D4A373] group-hover:bg-[#D4A373] group-hover:text-[#0A0706] transition-all">
+                          <div className="w-6 h-6 rounded-lg bg-[#D4A373]/10 border border-[#D4A373]/30 flex items-center justify-center text-[var(--accent)] group-hover:bg-[#D4A373] group-hover:text-[#0A0706] transition-all">
                             <ArrowRight className="w-3 h-3" />
                           </div>
                         </div>
@@ -1505,7 +1512,7 @@ export default function Home() {
               className="bg-[var(--modal-bg)] border border-[#D4A373]/50 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative text-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4A373]/20 to-[#8C6239]/10 border border-[#D4A373]/40 mx-auto flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4A373]/20 to-[#8C6239]/10 border border-[#D4A373]/40 mx-auto flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
                 <Coins className="w-6 h-6 animate-bounce" />
               </div>
 
@@ -1540,7 +1547,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setSelectedPackage(null)}
-                  className="py-2.5 px-3 rounded-xl border border-[var(--line)] bg-[var(--surface-alt)] text-xs font-semibold text-[var(--text-muted)] hover:text-[#FFF] transition-all cursor-pointer"
+                  className="py-2.5 px-3 rounded-xl border border-[var(--line)] bg-[var(--surface-alt)] text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all cursor-pointer"
                 >
                   Bekor qilish
                 </button>
@@ -1572,13 +1579,13 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-[var(--modal-bg)] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(212,163,115,0.12)] relative text-left my-auto max-h-[95vh] overflow-y-auto"
+              className="bg-[var(--modal-bg)] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-[var(--modal-shadow)] relative text-left my-auto max-h-[95vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* YOPISH TUGMASI (X) */}
               <button 
                 onClick={() => setActiveOrder(null)}
-                className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[var(--surface-alt)] border border-[#2E211B] flex items-center justify-center text-[var(--text-muted)] hover:text-[#FFF] transition-all cursor-pointer z-10"
+                className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all cursor-pointer z-10"
                 title="Yopish"
               >
                 <X className="w-4 h-4" />
@@ -1594,7 +1601,7 @@ export default function Home() {
                   <span className="text-xs font-bold text-[var(--gold-text)] uppercase tracking-wider">Toʻlov kutilmoqda</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-amber-300 font-mono bg-[var(--surface-alt)] px-3 py-1 rounded-xl border border-[#D4A373]/20 shadow-inner">
-                  <Clock className="w-3.5 h-3.5 text-[#D4A373]" />
+                  <Clock className="w-3.5 h-3.5 text-[var(--accent)]" />
                   <span>{Math.floor(timeLeft / 60)}:{String(timeLeft % 60).padStart(2, '0')}</span>
                 </div>
               </div>
@@ -1604,13 +1611,13 @@ export default function Home() {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#D4A373]/5 blur-2xl rounded-full pointer-events-none" />
                 <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">Toʻlanishi kerak boʻlgan aniq summa</p>
                 <div className="flex items-center justify-center gap-2 mt-1">
-                  <span className="text-2xl sm:text-3xl font-serif font-extrabold text-[#FFF] tracking-tight drop-shadow-[0_2px_10px_rgba(212,163,115,0.25)]">
+                  <span className="text-2xl sm:text-3xl font-serif font-extrabold text-[var(--text-main)] tracking-tight drop-shadow-[0_2px_10px_rgba(212,163,115,0.25)]">
                     {formatPrice(activeOrder.exactAmount)}
                   </span>
                   <span className="text-sm font-bold text-[var(--gold-text)]">soʻm</span>
                   <button 
                     onClick={copyAmount}
-                    className="p-1.5 rounded-xl bg-[#261A14] hover:bg-[#D4A373]/25 text-[var(--gold-text)] border border-[#3A2820] hover:border-[#D4A373]/50 transition-all cursor-pointer ml-1 shadow-sm active:scale-95"
+                    className="p-1.5 rounded-xl bg-[var(--surface-alt)] hover:bg-[#D4A373]/25 text-[var(--gold-text)] border border-[var(--line)] hover:border-[#D4A373]/50 transition-all cursor-pointer ml-1 shadow-sm active:scale-95"
                     title="Summani nusxalash"
                   >
                     {amountCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -1643,7 +1650,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={copyCard}
-                  className="flex items-center gap-1 text-xs text-[var(--gold-text)] bg-[var(--input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--line)] hover:border-[#D4A373]/50 hover:text-[#FFF] transition-all cursor-pointer active:scale-95"
+                  className="flex items-center gap-1 text-xs text-[var(--gold-text)] bg-[var(--input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--line)] hover:border-[#D4A373]/50 hover:text-[var(--text-main)] transition-all cursor-pointer active:scale-95"
                 >
                   {cardCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{cardCopied ? 'Nusxalandi' : 'Nusxa'}</span>
@@ -1658,7 +1665,7 @@ export default function Home() {
               {/* Kutish indikatori */}
               <div className="mt-3 pt-2.5 border-t border-[var(--line)] flex items-center justify-between text-xs text-[var(--text-muted)]">
                 <div className="flex items-center gap-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4A373]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--accent)]" />
                   <span>Toʻlov kutilmoqda...</span>
                 </div>
                 <button 
@@ -1728,12 +1735,12 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.94, opacity: 0, y: 15 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-[var(--surface)] border border-[#D4A373]/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-[0_30px_90px_rgba(0,0,0,0.85)] backdrop-blur-2xl relative text-left"
+              className="bg-[var(--surface)] border border-[#D4A373]/40 rounded-3xl p-6 sm:p-7 w-full max-w-md shadow-[var(--modal-shadow)] backdrop-blur-2xl relative text-left"
               onClick={(e) => e.stopPropagation()}
             >
               <button 
                 onClick={() => setShowAuthModal(false)} 
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[var(--surface-alt)] border border-[#2E211B] flex items-center justify-center text-[var(--text-muted)] hover:text-[#FFF] transition-all cursor-pointer"
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-main)] transition-all cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1806,7 +1813,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-[var(--text-muted)] hover:text-[#D4A373] cursor-pointer"
+                      className="absolute right-3 top-3 text-[var(--text-muted)] hover:text-[var(--accent)] cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -1847,7 +1854,7 @@ export default function Home() {
                     <button 
                       type="button"
                       onClick={() => { setAuthMode('register'); setAuthError(''); }} 
-                      className="text-[#D4A373] font-bold hover:underline ml-1 cursor-pointer"
+                      className="text-[var(--accent)] font-bold hover:underline ml-1 cursor-pointer"
                     >
                       Roʻyxatdan oʻtish
                     </button>
@@ -1858,7 +1865,7 @@ export default function Home() {
                     <button 
                       type="button"
                       onClick={() => { setAuthMode('login'); setAuthError(''); }} 
-                      className="text-[#D4A373] font-bold hover:underline ml-1 cursor-pointer"
+                      className="text-[var(--accent)] font-bold hover:underline ml-1 cursor-pointer"
                     >
                       Tizimga kirish
                     </button>
