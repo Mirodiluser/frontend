@@ -64,10 +64,14 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
     if(working)return;
     if(!next){setFile(null);setError('');void requestQuote(null,direction);return;}
     if(!/\.docx$/i.test(next.name)){
-      setFile(null);setQuote(null);setError('Faqat .DOCX formatidagi Word fayli qabul qilinadi.');return;
+      quoteRequest.current?.abort();
+      setFile(null);setQuote(null);setLoadingQuote(false);
+      setError('Faqat .DOCX formatidagi Word fayli qabul qilinadi.');return;
     }
     if(!next.size||next.size>LIMIT){
-      setFile(null);setQuote(null);setError('DOCX fayli 25 MB dan oshmasligi kerak.');return;
+      quoteRequest.current?.abort();
+      setFile(null);setQuote(null);setLoadingQuote(false);
+      setError('DOCX fayli 25 MB dan oshmasligi kerak.');return;
     }
     setFile(next);void requestQuote(next,direction);
   };
