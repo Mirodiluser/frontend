@@ -842,12 +842,6 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--surface)] border border-[#C79A3E]/35 text-xs font-medium text-[var(--gold-text)] mb-6 backdrop-blur-xl shadow-[var(--panel-shadow)]">
-            <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>O&lsquo;zbek filologiyasining akademik standarti</span>
-            <div className="w-1.5 h-1.5 rounded-full bg-[#C79A3E] animate-ping" />
-          </div>
-
           <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight">
             {['Mukammal','grammatika'].map((word,i)=>(
               <span key={word} className="tahrir-word" style={{animationDelay:`${0.15+i*0.12}s`}}>{word}&nbsp;</span>
@@ -860,6 +854,7 @@ export default function Home() {
           <p className="tahrir-lead mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
+          <div className="tahrir-hero-divider" aria-hidden="true"><span /></div>
         </motion.div>
 
         {/* Honey Bronze Luxe glossy tool shell */}
@@ -898,15 +893,6 @@ export default function Home() {
                   )}
                   <Icon className={`w-4 h-4 relative z-10 transition-colors ${isActive ? 'text-[var(--gold-text)]' : ''}`} />
                   <span className="tahrir-tab-label relative z-10">{tab.label}</span>
-                  {tab.badge && (
-                    <span className={`relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded-md ${
-                      tab.badge === 'Bepul' || tab.badge === 'Cheksiz' 
-                        ? 'bg-[#C79A3E]/20 text-[var(--gold-text)] border border-[#C79A3E]/35' 
-                        : 'bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] font-extrabold'
-                    }`}>
-                      {tab.badge}
-                    </span>
-                  )}
                 </button>
               );
             })}
