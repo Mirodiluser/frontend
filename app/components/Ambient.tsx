@@ -99,10 +99,6 @@ export default function Ambient({ theme }: { theme: 'dark' | 'light' }) {
   return (
     <div aria-hidden className="tahrir-ambient fixed inset-0 z-0 pointer-events-none overflow-hidden">
       <div className="tahrir-paper" />
-      <div className="tahrir-aurora tahrir-aurora-a" />
-      <div className="tahrir-aurora tahrir-aurora-b" />
-      <div className="tahrir-aurora tahrir-aurora-c" />
-      <div className="tahrir-rays" />
       <canvas ref={canvasRef} className="absolute inset-0" />
       <div className="tahrir-vignette" />
     </div>
