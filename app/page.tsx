@@ -86,7 +86,7 @@ interface Toast {
 }
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('translit');
+  const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('corrector');
   const [guideOpen, setGuideOpen] = useState(false);
 
   // Birinchi tashrifda Qoʻllanma oʻzi ochiladi; keyin sarlavhadagi tugma orqali qayta ochiladi
@@ -698,7 +698,7 @@ export default function Home() {
   return (
     <main className="tahrir-ui min-h-screen bg-[var(--page-bg)] text-[var(--text-main)] selection:bg-[#C79A3E]/35 selection:text-[#FFF] font-sans relative overflow-x-hidden">
       
-      {/* Original library photo with a calm reading-light overlay; no distracting particles. */}
+      {/* Honey Bronze Luxe: warm metallic atmosphere without photographs or distracting movement. */}
       <Ambient />
 
       {/* TOAST BILDIRISHNOMALARI (Z-INDEX 9999 BILAN OYNA USTIDA TURADI) */}
@@ -862,12 +862,14 @@ export default function Home() {
           </p>
         </motion.div>
 
+        {/* Honey Bronze Luxe glossy tool shell */}
+        <div className="tahrir-workspace-shell mt-10">
         {/* TABLAR */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-10 flex justify-center"
+          className="flex justify-center"
         >
           <div data-guide="tabs" className="tahrir-tabs p-1.5 rounded-2xl bg-[var(--surface)] border border-[#C79A3E]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[var(--panel-shadow)]">
             {[
@@ -910,7 +912,7 @@ export default function Home() {
         </motion.div>
 
         {/* TABLAR ICHIDAGI MAYDON */}
-        <div className="mt-8">
+        <div className="mt-4">
           <AnimatePresence mode="wait">
             
             {activeTab === 'translit' && (
@@ -978,7 +980,7 @@ export default function Home() {
                         <p className="text-xs text-[var(--text-muted)] max-w-[260px] leading-relaxed">Kirill ↔ Latin vositasidan foydalanish uchun tizimga kiring yoki roʻyxatdan oʻting.</p>
                         <button
                           onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
-                          className="mt-1 px-5 py-2 rounded-xl bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] text-xs font-bold cursor-pointer hover:shadow-[0_8px_24px_rgba(199,154,62,0.3)] transition-all"
+                          className="tahrir-primary mt-1 px-5 py-2 rounded-xl bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] text-xs font-bold cursor-pointer hover:shadow-[0_8px_24px_rgba(199,154,62,0.3)] transition-all"
                         >
                           Kirish
                         </button>
@@ -1318,6 +1320,7 @@ export default function Home() {
             )}
 
           </AnimatePresence>
+        </div>
         </div>
 
         {/* KAFOLATLAR */}
