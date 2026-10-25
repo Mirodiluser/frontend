@@ -78,6 +78,8 @@ export default function Ambient() {
         <path d="M-160 130 C-24 66 50 97 128 218 C209 339 293 362 450 394 L490 467 C303 442 197 471 95 343 C17 246-55 212-160 274Z" fill="url(#honey-satin-left)"/>
         <path d="M-160 127 C-24 63 50 94 128 215 C209 336 293 359 450 391" stroke="#FFE8B8" strokeWidth="13" strokeOpacity=".51" filter="url(#honey-soft-glint)"/>
         <path d="M-160 125 C-24 61 50 92 128 213 C209 334 293 357 450 389" stroke="url(#honey-gold-line)" strokeWidth="3.4"/>
+        {/* Warm metallic reflections travel along the outer crest, never over copy. */}
+        <path className="honey-ribbon-glint honey-ribbon-glint-left" d="M-160 125 C-24 61 50 92 128 213 C209 334 293 357 450 389" pathLength="1000" stroke="#FFEDBD" strokeWidth="4.3" strokeLinecap="round" strokeDasharray="132 868" />
         <path d="M-160 152 C-31 92 44 141 119 251 C202 374 297 414 466 432" stroke="#6B3B24" strokeWidth="9" strokeOpacity=".48"/>
         <path d="M-155 264 C-20 206 49 277 113 365 C215 490 320 459 456 474 L497 528 C287 516 195 547 75 414 C-2 326-79 307-155 346Z" fill="url(#honey-satin-left)" fillOpacity=".58"/>
         <path d="M-155 261 C-20 203 49 274 113 362 C215 487 320 456 456 471" stroke="#F7C588" strokeWidth="2.2" strokeOpacity=".69"/>
@@ -85,12 +87,14 @@ export default function Ambient() {
         <path d="M1590 99 C1450 56 1374 119 1310 230 C1246 338 1208 371 1071 405 L1033 496 C1209 470 1321 418 1395 290 C1462 190 1513 207 1590 247Z" fill="url(#honey-satin-right)"/>
         <path d="M1590 96 C1450 53 1374 116 1310 227 C1246 335 1208 368 1071 402" stroke="#FFE9BE" strokeWidth="14" strokeOpacity=".41" filter="url(#honey-soft-glint)"/>
         <path d="M1590 94 C1450 51 1374 114 1310 225 C1246 333 1208 366 1071 400" stroke="url(#honey-gold-line)" strokeWidth="3.2"/>
+        <path className="honey-ribbon-glint honey-ribbon-glint-right" d="M1590 94 C1450 51 1374 114 1310 225 C1246 333 1208 366 1071 400" pathLength="1000" stroke="#FFE7B1" strokeWidth="4.5" strokeLinecap="round" strokeDasharray="126 874" />
         <path d="M1590 201 C1470 171 1403 240 1330 345 C1254 448 1211 476 1098 491 L1064 547 C1238 533 1377 488 1459 361 C1518 271 1551 291 1590 310Z" fill="url(#honey-satin-right)" opacity=".56"/>
         <path d="M1590 200 C1470 170 1403 239 1330 344 C1254 447 1211 475 1098 490" stroke="#FFE2AA" strokeWidth="2" strokeOpacity=".73"/>
         {/* The lower ribbon adds depth underneath the panel without covering controls. */}
         <path d="M-140 842 C144 698 338 920 594 803 C853 680 1140 706 1570 792 L1570 933 C1128 851 912 825 665 899 C330 1008 139 814-140 981Z" fill="url(#honey-satin-bottom)" opacity=".70"/>
         <path d="M-140 838 C144 694 338 916 594 799 C853 676 1140 702 1570 788" stroke="#FFE0A8" strokeOpacity=".38" strokeWidth="13" filter="url(#honey-soft-glint)"/>
         <path d="M-140 834 C144 690 338 912 594 795 C853 672 1140 698 1570 784" stroke="url(#honey-gold-line)" strokeOpacity=".64" strokeWidth="2.7"/>
+        <path className="honey-ribbon-glint honey-ribbon-glint-low" d="M-140 834 C144 690 338 912 594 795 C853 672 1140 698 1570 784" pathLength="1000" stroke="#F9D19A" strokeWidth="2.7" strokeLinecap="round" strokeDasharray="83 917" />
         {/* A small embossed gold feather, not a flat outline icon. */}
         <g className="honey-bronze-plume" transform="translate(1242 157) rotate(22 35 115)">
           <path d="M10 214 C-53 141 -28 36 67 -8 C86 86 72 164 10 214Z" fill="#231309" opacity=".25" transform="translate(8 9)"/>
