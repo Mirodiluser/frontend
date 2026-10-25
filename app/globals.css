@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root { --background: #6A432A; --foreground: #F8EBDD; }
+:root { --background: #623722; --foreground: #F8EBDD; }
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -17,7 +17,7 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
  * Highlights are on the edges only: no white haze behind any text.
  */
 .tahrir-ui {
-  --page-bg: #6A432A;
+  --page-bg: #623722;
   --surface: rgba(247, 229, 204, .98);
   --surface-alt: rgba(230, 196, 157, .96);
   --input-bg: rgba(252, 242, 225, .99);
@@ -631,10 +631,10 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
    leave the center dark bronze and all tool surfaces untouched. */
 .honey-bronze-background {
   background:
-    radial-gradient(ellipse 32% 44% at 5% 18%,rgba(203,128,73,.20),transparent 86%),
-    radial-gradient(ellipse 35% 50% at 95% 18%,rgba(224,151,87,.22),transparent 86%),
-    radial-gradient(ellipse 54% 59% at 50% 68%,rgba(87,44,24,.15),transparent 92%),
-    linear-gradient(148deg,#8B5637 0%,#77472D 22%,#71412A 47%,#7E492E 72%,#60351F 100%);
+    radial-gradient(ellipse 32% 44% at 5% 18%,rgba(224,124,66,.30),transparent 86%),
+    radial-gradient(ellipse 35% 50% at 95% 18%,rgba(239,156,82,.34),transparent 86%),
+    radial-gradient(ellipse 54% 59% at 50% 68%,rgba(71,30,19,.25),transparent 92%),
+    linear-gradient(148deg,#8E5432 0%,#784127 22%,#63341F 47%,#794128 72%,#4E291A 100%);
 }
 .honey-bronze-waves {
   opacity:1 !important;
@@ -655,7 +655,7 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   filter:drop-shadow(0 0 7px rgba(255,204,129,.44)) drop-shadow(0 9px 15px rgba(43,19,8,.38));
 }
 .honey-bronze-vignette {
-  background:radial-gradient(ellipse 94% 92% at 50% 39%,transparent 61%,rgba(42,21,12,.22) 100%);
+  background:radial-gradient(ellipse 94% 92% at 50% 39%,transparent 61%,rgba(38,17,9,.29) 100%);
 }
 @media(max-width:768px) {
   .honey-bronze-waves { opacity:.88 !important; }
@@ -681,50 +681,68 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   overflow: hidden;
   transform:scale(1.018);
   transform-origin:50% 42%;
-  animation: honey-atmosphere-breathe 32s ease-in-out infinite alternate;
+  animation: honey-atmosphere-breathe 18s ease-in-out infinite alternate;
 }
 .honey-bronze-background::after {
   content:"";
   position:absolute;inset:-4%;
   pointer-events:none;
   background:
-    radial-gradient(ellipse 39% 44% at 88% 13%,rgba(243,175,102,.10),transparent 80%),
-    radial-gradient(ellipse 30% 51% at 8% 69%,rgba(255,209,139,.08),transparent 82%);
-  opacity:.34;
-  animation:honey-light-wander 35s ease-in-out infinite alternate;
+    radial-gradient(ellipse 39% 44% at 88% 13%,rgba(247,170,89,.23),transparent 80%),
+    radial-gradient(ellipse 30% 51% at 8% 69%,rgba(236,143,76,.17),transparent 82%);
+  opacity:.47;
+  animation:honey-light-wander 16s ease-in-out infinite alternate;
 }
 .honey-bronze-waves {
   transform-origin:50% 40%;
-  animation:honey-metal-drift 38s ease-in-out infinite alternate;
+  animation:honey-metal-drift 18s ease-in-out infinite alternate;
 }
 .honey-bronze-plume {
   transform-box:fill-box;
   transform-origin:50% 88%;
-  animation:honey-feather-gleam 22s ease-in-out infinite alternate;
+  animation:honey-feather-gleam 12s ease-in-out infinite alternate;
 }
 .honey-bronze-left-light,.honey-bronze-right-light {
-  animation:honey-ambient-glow 33s ease-in-out infinite alternate;
+  animation:honey-ambient-glow 14s ease-in-out infinite alternate;
 }
 .honey-bronze-right-light {animation-delay:-14s;}
 @keyframes honey-atmosphere-breathe {
-  0% {transform:translate3d(-.3%,0,0) scale(1.018);}
-  100% {transform:translate3d(.35%,-.3%,0) scale(1.029);}
+  0% {transform:translate3d(-.7%,.25%,0) scale(1.025);}
+  100% {transform:translate3d(.85%,-.55%,0) scale(1.043);}
 }
 @keyframes honey-light-wander {
-  0% {transform:translate3d(-.8%,.4%,0);opacity:.28;}
-  100% {transform:translate3d(1%,-.8%,0);opacity:.52;}
+  0% {transform:translate3d(-1.4%,.6%,0);opacity:.38;}
+  100% {transform:translate3d(1.7%,-1.2%,0);opacity:.85;}
 }
 @keyframes honey-metal-drift {
-  0% {transform:translate3d(-.35%,.15%,0) scale(1.003);}
-  100% {transform:translate3d(.35%,-.15%,0) scale(1.012);}
+  0% {transform:translate3d(-1.15%,.45%,0) scale(1.008);}
+  100% {transform:translate3d(1.15%,-.48%,0) scale(1.027);}
 }
 @keyframes honey-feather-gleam {
-  0% {opacity:.91;}
+  0% {opacity:.78;}
   100% {opacity:1;}
 }
 @keyframes honey-ambient-glow {
-  0% {opacity:.29;transform:translate3d(0,0,0);}
-  100% {opacity:.36;transform:translate3d(1.5%,-1%,0);}
+  0% {opacity:.33;transform:translate3d(-1%,.5%,0);}
+  100% {opacity:.68;transform:translate3d(2%,-1.4%,0);}
+}
+
+
+/* Polished gold traveling on the ribbon crests is visible within seconds
+   without flashing, moving copy or introducing white haze. */
+.honey-ribbon-glint {
+  fill:none;
+  pointer-events:none;
+  opacity:.90;
+  stroke-dashoffset:1000;
+  filter:drop-shadow(0 0 3px rgba(255,221,155,.58));
+  animation:honey-specular-travel 10.5s linear infinite;
+}
+.honey-ribbon-glint-right {animation-duration:12.5s;animation-delay:-5.5s;opacity:.86;}
+.honey-ribbon-glint-low {animation-duration:16s;animation-delay:-9s;opacity:.65;}
+@keyframes honey-specular-travel {
+  from {stroke-dashoffset:1000;}
+  to {stroke-dashoffset:0;}
 }
 
 /* Spring transitions work with existing Framer Motion state and preserve
@@ -831,8 +849,10 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
 
 /* User motion preferences and light-weight handling on smaller screens. */
 @media(max-width:640px) {
-  .honey-bronze-waves {animation-duration:54s;}
-  .honey-bronze-background {animation-duration:45s;}
+  .honey-bronze-waves {animation-duration:26s;}
+  .honey-bronze-background {animation-duration:27s;}
+  .honey-ribbon-glint-low {display:none;}
+  .honey-ribbon-glint-left,.honey-ribbon-glint-right {animation-duration:16s;opacity:.7;}
   .tahrir-shop-modal {padding:16px;}
   .tahrir-shop-package {padding:13px;}
 }
@@ -843,6 +863,7 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   .honey-bronze-plume,
   .honey-bronze-left-light,
   .honey-bronze-right-light {animation:none !important;transform:none !important;}
+  .honey-ribbon-glint {animation:none !important;opacity:0 !important;}
   .tahrir-tab-content {scroll-behavior:auto;}
 }
 @media(prefers-reduced-data:reduce) {
@@ -850,4 +871,5 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   .honey-bronze-background::after,
   .honey-bronze-waves,
   .honey-bronze-plume {animation:none !important;}
+  .honey-ribbon-glint {animation:none !important;opacity:0 !important;}
 }
