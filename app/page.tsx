@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, useDeferredValue } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { 
   FileText, 
   RefreshCw, 
@@ -86,6 +86,7 @@ interface Toast {
 }
 
 export default function Home() {
+  const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('corrector');
   const [guideOpen, setGuideOpen] = useState(false);
 
@@ -901,9 +902,9 @@ export default function Home() {
 
         {/* TABLAR ICHIDAGI MAYDON */}
         <motion.div
-          layout
+          layout={!reduceMotion}
           className="tahrir-tab-content mt-3"
-          transition={{ layout: { type: 'spring', stiffness: 210, damping: 30, mass: 0.85 } }}
+          transition={reduceMotion ? { duration: 0 } : { layout: { type: 'spring', stiffness: 210, damping: 30, mass: 0.85 } }}
         >
           <AnimatePresence mode="wait" initial={false}>
             
@@ -911,10 +912,10 @@ export default function Home() {
               <motion.div 
                 key="tab-translit"
                 data-guide="translit"
-                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 12, scale: 0.994 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -7, scale: 0.997 }}
-                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -7, scale: 0.997 }}
+                transition={reduceMotion ? { duration: 0.01 } : { duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="text-left"
               >
                 <div className="flex items-center justify-center gap-3 mb-5">
@@ -1035,10 +1036,10 @@ export default function Home() {
               <motion.div 
                 key="tab-corrector"
                 data-guide="corrector"
-                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 12, scale: 0.994 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -7, scale: 0.997 }}
-                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -7, scale: 0.997 }}
+                transition={reduceMotion ? { duration: 0.01 } : { duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="max-w-4xl mx-auto space-y-6 text-left"
               >
                 <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
@@ -1152,10 +1153,10 @@ export default function Home() {
               <motion.div 
                 key="tab-converter"
                 data-guide="converter"
-                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 12, scale: 0.994 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -7, scale: 0.997 }}
-                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -7, scale: 0.997 }}
+                transition={reduceMotion ? { duration: 0.01 } : { duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="max-w-4xl mx-auto text-left"
               >
                 <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
