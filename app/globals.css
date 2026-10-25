@@ -669,3 +669,185 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
   .honey-bronze-waves { opacity:.6 !important; }
   .honey-bronze-plume { opacity:.4; }
 }
+
+
+/* ============================================================
+   LIVING BRONZE — subtle motion and tactile transitions
+   ============================================================
+   All decorative movement happens BEHIND the content and never
+   blurs characters or moves controls. Max drift is ~1%.
+*/
+.honey-bronze-background {
+  overflow: hidden;
+  transform:scale(1.018);
+  transform-origin:50% 42%;
+  animation: honey-atmosphere-breathe 32s ease-in-out infinite alternate;
+}
+.honey-bronze-background::after {
+  content:"";
+  position:absolute;inset:-4%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 39% 44% at 88% 13%,rgba(243,175,102,.10),transparent 80%),
+    radial-gradient(ellipse 30% 51% at 8% 69%,rgba(255,209,139,.08),transparent 82%);
+  opacity:.34;
+  animation:honey-light-wander 35s ease-in-out infinite alternate;
+}
+.honey-bronze-waves {
+  transform-origin:50% 40%;
+  animation:honey-metal-drift 38s ease-in-out infinite alternate;
+}
+.honey-bronze-plume {
+  transform-box:fill-box;
+  transform-origin:50% 88%;
+  animation:honey-feather-gleam 22s ease-in-out infinite alternate;
+}
+.honey-bronze-left-light,.honey-bronze-right-light {
+  animation:honey-ambient-glow 33s ease-in-out infinite alternate;
+}
+.honey-bronze-right-light {animation-delay:-14s;}
+@keyframes honey-atmosphere-breathe {
+  0% {transform:translate3d(-.3%,0,0) scale(1.018);}
+  100% {transform:translate3d(.35%,-.3%,0) scale(1.029);}
+}
+@keyframes honey-light-wander {
+  0% {transform:translate3d(-.8%,.4%,0);opacity:.28;}
+  100% {transform:translate3d(1%,-.8%,0);opacity:.52;}
+}
+@keyframes honey-metal-drift {
+  0% {transform:translate3d(-.35%,.15%,0) scale(1.003);}
+  100% {transform:translate3d(.35%,-.15%,0) scale(1.012);}
+}
+@keyframes honey-feather-gleam {
+  0% {opacity:.91;}
+  100% {opacity:1;}
+}
+@keyframes honey-ambient-glow {
+  0% {opacity:.29;transform:translate3d(0,0,0);}
+  100% {opacity:.36;transform:translate3d(1.5%,-1%,0);}
+}
+
+/* Spring transitions work with existing Framer Motion state and preserve
+   accessible, stable text while sections enter/leave. */
+.tahrir-tab-content { transform-origin:50% 0%; }
+.tahrir-tab {transition:background .35s ease,border-color .35s ease,color .3s ease,box-shadow .4s ease,transform .32s cubic-bezier(.2,.7,.2,1);}
+.tahrir-tab:hover:not(.is-active) {
+  box-shadow:inset 0 1px 0 rgba(255,255,245,.85),0 5px 15px rgba(116,67,34,.11);
+}
+.tahrir-active-pill { transition:box-shadow .4s ease; }
+.tahrir-tab.is-active .tahrir-active-pill { box-shadow:0 8px 22px rgba(90,46,21,.25),inset 0 1px 0 rgba(255,223,173,.50),inset 0 -2px 0 rgba(58,28,12,.26) !important; }
+.tahrir-ui .tahrir-panel:focus-within {box-shadow:0 16px 40px rgba(98,52,27,.19),inset 0 2px 0 rgba(255,255,244,.9) !important;}
+
+/* ============================================================
+   COIN SHOP — separate high-contrast champagne surface
+   ============================================================ */
+.tahrir-shop-modal,
+.tahrir-shop-checkout {
+  --text-main:#2D1C10;
+  --text-secondary:#48311F;
+  --text-muted:#60432C;
+  --gold-text:#754118;
+  --accent:#935018;
+  --surface:#F6E3CB;
+  --surface-alt:#E9C9A4;
+  --input-bg:#FFF3E2;
+  --line:rgba(104,63,33,.34);
+  color:#2D1C10;
+  border:1px solid rgba(252,225,184,.90) !important;
+  background:linear-gradient(160deg,#FFF0D9 0%,#F2D9BB 52%,#E9C8A6 100%) !important;
+  box-shadow:
+    0 32px 90px rgba(33,17,9,.37),
+    inset 0 2px 0 rgba(255,255,244,.86),
+    inset 0 -1px 0 rgba(145,83,40,.18) !important;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.tahrir-shop-modal::before,
+.tahrir-shop-checkout::before {
+  content:"";position:absolute;left:5%;right:5%;top:0;height:2px;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,245,.94),transparent);
+}
+.tahrir-shop-modal h2,
+.tahrir-shop-checkout h3 {
+  color:#29190F !important;
+  text-shadow:none;
+  letter-spacing:-.01em;
+}
+.tahrir-shop-modal .text-\[var\(--text-main\)\],
+.tahrir-shop-checkout .text-\[var\(--text-main\)\] {color:#2B1C12;}
+.tahrir-shop-modal .text-\[var\(--text-muted\)\],
+.tahrir-shop-checkout .text-\[var\(--text-muted\)\] {color:#60432C;}
+.tahrir-shop-modal .text-\[var\(--gold-text\)\],
+.tahrir-shop-checkout .text-\[var\(--gold-text\)\] {color:#754118;}
+.tahrir-shop-modal .text-\[var\(--accent\)\] {color:#935018;}
+.tahrir-shop-modal .text-emerald-700,
+.tahrir-shop-modal .text-emerald-800 {color:#166044;}
+.tahrir-shop-modal button:focus-visible,
+.tahrir-shop-checkout button:focus-visible {outline:3px solid #9D5427;outline-offset:2px;}
+.tahrir-shop-balance {
+  background:linear-gradient(125deg,#EFD4B4,#E7BF94) !important;
+  border:1px solid rgba(142,91,51,.30) !important;
+  box-shadow:inset 0 1px 0 rgba(255,250,228,.84);
+}
+.tahrir-shop-package {
+  color:#2B1B11;
+  border:1px solid rgba(145,92,51,.31) !important;
+  background:linear-gradient(165deg,#FBEBD5,#E9CCA9) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,242,.87),0 7px 16px rgba(94,52,23,.08);
+}
+.tahrir-shop-package:hover {
+  background:linear-gradient(165deg,#FFF3E1,#EED0A9) !important;
+  border-color:rgba(172,106,52,.72) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,244,.97),0 13px 24px rgba(98,52,24,.16);
+}
+.tahrir-shop-package .text-lg {color:#24160F;}
+.tahrir-shop-package .text-xs,
+.tahrir-shop-package .text-\[11px\] {line-height:1.5;}
+.tahrir-shop-package .border-t {border-color:rgba(120,73,40,.25);}
+.tahrir-shop-stats > div {
+  background:linear-gradient(150deg,#F7E7D1,#EAC9A4) !important;
+  border-color:rgba(125,78,43,.28) !important;
+  color:#60432C;
+  box-shadow:inset 0 1px 0 rgba(255,255,243,.8);
+}
+.tahrir-shop-stats p:first-child {color:#724015 !important;font-size:.93rem;}
+
+/* Calculator stays legible within the same surface and retains its logic. */
+.tahrir-shop-custom-offer {
+  --text-main:#2D1C10;
+  --text-muted:#60432C;
+  --gold-text:#78421A;
+  --input-bg:#FFF0DB;
+  color:#2D1C10;
+  background:linear-gradient(150deg,#F5DFC1,#E8C59E) !important;
+  border-color:rgba(126,80,43,.34) !important;
+  box-shadow:0 8px 22px rgba(114,69,38,.10),inset 0 1px 0 rgba(255,252,236,.92);
+}
+.tahrir-shop-custom-offer label,
+.tahrir-shop-custom-offer input {color:#2D1C10;}
+.tahrir-shop-custom-offer label {background:#FFF0DB;}
+.tahrir-shop-custom-offer button {min-height:42px;}
+.tahrir-shop-custom-offer button:disabled {opacity:.53;}
+
+/* User motion preferences and light-weight handling on smaller screens. */
+@media(max-width:640px) {
+  .honey-bronze-waves {animation-duration:54s;}
+  .honey-bronze-background {animation-duration:45s;}
+  .tahrir-shop-modal {padding:16px;}
+  .tahrir-shop-package {padding:13px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .honey-bronze-background,
+  .honey-bronze-background::after,
+  .honey-bronze-waves,
+  .honey-bronze-plume,
+  .honey-bronze-left-light,
+  .honey-bronze-right-light {animation:none !important;transform:none !important;}
+  .tahrir-tab-content {scroll-behavior:auto;}
+}
+@media(prefers-reduced-data:reduce) {
+  .honey-bronze-background,
+  .honey-bronze-background::after,
+  .honey-bronze-waves,
+  .honey-bronze-plume {animation:none !important;}
+}
