@@ -219,6 +219,13 @@ body {
 }
 .tahrir-tab:hover { transform: translateY(-1px); }
 
+.tahrir-login-gate {
+  background: rgba(234, 220, 201, .96);
+  color: var(--text-main);
+  border: 1px solid var(--line);
+}
+.tahrir-login-gate p { text-shadow: none; }
+
 /* File drop areas have a calm, paper-like fill, separate from the photograph. */
 .tahrir-dropzone {
   background: var(--input-bg) !important;
