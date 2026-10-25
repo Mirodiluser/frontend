@@ -502,39 +502,61 @@ export default function Home() {
       return;
     }
     setFileFormatError('');
-
-    if (selectedFile.size > 25 * 1024 * 1024) {
+    if (selectedFile.size > 25 * 1024 * 1024 || selectedFile.size === 0) {
       setFile(null);
       setPageInfo(null);
-      addToast('error', 'Hajm katta', 'Fayl hajmi 25 MB dan oshmasligi kerak.');
+      setFileFormatError('DOCX fayli boʻsh yoki hajmi 25 MB dan katta.');
+      addToast('error', 'Fayl hajmi', 'Fayl boʻsh boʻlmasligi va 25 MB dan oshmasligi kerak.');
       return;
     }
 
+    // Keep the chosen document if the server temporarily crashes, sleeps
+    // or loses connectivity. Users can retry the same quote without reupload.
     setFile(selectedFile);
+    setPageInfo(null);
     setIsCountingPages(true);
-
     const formData = new FormData();
     formData.append('document', selectedFile);
 
+    const fetchQuote = async () => {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 22000);
+      try {
+        return await fetch(`${API_URL}/api/count-pages`, {
+          method: 'POST',
+          body: formData,
+          signal: controller.signal,
+        });
+      } finally {
+        window.clearTimeout(timeout);
+      }
+    };
+
     try {
-      const res = await fetch(`${API_URL}/api/count-pages`, {
-        method: 'POST',
-        body: formData,
-      });
+      let res: Response;
+      try {
+        res = await fetchQuote();
+      } catch {
+        // One limited retry for a transient Render restart/cold start.
+        await new Promise(resolve => window.setTimeout(resolve, 1250));
+        res = await fetchQuote();
+      }
       const data = await res.json().catch(() => ({}));
-      if (!res.ok || !Number.isSafeInteger(data.pages) || data.pages < 1) {
+      if (!res.ok || !Number.isSafeInteger(data.pages) || data.pages < 1 ||
+          !Number.isSafeInteger(data.requiredCoins) || data.requiredCoins < 1) {
         const message = data.error || 'DOCX faylini oʻqib boʻlmadi. Boshqa .DOCX faylini tanlang.';
-        setFile(null);
-        setPageInfo(null);
         setFileFormatError(message);
+        setPageInfo(null);
         addToast('warning', 'Fayl qabul qilinmadi', message);
         return;
       }
       setPageInfo({ pages: data.pages, requiredCoins: data.requiredCoins });
+      setFileFormatError('');
     } catch {
-      setFile(null);
       setPageInfo(null);
-      addToast('error', 'Xatolik', 'Serverga ulanib boʻlmadi. Iltimos, qayta urinib koʻring.');
+      const message = 'Server vaqtincha javob bermayapti. Faylingiz saqlandi — «Qayta hisoblash»ni bosing.';
+      setFileFormatError(message);
+      addToast('error', 'Ulanish uzildi', message);
     } finally {
       setIsCountingPages(false);
     }
@@ -1130,14 +1152,23 @@ export default function Home() {
                     )}
 
                     {fileFormatError && (
-                      <p role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-700">
-                        {fileFormatError}
-                      </p>
+                      <div className="mt-3 flex flex-col items-center gap-2">
+                        <p role="alert" className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-700">
+                          {fileFormatError}
+                        </p>
+                        {file && !pageInfo && !isCountingPages && (
+                          <button type="button"
+                            onClick={(e) => { e.stopPropagation(); void processSelectedFile(file); }}
+                            className="rounded-xl border border-[#B67A46]/60 bg-[#F6E0C0] px-4 py-2 text-xs font-semibold text-[#512D19] shadow-sm transition hover:bg-[#FFEDD2] cursor-pointer">
+                            Qayta hisoblash
+                          </button>
+                        )}
+                      </div>
                     )}
 
                     <motion.button
                       onClick={(e) => { e.stopPropagation(); handleProcessDocx(); }}
-                      disabled={!file || isProcessingDoc || isCountingPages}
+                      disabled={!file || !pageInfo || isProcessingDoc || isCountingPages}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="tahrir-primary mt-6 px-7 py-3 rounded-xl bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] font-bold text-xs sm:text-sm shadow-lg shadow-[#C79A3E]/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
