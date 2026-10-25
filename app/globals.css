@@ -624,3 +624,48 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
 @media(prefers-reduced-motion:reduce) {
   .tahrir-header,.tahrir-tab,.tahrir-primary,.tahrir-panel,.tahrir-navlink,.tahrir-nav-shop{transition-duration:.01ms!important;}
 }
+
+/* 2026-10-25 — CINEMATIC METALLIC BACKDROP
+   The chosen reference has richly curved, reflective gold surfaces.
+   Render the ribbon highlights at full strength at the edges only;
+   leave the center dark bronze and all tool surfaces untouched. */
+.honey-bronze-background {
+  background:
+    radial-gradient(ellipse 32% 44% at 5% 18%,rgba(203,128,73,.20),transparent 86%),
+    radial-gradient(ellipse 35% 50% at 95% 18%,rgba(224,151,87,.22),transparent 86%),
+    radial-gradient(ellipse 54% 59% at 50% 68%,rgba(87,44,24,.15),transparent 92%),
+    linear-gradient(148deg,#8B5637 0%,#77472D 22%,#71412A 47%,#7E492E 72%,#60351F 100%);
+}
+.honey-bronze-waves {
+  opacity:1 !important;
+  filter:drop-shadow(0 5px 14px rgba(47,21,9,.20));
+}
+.honey-bronze-left-light {
+  opacity:.35;
+  filter:blur(66px);
+  background:rgba(229,161,90,.39);
+}
+.honey-bronze-right-light {
+  opacity:.36;
+  filter:blur(70px);
+  background:rgba(240,178,101,.41);
+}
+.honey-bronze-plume {
+  opacity:1;
+  filter:drop-shadow(0 0 7px rgba(255,204,129,.44)) drop-shadow(0 9px 15px rgba(43,19,8,.38));
+}
+.honey-bronze-vignette {
+  background:radial-gradient(ellipse 94% 92% at 50% 39%,transparent 61%,rgba(42,21,12,.22) 100%);
+}
+@media(max-width:768px) {
+  .honey-bronze-waves { opacity:.88 !important; }
+  .honey-bronze-plume {opacity:.80;}
+}
+@media(max-width:520px) {
+  .honey-bronze-waves { opacity:.62 !important; }
+  .honey-bronze-plume { display:none; }
+}
+@media(prefers-contrast:more) {
+  .honey-bronze-waves { opacity:.6 !important; }
+  .honey-bronze-plume { opacity:.4; }
+}
