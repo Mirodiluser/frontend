@@ -987,7 +987,7 @@ export default function Home() {
                       </div>
                     </div>
                     {!user && (
-                      <div className="absolute inset-0 z-10 rounded-3xl bg-[#0A0706]/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 px-6 text-center" data-testid="translit-login-gate">
+                      <div className="absolute inset-0 z-10 rounded-3xl bg-[var(--modal-bg)]/85 backdrop-blur-sm flex flex-col items-center justify-center gap-3 px-6 text-center" data-testid="translit-login-gate">
                         <div className="w-11 h-11 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center">
                           <Lock className="w-5 h-5 text-[var(--gold-text)]" />
                         </div>
@@ -1417,7 +1417,7 @@ export default function Home() {
                             ? 'bg-gradient-to-b from-[#241712] to-[#140E0B] border-[#D4A373] shadow-[0_5px_20px_rgba(212,163,115,0.15)]'
                             : pkg.bestValue
                             ? 'bg-gradient-to-b from-[#20140E] to-[#140E0B] border-[#E0A96D]/80'
-                            : 'bg-[#1A120E]/80 border-[var(--line)] hover:border-[#D4A373]/50'
+                            : 'bg-[var(--surface-alt)] border-[var(--line)] hover:border-[#D4A373]/50'
                         }`}
                       >
                         {pkg.badge && (
@@ -1471,15 +1471,15 @@ export default function Home() {
               </div>
 
               <div className="pt-2.5 border-t border-[var(--line)] grid grid-cols-3 gap-2 text-center text-xs text-[var(--text-muted)] shrink-0">
-                <div className="bg-[#1A120E] p-1.5 rounded-xl border border-[var(--line)]">
+                <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalPurchased}</p>
                   <p className="text-[9px]">Sotib olingan</p>
                 </div>
-                <div className="bg-[#1A120E] p-1.5 rounded-xl border border-[var(--line)]">
+                <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalSpent}</p>
                   <p className="text-[9px]">Sarflangan</p>
                 </div>
-                <div className="bg-[#1A120E] p-1.5 rounded-xl border border-[var(--line)]">
+                <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalTransactions}</p>
                   <p className="text-[9px]">Amallar</p>
                 </div>
@@ -1502,7 +1502,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 15 }}
               transition={{ type: "spring", duration: 0.3 }}
-              className="bg-[#120D0A] border border-[#D4A373]/50 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative text-center"
+              className="bg-[var(--modal-bg)] border border-[#D4A373]/50 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative text-center"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#D4A373]/20 to-[#8C6239]/10 border border-[#D4A373]/40 mx-auto flex items-center justify-center text-[#D4A373] mb-3 shadow-md">
@@ -1572,7 +1572,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-gradient-to-b from-[#18110D] via-[#120D0A] to-[#0A0705] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(212,163,115,0.12)] relative text-left my-auto max-h-[95vh] overflow-y-auto"
+              className="bg-[var(--modal-bg)] border border-[#D4A373]/40 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_40px_rgba(212,163,115,0.12)] relative text-left my-auto max-h-[95vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* YOPISH TUGMASI (X) */}
@@ -1600,7 +1600,7 @@ export default function Home() {
               </div>
 
               {/* Aniq to'lov summasi ko'rsatkichi */}
-              <div className="mt-3.5 p-3.5 rounded-2xl bg-[#1C1410]/90 border border-[#D4A373]/30 text-center relative overflow-hidden shadow-inner">
+              <div className="mt-3.5 p-3.5 rounded-2xl bg-[var(--surface-alt)] border border-[#D4A373]/30 text-center relative overflow-hidden shadow-inner">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#D4A373]/5 blur-2xl rounded-full pointer-events-none" />
                 <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">Toʻlanishi kerak boʻlgan aniq summa</p>
                 <div className="flex items-center justify-center gap-2 mt-1">
@@ -1634,7 +1634,7 @@ export default function Home() {
               </div>
 
               {/* Karta rekviziti */}
-              <div className="mt-3 bg-[#18110D] border border-[var(--line)] rounded-xl p-2.5 flex items-center justify-between">
+              <div className="mt-3 bg-[var(--surface-alt)] border border-[var(--line)] rounded-xl p-2.5 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold tracking-wider">Qabul qiluvchi karta</p>
                   <p className="text-xs sm:text-sm font-mono font-bold text-[var(--text-main)] tracking-wider mt-0.5">
@@ -1643,7 +1643,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={copyCard}
-                  className="flex items-center gap-1 text-xs text-[var(--gold-text)] bg-[#241914] px-2.5 py-1.5 rounded-lg border border-[#3A2820] hover:border-[#D4A373]/50 hover:text-[#FFF] transition-all cursor-pointer active:scale-95"
+                  className="flex items-center gap-1 text-xs text-[var(--gold-text)] bg-[var(--input-bg)] px-2.5 py-1.5 rounded-lg border border-[var(--line)] hover:border-[#D4A373]/50 hover:text-[#FFF] transition-all cursor-pointer active:scale-95"
                 >
                   {cardCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{cardCopied ? 'Nusxalandi' : 'Nusxa'}</span>
