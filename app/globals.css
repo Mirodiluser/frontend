@@ -290,3 +290,337 @@ body { background: var(--background); color: var(--foreground); font-family: Ari
 @keyframes honey-word-rise {to{opacity:1;transform:translateY(0);}}
 @keyframes honey-text-glint {from{background-position:130% 0;}to{background-position:-60% 0;}}
 @keyframes honey-panel-rise {from{opacity:0;transform:translateY(13px) scale(.992);}to{opacity:1;transform:none;}}
+
+
+/* ============================================================
+   HONEY BRONZE LUXE / STUDIO FINISH
+   Refined from the approved second concept: gloss comes from
+   thin specular EDGES, not opaque white overlays on the copy.
+   ============================================================ */
+
+/* Bronze ambience: a graceful metallic frame, not the subject. */
+.honey-bronze-background {
+  background:
+    radial-gradient(ellipse 48% 50% at 96% 12%, rgba(214,150,90,.23),transparent 86%),
+    radial-gradient(ellipse 52% 58% at 2% 87%, rgba(176,109,61,.18),transparent 88%),
+    linear-gradient(138deg,#895A3A 0%,#815033 24%,#74472F 54%,#7B4B30 75%,#633923 100%);
+}
+.honey-bronze-waves {
+  opacity: .38;
+  filter: drop-shadow(0 1px 5px rgba(234,170,96,.08));
+}
+.honey-bronze-left-light, .honey-bronze-right-light { opacity:.27; filter:blur(86px); }
+.honey-bronze-quill {
+  opacity:.69;
+  right:max(5.5%,calc((100vw - 1390px)/2));
+  top:14%;
+  color:#F1BD7B;
+  filter:drop-shadow(0 0 6px rgba(245,185,106,.36)) drop-shadow(0 9px 16px rgba(35,17,8,.24));
+}
+.honey-bronze-quill::after {
+  content:""; display:block; position:absolute;
+  width:66%;height:1px;top:36%;left:25%;
+  transform:rotate(-27deg);
+  background:linear-gradient(90deg,transparent,rgba(255,233,175,.7),transparent);
+  box-shadow:0 0 9px rgba(237,180,107,.43);
+}
+.honey-bronze-vignette { background:radial-gradient(ellipse 100% 100% at 50% 40%,transparent 66%,rgba(36,17,10,.19)); }
+
+/* Floating navbar: same bronze as the background, differentiated by
+   optical separation, a single light rim and a softened cast shadow. */
+.tahrir-header {
+  position:sticky;
+  border:1px solid rgba(252,204,149,.26);
+  border-radius:22px;
+  background:
+    linear-gradient(155deg,rgba(182,115,70,.18),rgba(77,41,26,.18) 58%,rgba(211,147,91,.11)),
+    rgba(103,61,37,.56);
+  -webkit-backdrop-filter:blur(12px) saturate(1.15);
+  backdrop-filter:blur(12px) saturate(1.15);
+  box-shadow:
+    0 16px 30px rgba(37,18,10,.17),
+    0 2px 7px rgba(34,17,10,.07),
+    inset 0 1px 0 rgba(255,224,182,.37),
+    inset 0 -1px 0 rgba(50,24,12,.16);
+}
+.tahrir-header::before {
+  content:"";position:absolute;pointer-events:none;
+  top:1px;left:3.5%;right:3.5%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,228,187,.65) 32%,rgba(255,228,187,.37) 70%,transparent);
+}
+.tahrir-header::after {
+  height:1px;bottom:-1px;left:5%;right:5%;
+  opacity:.5;
+}
+.tahrir-header-inner { position:relative;z-index:1; }
+.tahrir-brand {min-width:0;}
+.tahrir-brand-mark {
+  position:relative;
+  border-radius:13px;
+  background:linear-gradient(145deg,#FFDFAC,#B47841 52%,#F6C48A);
+  box-shadow:0 0 18px rgba(246,185,103,.34),inset 0 1px 0 rgba(255,244,219,.87);
+}
+.tahrir-brand-mark > div {
+  border-radius:12px;
+  background:linear-gradient(145deg,#8C5636,#57321E 80%) !important;
+}
+.tahrir-brand-mark svg {
+  color:#FFD89E !important;
+  filter:drop-shadow(0 0 6px rgba(246,190,111,.76));
+}
+.tahrir-brand-title {
+  color:#FFF0D9;
+  text-shadow:0 1px 0 rgba(41,19,9,.45),0 0 13px rgba(235,174,107,.19);
+}
+.tahrir-brand-title > span {
+  color:#F4CB92;
+  text-shadow:0 0 12px rgba(255,205,128,.37);
+}
+.tahrir-nav { align-items:center; }
+.tahrir-navlink {
+  position:relative;
+  background:transparent !important;
+  border:1px solid transparent !important;
+  box-shadow:none !important;
+  color:#F8E9D4 !important;
+  min-height:42px;
+  -webkit-backdrop-filter:none !important;backdrop-filter:none !important;
+}
+.tahrir-navlink svg { color:#F3C58E !important; }
+.tahrir-navlink:hover, .tahrir-navlink:focus-visible {
+  background:rgba(255,220,170,.09) !important;
+  border-color:rgba(251,209,156,.35) !important;
+  box-shadow:inset 0 1px 0 rgba(255,238,208,.13) !important;
+  color:#FFF5E6 !important;
+}
+.tahrir-nav-account {
+  background:rgba(92,52,29,.28);
+  border:1px solid rgba(236,184,126,.16);
+  color:#FFF1DD;
+}
+.tahrir-nav-account svg { color:#F1C68E !important; }
+.tahrir-nav-shop {
+  min-height:43px;
+  color:#332014 !important;
+  background:linear-gradient(170deg,#FFE7C3 0%,#EEC595 48%,#D8A36A 100%) !important;
+  border:1px solid rgba(255,231,198,.82);
+  box-shadow:
+    0 5px 16px rgba(39,19,10,.17),
+    inset 0 1px 0 rgba(255,254,237,.82),
+    inset 0 -1px 0 rgba(154,91,43,.17) !important;
+}
+.tahrir-nav-shop:hover {
+  transform:translateY(-2px);
+  filter:brightness(1.04);
+  box-shadow:0 8px 21px rgba(39,19,10,.24),inset 0 1px 0 #FFF8E6 !important;
+}
+
+/* A single refined line below the title, as in the chosen illustration. */
+.tahrir-hero-divider {
+  position:relative;display:flex;align-items:center;justify-content:center;
+  gap:11px;margin:18px auto 0;width:114px;height:8px;
+}
+.tahrir-hero-divider::before,.tahrir-hero-divider::after {
+  content:"";display:block;flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(245,194,123,.82));
+}
+.tahrir-hero-divider::after {transform:rotate(180deg);}
+.tahrir-hero-divider span {
+  width:5px;height:5px;flex:none;border-radius:50%;
+  background:#F9D092;box-shadow:0 0 9px rgba(244,179,108,.45);
+}
+
+/* Correct proportions: 3 tabs and one well-defined working area. */
+.tahrir-workspace-shell {
+  max-width:990px;
+  margin-left:auto;margin-right:auto;
+  padding:10px 12px 13px;
+  border-radius:28px;
+  border:1px solid rgba(255,227,189,.91);
+  background:
+    linear-gradient(148deg,rgba(252,230,203,.98) 0%,rgba(247,222,193,.98) 55%,rgba(233,192,150,.98) 100%) padding-box,
+    linear-gradient(140deg,rgba(255,245,217,.97),rgba(197,122,68,.65),rgba(255,245,217,.83)) border-box;
+  box-shadow:
+    0 24px 55px rgba(44,21,10,.25),
+    0 5px 12px rgba(65,32,14,.10),
+    inset 0 2px 0 rgba(255,249,231,.98),
+    inset 0 -2px 0 rgba(168,100,49,.12);
+}
+.tahrir-workspace-shell::before {
+  top:0;left:3%;right:3%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,237,.95) 28%,#FFFCE8 55%,rgba(255,242,215,.6) 75%,transparent);
+}
+.tahrir-workspace-shell::after {
+  content:"";position:absolute;pointer-events:none;z-index:0;
+  left:4%;right:4%;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,240,210,.55),transparent);
+}
+.tahrir-workspace-shell > * { position:relative;z-index:1; }
+.tahrir-tabs {
+  padding:3px !important;
+  min-height:58px;
+  gap:5px !important;
+  width:100%;
+  border:0 !important;
+  border-radius:18px;
+  background:rgba(225,187,146,.48) !important;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  box-shadow:inset 0 1px 4px rgba(118,69,34,.11),inset 0 -1px 0 rgba(255,241,218,.7) !important;
+}
+.tahrir-tab {
+  padding:12px 12px;
+  border:1px solid rgba(153,95,52,.10);
+  min-height:52px;
+  background:linear-gradient(180deg,rgba(255,243,222,.8),rgba(238,206,175,.56));
+  box-shadow:inset 0 1px 0 rgba(255,255,241,.6);
+  color:#4D2F1D !important;
+  white-space:nowrap;
+  line-height:1.15;
+  font-size:clamp(.87rem,1.3vw,1.04rem);
+}
+.tahrir-tab svg {color:#825333;flex-shrink:0;width:19px;height:19px;}
+.tahrir-tab:not(.is-active):hover {
+  border-color:rgba(139,83,41,.32);
+  background:linear-gradient(180deg,rgba(255,246,229,.98),rgba(242,208,173,.85));
+}
+.tahrir-tab.is-active {
+  color:#FFF3E1 !important;
+  background:linear-gradient(170deg,#A66B42,#61381F) !important;
+  border-color:rgba(236,182,113,.79);
+  box-shadow:0 5px 17px rgba(98,52,25,.28),inset 0 1px 0 rgba(255,213,155,.57);
+}
+.tahrir-active-pill {
+  background:linear-gradient(180deg,#AB7146 0%,#885331 38%,#663A21 100%) !important;
+  box-shadow:
+    0 4px 15px rgba(98,49,21,.28),
+    inset 0 1px 0 rgba(255,228,181,.48),
+    inset 0 -2px 0 rgba(55,24,12,.31) !important;
+  border:1px solid rgba(242,187,119,.65);
+}
+.tahrir-active-pill::before {
+  content:"";position:absolute;top:1px;left:11%;right:11%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,232,194,.75),transparent);
+}
+.tahrir-tab.is-active svg {
+  color:#FFDAA8 !important;
+  filter:drop-shadow(0 0 5px rgba(255,218,150,.32));
+}
+.tahrir-tab.is-active .tahrir-tab-label {color:#FFF2DC !important;text-shadow:0 1px 2px rgba(28,11,4,.40);}
+.tahrir-tab:not(.is-active) .tahrir-tab-label {color:#452818 !important;text-shadow:none;}
+.tahrir-tab-label {font-weight:700;font-size:clamp(.88rem,1.32vw,1.04rem);}
+.tahrir-tab-content {padding:0 1px;}
+
+/* Distinct layered glass without a white overlay on any wording. */
+.tahrir-panel {
+  border-radius:21px;
+  background:linear-gradient(157deg,#FFEED9 0%,#F9E5CB 55%,#F4D9B9 100%) !important;
+  border:1px solid rgba(255,245,224,.97) !important;
+  box-shadow:
+    0 12px 29px rgba(107,60,30,.13),
+    inset 0 2px 0 rgba(255,255,243,.98),
+    inset 0 -2px 0 rgba(195,125,71,.10),
+    inset 1px 0 0 rgba(255,251,240,.7) !important;
+}
+.tahrir-panel::after {
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  height:2px;top:0;left:5%;right:5%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,244,.97),transparent);
+}
+.tahrir-panel > * {position:relative;z-index:1;}
+.tahrir-panel:hover {
+  transform:translateY(-2px);
+  box-shadow:
+    0 18px 37px rgba(93,49,24,.19),
+    inset 0 2px 0 #FFFCEE,
+    inset 0 -1px 0 rgba(189,115,68,.15) !important;
+}
+.tahrir-dropzone {
+  border-radius:18px;
+  background:linear-gradient(180deg,#FFF5E9 0%,#F9E9D5 100%) !important;
+  border:1px dashed rgba(172,118,78,.55) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,250,.98),0 1px 5px rgba(121,69,32,.05);
+}
+.tahrir-dropzone:hover {
+  box-shadow:inset 0 1px 0 #FFFAEF,0 10px 24px rgba(104,55,25,.12);
+  border-color:#AE7448 !important;
+}
+.tahrir-tool-icon {
+  color:#895328;
+  background:radial-gradient(circle at 32% 20%,#FFF9EA,#EDC498 65%,#C48A54 100%);
+  border:1px solid rgba(255,248,217,.89);
+  box-shadow:
+    0 6px 18px rgba(116,64,28,.18),
+    0 0 0 4px rgba(243,199,144,.17),
+    inset 0 1px 0 rgba(255,255,246,.98),
+    inset 0 -1px 0 rgba(154,93,46,.26);
+}
+.tahrir-tool-icon svg {
+  color:#895028;
+  filter:drop-shadow(0 1px 0 rgba(255,255,246,.8)) drop-shadow(0 0 4px rgba(182,113,46,.30));
+  width:27px;height:27px;
+}
+.tahrir-panel h3 { color:#302015 !important;font-weight:700 !important; }
+.tahrir-panel h4 { color:#302015 !important;font-weight:650 !important; }
+.tahrir-panel .text-\\[var\\(--text-muted\\)\\] {color:#654630;}
+.tahrir-ui .tahrir-dropzone > p { font-size:.90rem;color:#6B4B36; }
+.tahrir-ui .tahrir-dropzone h4 {font-size:1.03rem;}
+.tahrir-primary {
+  border-radius:15px;
+  background:linear-gradient(180deg,#B37B4E 0%,#95603A 22%,#704023 66%,#56301C 100%) !important;
+  box-shadow:
+    0 12px 22px rgba(92,45,18,.24),
+    inset 0 2px 0 rgba(255,225,178,.71),
+    inset 0 -2px 0 rgba(38,16,7,.35),
+    0 0 0 3px rgba(212,148,84,.13);
+  text-shadow:0 1px 1px rgba(40,15,6,.55);
+}
+.tahrir-primary:hover:not(:disabled) {
+  filter:brightness(1.08);
+  box-shadow:0 17px 32px rgba(88,43,16,.31),inset 0 2px 0 rgba(255,237,208,.77),0 0 0 3px rgba(222,160,98,.19);
+}
+.tahrir-primary::after {background:linear-gradient(110deg,transparent 34%,rgba(255,236,200,.27) 51%,transparent 67%);}
+
+/* Small interactive details: crisp, not washed out. */
+.tahrir-ui button:focus-visible {outline:3px solid #8B4A20 !important;outline-offset:3px;}
+.tahrir-ui .tahrir-workspace-shell .text-\\[var\\(--text-main\\)\\] {color:#2F2016;}
+.tahrir-ui .tahrir-workspace-shell .text-\\[var\\(--text-secondary\\)\\] {color:#543A27;}
+.tahrir-ui .tahrir-workspace-shell .text-\\[var\\(--text-muted\\)\\] {color:#654832;}
+.tahrir-ui .tahrir-workspace-shell .text-\\[var\\(--gold-text\\)\\] {color:#78451E;}
+.tahrir-ui .tahrir-workspace-shell .text-\\[var\\(--accent\\)\\] {color:#93521E;}
+
+/* Retain dedicated responsive behavior rather than shrinking legibility. */
+@media(max-width:768px) {
+  .tahrir-header {top:9px;border-radius:17px;width:calc(100% - 18px);}
+  .tahrir-header-inner {height:64px;padding-left:11px;padding-right:11px;}
+  .tahrir-brand-title {font-size:1.12rem;}
+  .tahrir-brand-mark {width:36px;height:36px;}
+  .tahrir-workspace-shell {max-width:100%;padding:8px 9px 10px;border-radius:22px;}
+  .tahrir-tabs {min-height:51px;gap:3px !important;}
+  .tahrir-tab {min-height:46px;padding:9px 5px;gap:5px;}
+  .tahrir-tab svg {width:17px;height:17px;}
+  .tahrir-tab-label{font-size:clamp(.75rem,1.9vw,.94rem);}
+  .honey-bronze-quill {opacity:.38;}
+}
+@media(max-width:480px) {
+  .tahrir-brand-mark {width:32px;height:32px;}
+  .tahrir-brand-title {font-size:1rem;}
+  .tahrir-header-inner {height:59px;padding:0 8px;}
+  .tahrir-nav {gap:3px !important;}
+  .tahrir-nav > button {padding:8px !important;}
+  .tahrir-nav [data-guide="account"] {gap:3px !important;}
+  .tahrir-nav-account > span {display:none;}
+  .tahrir-nav-shop {padding:8px 10px !important;min-height:38px;font-size:.78rem;}
+  .tahrir-workspace-shell {padding:6px 6px 9px;border-radius:19px;}
+  .tahrir-tabs {padding:2px !important;border-radius:13px;gap:2px !important;}
+  .tahrir-tab {min-height:43px;padding:7px 2px;gap:3px;border-radius:10px;}
+  .tahrir-tab svg {width:15px;height:15px;}
+  .tahrir-tab-label {font-size:clamp(.69rem,2.8vw,.84rem);letter-spacing:-.02em;}
+  .tahrir-tab-content {margin-top:8px;}
+  .tahrir-panel {padding:13px;border-radius:17px;}
+  .tahrir-dropzone {padding:18px 10px;}
+  .tahrir-hero-divider {margin-top:14px;}
+  .honey-bronze-quill {display:none;}
+}
+@media(prefers-reduced-motion:reduce) {
+  .tahrir-header,.tahrir-tab,.tahrir-primary,.tahrir-panel,.tahrir-navlink,.tahrir-nav-shop{transition-duration:.01ms!important;}
+}
