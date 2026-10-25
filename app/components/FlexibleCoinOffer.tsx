@@ -81,12 +81,12 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
       <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-14 h-36 w-36 rounded-full bg-[#E8A850]/25 blur-3xl"/>
       <div className="relative flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#D4A373]/25 bg-gradient-to-br from-[#D4A373]/20 to-[#D4A373]/[0.04] text-[var(--accent)]">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#C79A3E]/25 bg-gradient-to-br from-[#C79A3E]/20 to-[#C79A3E]/[0.04] text-[var(--accent)]">
             <Coins className="h-[17px] w-[17px]"/>
           </span>
           <h3 className="text-[13px] font-semibold tracking-wide text-[var(--text-main)]">Oʻzingizga mos tangalar</h3>
         </div>
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#CDA074] shadow-[0_0_10px_rgba(212,163,115,0.55)]"/>
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#CDA074] shadow-[0_0_10px_rgba(199,154,62,0.55)]"/>
       </div>
 
       <div className="relative mt-3 flex rounded-[11px] border border-[var(--line)] bg-[var(--input-bg)] p-[3px]">
@@ -105,7 +105,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
       </div>
 
       <div className="relative mt-3 grid grid-cols-2 items-stretch gap-2">
-        <label className="min-w-0 rounded-[12px] border border-[var(--line)] bg-[var(--input-bg)] px-3 py-2.5 transition-colors focus-within:border-[#D4A373] focus-within:ring-1 focus-within:ring-[#D4A373]/25">
+        <label className="min-w-0 rounded-[12px] border border-[var(--line)] bg-[var(--input-bg)] px-3 py-2.5 transition-colors focus-within:border-[#C79A3E] focus-within:ring-1 focus-within:ring-[#C79A3E]/25">
           <span className="block text-[10px] font-medium text-[var(--text-muted)]">
             {mode==='budget'?'Sizning summangiz':'Tangalar soni'}
           </span>
@@ -120,11 +120,11 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
           </span>
         </label>
 
-        <div aria-live="polite" className="min-w-0 rounded-[12px] border border-[#D4A373]/20 bg-gradient-to-b from-[#D4A373]/[0.10] to-[#D4A373]/[0.04] px-3 py-2.5">
+        <div aria-live="polite" className="min-w-0 rounded-[12px] border border-[#C79A3E]/20 bg-gradient-to-b from-[#C79A3E]/[0.10] to-[#C79A3E]/[0.04] px-3 py-2.5">
           <span className="block text-[10px] font-medium text-[var(--text-muted)]">{mode==='budget'?'Siz olasiz':'Toʻlov narxi'}</span>
           <div className="mt-1 flex min-h-6 min-w-0 items-baseline gap-1">
             {loading
-              ? <Loader2 className="h-4 w-4 animate-spin self-center text-[#D4A373]"/>
+              ? <Loader2 className="h-4 w-4 animate-spin self-center text-[#C79A3E]"/>
               : ready
                 ? <>
                     <span className="min-w-0 text-[16px] font-bold leading-6 tabular-nums text-[var(--gold-text)]">{display(mode==='budget'?quote!.coins:quote!.price)}</span>
@@ -139,7 +139,7 @@ export default function FlexibleCoinOffer({apiUrl,onCheckout}:Props){
 
       <button type="button" disabled={!ready||submitting}
         onClick={()=>void checkout()}
-        className="relative mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E5BA86] via-[#D2A06D] to-[#B98552] px-4 py-2.5 text-xs font-bold text-[#1C110A] shadow-[0_5px_16px_rgba(212,163,115,0.13)] transition-all duration-200 hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45">
+        className="relative mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#E5BA86] via-[#D2A06D] to-[#B98552] px-4 py-2.5 text-xs font-bold text-[#1C110A] shadow-[0_5px_16px_rgba(199,154,62,0.13)] transition-all duration-200 hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45">
         {submitting
           ? <Loader2 className="h-4 w-4 animate-spin"/>
           : <>Toʻlovga oʻtish <ArrowRight className="h-3.5 w-3.5"/></>}

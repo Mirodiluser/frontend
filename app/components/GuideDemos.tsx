@@ -138,7 +138,7 @@ export function DoneDemo() {
     <div className="tg-d-done" aria-hidden="true">
       <svg width="92" height="92" viewBox="0 0 100 100" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <circle className="r" cx="50" cy="50" r="42" stroke="rgba(247,216,181,.5)" strokeWidth="1.5" />
-        <circle className="c" cx="50" cy="50" r="38" stroke="#E2B180" strokeWidth="4" transform="rotate(-90 50 50)" />
+        <circle className="c" cx="50" cy="50" r="38" stroke="#E6C16E" strokeWidth="4" transform="rotate(-90 50 50)" />
         <path className="k" d="M32 52 L45 65 L69 38" stroke="#FFF3E3" strokeWidth="6" />
       </svg>
     </div>

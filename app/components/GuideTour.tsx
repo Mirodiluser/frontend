@@ -151,7 +151,7 @@ const WAYPOINTS: Record<string, (() => Pt | null)[]> = {
 
 /* ---------- konfetti ---------- */
 interface Part { x: number; y: number; vx: number; vy: number; r: number; vr: number; w: number; h: number; t: number; c: string; round: boolean }
-const COLORS = ['#F7D8B5', '#E2B180', '#FFF3E3', '#C99562', '#fff', '#f5c542', '#d98a5a'];
+const COLORS = ['#F5E3B3', '#E6C16E', '#FFF3E3', '#C9A04A', '#fff', '#f5c542', '#d98a5a'];
 
 function pad2(n: number) { return String(n).padStart(2, '0'); }
 
@@ -534,7 +534,7 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
             <div style={{ position: 'relative' }}>
               <div className="tg-mark" aria-hidden="true">
                 <span className="pr" /><span className="pr" /><span className="pr" />
-                <div className="core"><div><Feather size={34} color="#F2C99A" strokeWidth={1.7} /></div></div>
+                <div className="core"><div><Feather size={34} color="#EBCF8A" strokeWidth={1.7} /></div></div>
               </div>
               <h2 id="tg-title" className="tg-title" aria-label="Tahrir.AI">
                 {Array.from('TAHRIR').map((c, i) => (
@@ -549,7 +549,7 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
               <div className="tg-chips">
                 {CHIPS.map((c, i) => (
                   <span key={c} className="tg-chip" style={{ ['--i' as string]: i } as CSSProperties}>
-                    <Sparkles size={12} color="#E2B180" /> {c}
+                    <Sparkles size={12} color="#E6C16E" /> {c}
                   </span>
                 ))}
               </div>
