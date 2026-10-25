@@ -6,27 +6,28 @@ body { background:var(--background);color:var(--foreground);font-family:Arial,He
 /* ===== Tahrir.AI — "Iliq nur": yagona, yumshoq, yorugʻ mavzu =====
    Fon toʻliq xira (blur) iliq gradient; yozuvlar toʻq jigarrang, kontrast yumshoq va aniq. */
 .tahrir-ui {
-  --page-bg:#47301a;
-  --surface:rgba(255,248,234,.93); --surface-alt:rgba(250,238,214,.95); --input-bg:rgba(255,252,244,.95);
-  --text-main:#34210f; --text-secondary:#54402b; --text-muted:#6e5740;
-  --gold-text:#7d4a12; --accent:#a8651c; --tab-active:#3f2209;
-  --line:rgba(160,112,48,.42); --header-bg:rgba(255,246,230,.88);
-  --modal-bg:#fdf6e8; --modal-shadow:0 30px 90px rgba(15,8,2,.55);
-  --panel-shadow:0 22px 56px rgba(20,10,3,.34),inset 0 1px 0 rgba(255,255,255,.8);
-  --hero-text:#fcf0da; --hero-sub:#ecd9b8; --onbg:#ecd9b8;
+  --page-bg:#c9923f;
+  --surface:rgba(243,224,180,.84); --surface-alt:rgba(234,207,152,.92); --input-bg:rgba(247,233,201,.92);
+  --text-main:#2a1a0b; --text-secondary:#47311a; --text-muted:#64481f;
+  --gold-text:#7a440c; --accent:#a8600f; --tab-active:#2a1a0b;
+  --line:rgba(112,68,20,.34); --header-bg:rgba(226,190,120,.62);
+  --modal-bg:#f2dfb8; --modal-shadow:0 30px 90px rgba(52,28,6,.48);
+  --panel-shadow:0 18px 50px rgba(70,38,8,.30),0 2px 0 rgba(255,222,150,.35) inset;
+  --hero-text:#2a1a0b; --hero-sub:#3f2a14; --onbg:#3f2a14;
   color-scheme:light; isolation:isolate;
 }
 
 /* --- Fon: boy, yumshoq "eski oltin va yongʻoq" gradient (pushti rangsiz), jonli --- */
 .tahrir-paper { position:absolute;inset:0;background:
-  radial-gradient(62% 52% at 50% 20%,rgba(232,186,104,.62) 0%,rgba(232,186,104,0) 72%),
-  radial-gradient(52% 50% at 10% 85%,rgba(48,96,80,.42) 0%,rgba(48,96,80,0) 72%),
-  radial-gradient(50% 50% at 94% 30%,rgba(176,98,44,.42) 0%,rgba(176,98,44,0) 70%),
-  linear-gradient(180deg,#5c3d1e 0%,#4c321a 50%,#402913 100%); }
+  radial-gradient(62% 52% at 50% 24%,#f0cf86 0%,rgba(240,207,134,0) 72%),
+  radial-gradient(55% 55% at 8% 82%,#b87a2c 0%,rgba(184,122,44,0) 72%),
+  radial-gradient(50% 50% at 94% 14%,#d49a42 0%,rgba(212,154,66,0) 70%),
+  linear-gradient(180deg,#dcae5a 0%,#c58d3d 52%,#8f5a22 100%); }
+.tahrir-paper::after { content:"";position:absolute;inset:0;opacity:.16;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .18  0 0 0 0 .06  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 .tahrir-aurora { position:absolute;border-radius:9999px;filter:blur(80px);will-change:transform; }
-.tahrir-aurora-a { width:58vmax;height:46vmax;left:-14vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(236,190,108,.55),transparent);animation:tahrir-drift-a 26s ease-in-out infinite alternate; }
-.tahrir-aurora-b { width:50vmax;height:42vmax;right:-14vmax;top:6vmax;background:radial-gradient(closest-side,rgba(184,102,46,.5),transparent);animation:tahrir-drift-b 31s ease-in-out infinite alternate; }
-.tahrir-aurora-c { width:56vmax;height:40vmax;left:14vmax;bottom:-18vmax;background:radial-gradient(closest-side,rgba(50,104,86,.5),transparent);animation:tahrir-drift-c 35s ease-in-out infinite alternate; }
+.tahrir-aurora-a { width:58vmax;height:46vmax;left:-14vmax;top:-18vmax;background:radial-gradient(closest-side,rgba(255,216,128,.85),transparent);animation:tahrir-drift-a 24s ease-in-out infinite alternate; }
+.tahrir-aurora-b { width:50vmax;height:42vmax;right:-14vmax;top:6vmax;background:radial-gradient(closest-side,rgba(196,116,40,.6),transparent);animation:tahrir-drift-b 29s ease-in-out infinite alternate; }
+.tahrir-aurora-c { width:56vmax;height:40vmax;left:18vmax;bottom:-18vmax;background:radial-gradient(closest-side,rgba(110,64,20,.62),transparent);animation:tahrir-drift-c 33s ease-in-out infinite alternate; }
 .tahrir-bokeh { position:absolute;border-radius:9999px;filter:blur(16px);background:radial-gradient(circle,rgba(255,222,150,.6),rgba(240,184,96,.22) 55%,transparent 72%);animation:tahrir-float var(--d,18s) ease-in-out infinite alternate;opacity:var(--o,.6); }
 .tahrir-vignette { position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(18,9,3,.42) 100%); }
 .tahrir-hero { color:var(--hero-text)!important;text-shadow:0 2px 18px rgba(24,12,4,.5),0 1px 2px rgba(24,12,4,.35); }
@@ -39,7 +40,7 @@ body { background:var(--background);color:var(--foreground);font-family:Arial,He
 
 /* --- Sarlavha --- */
 .tahrir-word { display:inline-block;opacity:0;transform:translateY(.5em) scale(.96);filter:blur(10px);animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards; }
-.tahrir-shimmer { text-shadow:none;background:linear-gradient(100deg,#e9b35c 0%,#f6d08a 30%,#fff1cd 48%,#f6d08a 68%,#e9b35c 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards,tahrir-shine 5.5s ease-in-out 1.4s infinite; }
+.tahrir-shimmer { text-shadow:none;background:linear-gradient(100deg,#5e3006 0%,#8f4c0c 30%,#b8721a 48%,#8f4c0c 68%,#5e3006 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tahrir-word .9s cubic-bezier(.2,.8,.2,1) forwards,tahrir-shine 5.5s ease-in-out 1.4s infinite; }
 
 /* --- Panellar, tablar --- */
 .tahrir-panel,.tahrir-tabs { position:relative;isolation:isolate;background:var(--surface)!important;border-color:var(--line)!important;box-shadow:var(--panel-shadow)!important;backdrop-filter:blur(20px) saturate(1.15);-webkit-backdrop-filter:blur(20px) saturate(1.15); }
@@ -54,7 +55,7 @@ body { background:var(--background);color:var(--foreground);font-family:Arial,He
 .tahrir-dropzone:hover { transform:translateY(-2px);border-color:var(--accent);box-shadow:0 14px 35px rgba(150,112,30,.16); }
 .tahrir-primary { min-height:54px;font-size:1rem!important;box-shadow:0 10px 26px rgba(150,112,30,.28);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s; }
 .tahrir-primary:hover { transform:translateY(-2px);box-shadow:0 16px 36px rgba(150,112,30,.38); }
-.tahrir-primary::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.4) 50%,transparent 75%);transform:translateX(-130%);transition:transform .9s ease; }
+.tahrir-primary::after { content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 25%,rgba(255,236,170,.5) 50%,transparent 75%);transform:translateX(-130%);transition:transform .9s ease; }
 .tahrir-primary:hover::after { transform:translateX(130%); }
 .tahrir-ui textarea { font-size:clamp(.95rem,1.5vw,1.05rem)!important;line-height:1.75; }
 .tahrir-ui :is(button,input,textarea,select):focus-visible { outline:3px solid #b98a26!important;outline-offset:3px; }

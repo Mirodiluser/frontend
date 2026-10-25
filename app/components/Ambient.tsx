@@ -61,9 +61,9 @@ export default function Ambient() {
         const twinkle = 0.45 + 0.55 * Math.sin(time / 1000 * m.speed + m.phase);
         const alpha = 0.85 * twinkle;
         const glow = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 5);
-        glow.addColorStop(0, `rgba(255,252,240,${alpha})`);
-        glow.addColorStop(0.45, `rgba(255,226,170,${alpha * 0.35})`);
-        glow.addColorStop(1, 'rgba(255,226,170,0)');
+        glow.addColorStop(0, `rgba(255,230,160,${alpha})`);
+        glow.addColorStop(0.45, `rgba(240,190,95,${alpha * 0.35})`);
+        glow.addColorStop(1, 'rgba(240,190,95,0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
         ctx.arc(m.x, m.y, m.r * 5, 0, Math.PI * 2);

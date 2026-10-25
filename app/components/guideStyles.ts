@@ -226,8 +226,8 @@ export const GUIDE_CSS = `
 .tg-blur{background:radial-gradient(120% 95% at 50% 38%,rgba(226,178,98,.22),rgba(28,16,7,.66));
   -webkit-backdrop-filter:blur(12px) saturate(1.05);backdrop-filter:blur(12px) saturate(1.05)}
 .tg-blob{mix-blend-mode:screen;opacity:.5}
-.tg-hero{background:radial-gradient(90% 60% at 50% 0%,rgba(255,255,255,.7),transparent 70%),linear-gradient(165deg,rgba(255,250,240,.97),rgba(252,236,212,.97));
-  border:1px solid rgba(143,101,20,.3);box-shadow:0 40px 100px rgba(100,58,18,.38),inset 0 1px 0 rgba(255,255,255,.9)}
+.tg-hero{background:radial-gradient(90% 60% at 50% 0%,rgba(250,226,160,.7),transparent 70%),linear-gradient(165deg,rgba(243,224,182,.98),rgba(228,196,138,.98));
+  border:1px solid rgba(143,101,20,.3);box-shadow:0 40px 100px rgba(52,28,6,.5),inset 0 1px 0 rgba(255,226,160,.7)}
 .tg-hero .hb1{background:radial-gradient(circle,rgba(246,176,96,.55),transparent 68%);mix-blend-mode:normal}
 .tg-hero .hb2{background:radial-gradient(circle,rgba(244,160,140,.45),transparent 68%);mix-blend-mode:normal}
 .tg-mark .core>div{background:linear-gradient(160deg,#6b4021,#3c2210)}
@@ -236,10 +236,10 @@ export const GUIDE_CSS = `
   -webkit-background-clip:text;background-clip:text;color:transparent}
 .tg-sub{color:#4a3b28}
 .tg-chip{color:#43361f;background:rgba(255,255,255,.6);border:1px solid rgba(120,90,30,.3)}
-.tg-glass{background:linear-gradient(165deg,rgba(255,250,241,.97),rgba(252,238,216,.97));border:1px solid rgba(143,101,20,.3);
-  box-shadow:0 36px 90px rgba(100,58,18,.36),inset 0 1px 0 rgba(255,255,255,.9)}
-.tg-glass::before{background:radial-gradient(380px circle at var(--mx,50%) var(--my,-10%),rgba(255,255,255,.55),transparent 62%)}
-.tg-stage{background:radial-gradient(120% 150% at 50% 0%,rgba(246,190,120,.38),transparent 62%),linear-gradient(180deg,rgba(255,255,255,.5),transparent);
+.tg-glass{background:linear-gradient(165deg,rgba(243,224,182,.98),rgba(230,200,144,.98));border:1px solid rgba(143,101,20,.3);
+  box-shadow:0 36px 90px rgba(52,28,6,.5),inset 0 1px 0 rgba(255,226,160,.7)}
+.tg-glass::before{background:radial-gradient(380px circle at var(--mx,50%) var(--my,-10%),rgba(255,222,150,.4),transparent 62%)}
+.tg-stage{background:radial-gradient(120% 150% at 50% 0%,rgba(236,176,84,.4),transparent 62%),linear-gradient(180deg,rgba(255,226,160,.3),transparent);
   border-bottom:1px solid rgba(120,90,30,.18)}
 .tg-ghost{-webkit-text-stroke:1px rgba(143,101,20,.22)}
 .tg-kicker{color:#6e5a3a}
@@ -254,7 +254,7 @@ export const GUIDE_CSS = `
 .tg-x{background:rgba(120,70,25,.10);color:#675540}
 .tg-x:hover{background:rgba(120,70,25,.18);color:#3f2d08}
 .tg-next:focus-visible,.tg-back:focus-visible,.tg-skip:focus-visible,.tg-x:focus-visible{outline-color:#b0651a}
-.tg-d-tabs{background:rgba(255,255,255,.6);border:1px solid rgba(120,90,30,.28);box-shadow:inset 0 2px 8px rgba(120,90,30,.12)}
+.tg-d-tabs{background:rgba(240,214,160,.75);border:1px solid rgba(120,90,30,.28);box-shadow:inset 0 2px 8px rgba(120,90,30,.12)}
 .tg-d-pill{background:linear-gradient(135deg,rgba(230,193,110,.5),rgba(199,154,62,.38));border:1px solid rgba(143,101,20,.5);box-shadow:0 6px 20px rgba(199,154,62,.3)}
 .tg-d-tab{color:#675540}
 @keyframes tg-d-lit{0%,28%{color:#3f2d08}38%,100%{color:#675540}}
@@ -262,7 +262,7 @@ export const GUIDE_CSS = `
 .tg-d-tag b{background:rgba(199,154,62,.2);border:1px solid rgba(143,101,20,.4);color:#5e4008}
 .tg-d-text{color:#2a2015}
 .tg-d-doc{box-shadow:0 14px 34px rgba(100,58,18,.28)}
-.tg-d-file{background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,244,226,.7));border:1px solid rgba(143,101,20,.35);color:#5e4008;box-shadow:0 10px 24px rgba(100,58,18,.2)}
+.tg-d-file{background:linear-gradient(160deg,rgba(246,228,186,.95),rgba(232,204,150,.85));border:1px solid rgba(143,101,20,.35);color:#5e4008;box-shadow:0 10px 24px rgba(100,58,18,.2)}
 .tg-d-flow i{background:#b98a26}
 .tg-d-num{color:#5e4008}
 .tg-d-num small{color:#6e5a3a}

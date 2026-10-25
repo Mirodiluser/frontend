@@ -713,11 +713,11 @@ export default function Home() {
               transition={{ duration: 0.22 }}
               className={`p-4 rounded-2xl border shadow-[var(--modal-shadow)] backdrop-blur-2xl pointer-events-auto flex items-start gap-3 ${
                 toast.type === 'success' 
-                  ? 'bg-[#f1faf2]/95 border-emerald-600/35 text-emerald-950' 
+                  ? 'bg-[#e4ecc9]/95 border-emerald-700/40 text-emerald-950' 
                   : toast.type === 'error' 
-                  ? 'bg-[#fff1ef]/95 border-rose-600/35 text-rose-950' 
+                  ? 'bg-[#f1d2b4]/95 border-red-800/40 text-red-950' 
                   : toast.type === 'warning'
-                  ? 'bg-[#fff7e3]/95 border-amber-600/45 text-amber-950 ring-1 ring-amber-500/20'
+                  ? 'bg-[#f6e0a4]/95 border-amber-700/50 text-amber-950 ring-1 ring-amber-600/20'
                   : 'bg-[var(--surface)] border-[#C79A3E]/35 text-[var(--text-main)]'
               }`}
             >
