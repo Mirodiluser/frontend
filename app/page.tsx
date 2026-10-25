@@ -40,6 +40,7 @@ import {
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import GuideTour from './components/GuideTour';
 import Ambient from './components/Ambient';
+import DocxTranslitPro from './components/DocxTranslitPro';
 import { analyzeLatin, cyrillicToLatin, countWords } from './lib/uzTranslit';
 
 // Pulli AI tekshiruvi faqat shu soʻz sonigacha (server ham tekshiradi)
@@ -1029,6 +1030,15 @@ export default function Home() {
                     )}
                   </div>
                 </div>
+                <DocxTranslitPro
+                  apiUrl={API_URL}
+                  loggedIn={!!user}
+                  coins={userCoins}
+                  openLogin={() => { setAuthMode('login'); setShowAuthModal(true); }}
+                  openShop={() => setShowShop(true)}
+                  reloadWallet={loadUserWallet}
+                  notify={addToast}
+                />
               </motion.div>
             )}
 
