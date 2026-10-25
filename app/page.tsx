@@ -743,19 +743,19 @@ export default function Home() {
       </div>
 
       {/* SHAPKA / NAV QISMI */}
-      <header className="tahrir-header sticky top-0 z-40 w-full backdrop-blur-xl border-b transition-all">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
+      <header className="tahrir-header sticky top-3 z-40 mx-auto w-[calc(100%-24px)] max-w-[1210px] transition-all">
+        <div className="tahrir-header-inner mx-auto px-4 sm:px-6 h-[68px] sm:h-[74px] flex items-center justify-between gap-2">
           <motion.div 
             initial={{ opacity: 0, x: -15 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="tahrir-brand flex items-center gap-2.5 sm:gap-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E6C16E] to-[#8A6420] p-[1px] shadow-lg shadow-[#C79A3E]/20 transition-transform duration-300 group-hover:scale-105">
+            <div className="tahrir-brand-mark w-10 h-10 rounded-2xl bg-gradient-to-br from-[#E6C16E] to-[#8A6420] p-[1px] transition-transform duration-300 group-hover:scale-105">
               <div className="w-full h-full bg-[var(--modal-bg)] rounded-2xl flex items-center justify-center">
                 <Feather className="w-5 h-5 text-[var(--gold-text)] transition-transform duration-300 group-hover:rotate-12" />
               </div>
             </div>
-            <span className="text-xl sm:text-2xl font-serif font-bold tracking-wider text-[var(--text-main)] drop-shadow-sm">
+            <span className="tahrir-brand-title text-xl sm:text-2xl font-serif font-bold tracking-wider">
               TAHRIR<span className="text-[var(--accent)] drop-shadow-[0_0_15px_rgba(199,154,62,0.4)]">.AI</span>
             </span>
           </motion.div>
@@ -772,7 +772,7 @@ export default function Home() {
               onClick={() => setGuideOpen(true)}
               title="Qoʻllanma"
               aria-label="Qoʻllanma"
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-[var(--surface-alt)] border border-[#C79A3E]/20 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--gold-text)] hover:border-[#C79A3E]/50 transition-all cursor-pointer backdrop-blur-md"
+              className="tahrir-navlink flex items-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
               <span className="hidden sm:inline">Qoʻllanma</span>
@@ -785,13 +785,13 @@ export default function Home() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowShop(true)}
-                  className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[var(--surface-alt)] border border-[#C79A3E]/30 shadow-inner hover:border-[#C79A3E]/60 transition-all cursor-pointer backdrop-blur-md"
+                  className="tahrir-navlink flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                 >
                   <Coins className="w-4 h-4 text-[var(--accent)] animate-pulse" />
                   <span className="text-xs sm:text-sm font-semibold text-[var(--gold-text)]">{userCoins} tanga</span>
                 </motion.button>
 
-                <div className="flex items-center gap-2 bg-[var(--surface-alt)] border border-[var(--line)] py-1.5 px-3 rounded-xl backdrop-blur-md">
+                <div className="tahrir-nav-account flex items-center gap-2 py-1.5 px-3 rounded-xl">
                   <div className="w-6 h-6 rounded-lg bg-[var(--surface-alt)] flex items-center justify-center">
                     <User className="w-3.5 h-3.5 text-[var(--accent)]" />
                   </div>
@@ -811,7 +811,7 @@ export default function Home() {
                 whileTap={{ scale: 0.97 }}
                 onClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
                 aria-label="Kirish"
-                className="px-4 py-2 rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] text-xs font-bold text-[var(--text-main)] hover:border-[#C79A3E]/50 hover:bg-[var(--surface-alt)] transition-all flex items-center gap-1.5 shadow-md backdrop-blur-md cursor-pointer"
+                className="tahrir-navlink px-4 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <LogIn className="w-3.5 h-3.5 text-[var(--accent)]" />
                 <span className="hidden min-[430px]:inline">Kirish</span>
@@ -822,7 +822,7 @@ export default function Home() {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => user ? setShowShop(true) : setShowAuthModal(true)}
-              className="px-4 sm:px-5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-[#C79A3E] via-[#B58A2E] to-[#8A6420] text-[#0A0706] shadow-md shadow-[#C79A3E]/20 hover:shadow-[#C79A3E]/35 transition-all flex items-center gap-1.5 cursor-pointer"
+              className="tahrir-nav-shop px-4 sm:px-5 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Coins className="w-3.5 h-3.5" />
               <span>Doʻkon</span>
@@ -835,19 +835,13 @@ export default function Home() {
       {guideOpen && <GuideTour onClose={closeGuide} onTabChange={setActiveTab} />}
 
       {/* ASOSIY QISM */}
-      <div className="tahrir-focus-stage relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-10 pb-24 text-center">
+      <div className="tahrir-focus-stage relative z-10 max-w-6xl mx-auto px-4 sm:px-8 pt-9 pb-20 text-center">
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--surface)] border border-[#C79A3E]/35 text-xs font-medium text-[var(--gold-text)] mb-6 backdrop-blur-xl shadow-[var(--panel-shadow)]">
-            <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
-            <span>O&lsquo;zbek filologiyasining akademik standarti</span>
-            <div className="w-1.5 h-1.5 rounded-full bg-[#C79A3E] animate-ping" />
-          </div>
-
           <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight">
             {['Mukammal','grammatika'].map((word,i)=>(
               <span key={word} className="tahrir-word" style={{animationDelay:`${0.15+i*0.12}s`}}>{word}&nbsp;</span>
@@ -860,10 +854,11 @@ export default function Home() {
           <p className="tahrir-lead mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
+          <div className="tahrir-hero-divider" aria-hidden="true"><span /></div>
         </motion.div>
 
         {/* Honey Bronze Luxe glossy tool shell */}
-        <div className="tahrir-workspace-shell mt-10">
+        <div className="tahrir-workspace-shell mt-8">
         {/* TABLAR */}
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
@@ -871,7 +866,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex justify-center"
         >
-          <div data-guide="tabs" className="tahrir-tabs p-1.5 rounded-2xl bg-[var(--surface)] border border-[#C79A3E]/20 backdrop-blur-2xl flex flex-wrap gap-1 shadow-[var(--panel-shadow)]">
+          <div data-guide="tabs" role="tablist" aria-label="TAHRIR.AI vositalari" className="tahrir-tabs p-1.5 rounded-2xl flex flex-wrap gap-1">
             {[
               { id: 'translit', label: 'Kirill ↔ Latin', icon: RefreshCw, badge: 'Cheksiz' },
               { id: 'corrector', label: 'Imlo Tahrirchi', icon: Sparkles, badge: 'AI Pro' },
@@ -883,28 +878,21 @@ export default function Home() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`tahrir-tab relative px-5 py-3 rounded-xl text-sm sm:text-base font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                    isActive ? 'text-[var(--tab-active)]' : 'text-[var(--text-muted)] hover:text-[var(--gold-text)]'
+                  role="tab"
+                  aria-selected={isActive}
+                  className={`tahrir-tab relative px-4 py-3 rounded-xl text-sm sm:text-base font-semibold transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                    isActive ? 'is-active text-[#FFF2DE]' : 'text-[#563820] hover:text-[#442914]'
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeTabPill"
-                      className="absolute inset-0 bg-gradient-to-r from-[#C79A3E]/25 via-[#C79A3E]/15 to-[#8A6420]/25 rounded-xl border border-[#C79A3E]/50 shadow-[0_0_25px_rgba(199,154,62,0.2)]"
+                      className="tahrir-active-pill absolute inset-0 rounded-xl"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
                   <Icon className={`w-4 h-4 relative z-10 transition-colors ${isActive ? 'text-[var(--gold-text)]' : ''}`} />
-                  <span className="relative z-10">{tab.label}</span>
-                  {tab.badge && (
-                    <span className={`relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded-md ${
-                      tab.badge === 'Bepul' || tab.badge === 'Cheksiz' 
-                        ? 'bg-[#C79A3E]/20 text-[var(--gold-text)] border border-[#C79A3E]/35' 
-                        : 'bg-gradient-to-r from-[#C79A3E] to-[#8A6420] text-[#0A0706] font-extrabold'
-                    }`}>
-                      {tab.badge}
-                    </span>
-                  )}
+                  <span className="tahrir-tab-label relative z-10">{tab.label}</span>
                 </button>
               );
             })}
@@ -912,7 +900,7 @@ export default function Home() {
         </motion.div>
 
         {/* TABLAR ICHIDAGI MAYDON */}
-        <div className="mt-4">
+        <div className="tahrir-tab-content mt-3">
           <AnimatePresence mode="wait">
             
             {activeTab === 'translit' && (
@@ -1049,7 +1037,7 @@ export default function Home() {
                 transition={{ duration: 0.25 }}
                 className="max-w-4xl mx-auto space-y-6 text-left"
               >
-                <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-6 shadow-[var(--panel-shadow)] backdrop-blur-xl">
+                <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="text-base font-medium text-[var(--text-main)] flex items-center gap-2">
                       <FileText className="w-4 h-4 text-[var(--accent)]" />
@@ -1067,7 +1055,7 @@ export default function Home() {
                       if (e.dataTransfer.files?.[0]) processSelectedFile(e.dataTransfer.files[0]);
                     }}
                     onClick={() => document.getElementById('fileInput')?.click()}
-                    className={`tahrir-dropzone relative rounded-2xl p-8 border-2 border-dashed transition-all duration-200 bg-[var(--input-bg)] cursor-pointer flex flex-col items-center text-center ${
+                    className={`tahrir-dropzone relative rounded-2xl p-5 sm:p-7 border-2 border-dashed transition-all duration-200 bg-[var(--input-bg)] cursor-pointer flex flex-col items-center text-center ${
                       isDragging 
                         ? 'border-[#C79A3E] bg-[#C79A3E]/10 scale-[1.01]' 
                         : 'border-[var(--line)] hover:border-[#C79A3E]/50'
@@ -1085,7 +1073,7 @@ export default function Home() {
                       }}
                     />
 
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
+                    <div className="tahrir-tool-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-3">
                       <UploadCloud className="w-6 h-6" />
                     </div>
 
@@ -1166,7 +1154,7 @@ export default function Home() {
                 transition={{ duration: 0.25 }}
                 className="max-w-4xl mx-auto text-left"
               >
-                <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-6 shadow-[var(--panel-shadow)] backdrop-blur-xl">
+                <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base font-medium text-[var(--text-main)] flex items-center gap-2">
                       <FileType className="w-4 h-4 text-[var(--accent)]" />
@@ -1186,7 +1174,7 @@ export default function Home() {
                       if (e.dataTransfer.files?.[0]) handleSelectConverterFile(e.dataTransfer.files[0]);
                     }}
                     onClick={() => document.getElementById('converterFileInput')?.click()}
-                    className={`tahrir-dropzone relative rounded-2xl p-8 border-2 border-dashed transition-all duration-200 bg-[var(--input-bg)] cursor-pointer flex flex-col items-center text-center ${
+                    className={`tahrir-dropzone relative rounded-2xl p-5 sm:p-7 border-2 border-dashed transition-all duration-200 bg-[var(--input-bg)] cursor-pointer flex flex-col items-center text-center ${
                       isConverterDragging 
                         ? 'border-[#C79A3E] bg-[#C79A3E]/10 scale-[1.01]' 
                         : 'border-[var(--line)] hover:border-[#C79A3E]/50'
@@ -1204,7 +1192,7 @@ export default function Home() {
                       }}
                     />
                     
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--surface-alt)] border border-[var(--line)] flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
+                    <div className="tahrir-tool-icon w-12 h-12 rounded-2xl flex items-center justify-center mb-3">
                       <UploadCloud className="w-6 h-6" />
                     </div>
 
