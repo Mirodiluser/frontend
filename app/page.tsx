@@ -888,7 +888,7 @@ export default function Home() {
                     <motion.div
                       layoutId="activeTabPill"
                       className="tahrir-active-pill absolute inset-0 rounded-xl"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      transition={{ type: 'spring', stiffness: 310, damping: 32, mass: 0.75 }}
                     />
                   )}
                   <Icon className={`w-4 h-4 relative z-10 transition-colors ${isActive ? 'text-[var(--gold-text)]' : ''}`} />
@@ -900,17 +900,21 @@ export default function Home() {
         </motion.div>
 
         {/* TABLAR ICHIDAGI MAYDON */}
-        <div className="tahrir-tab-content mt-3">
-          <AnimatePresence mode="wait">
+        <motion.div
+          layout
+          className="tahrir-tab-content mt-3"
+          transition={{ layout: { type: 'spring', stiffness: 210, damping: 30, mass: 0.85 } }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
             
             {activeTab === 'translit' && (
               <motion.div 
                 key="tab-translit"
                 data-guide="translit"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -7, scale: 0.997 }}
+                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="text-left"
               >
                 <div className="flex items-center justify-center gap-3 mb-5">
@@ -1031,10 +1035,10 @@ export default function Home() {
               <motion.div 
                 key="tab-corrector"
                 data-guide="corrector"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -7, scale: 0.997 }}
+                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="max-w-4xl mx-auto space-y-6 text-left"
               >
                 <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
@@ -1148,10 +1152,10 @@ export default function Home() {
               <motion.div 
                 key="tab-converter"
                 data-guide="converter"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
+                initial={{ opacity: 0, y: 12, scale: 0.994 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -7, scale: 0.997 }}
+                transition={{ duration: 0.37, ease: [0.22, 1, 0.36, 1] }}
                 className="max-w-4xl mx-auto text-left"
               >
                 <div className="tahrir-panel bg-[var(--surface)] border border-[#C79A3E]/20 rounded-3xl p-4 sm:p-6 shadow-[var(--panel-shadow)]">
@@ -1308,7 +1312,7 @@ export default function Home() {
             )}
 
           </AnimatePresence>
-        </div>
+        </motion.div>
         </div>
 
         {/* KAFOLATLAR */}
@@ -1337,7 +1341,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.94, opacity: 0, y: 15 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-[var(--surface)] border border-[#C79A3E]/40 rounded-3xl p-5 sm:p-7 w-full max-w-3xl shadow-[var(--modal-shadow)] backdrop-blur-2xl relative flex flex-col max-h-[90vh] overflow-hidden"
+              className="tahrir-shop-modal bg-[var(--surface)] border border-[#C79A3E]/40 rounded-3xl p-5 sm:p-7 w-full max-w-3xl shadow-[var(--modal-shadow)] relative flex flex-col max-h-[90vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between pb-3.5 border-b border-[var(--line)] shrink-0">
@@ -1345,7 +1349,7 @@ export default function Home() {
                   <h2 className="text-lg sm:text-xl font-serif font-bold text-[var(--text-main)] flex items-center gap-2">
                     <Coins className="w-5 h-5 text-[var(--accent)]" /> Tanga Doʻkoni
                   </h2>
-                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">Kerakli sahifalar hajmiga mos eng qulay paketni tanlang</p>
+                  <p className="text-sm text-[var(--text-muted)] mt-1">Kerakli sahifalar hajmiga mos eng qulay paketni tanlang</p>
                 </div>
                 <button 
                   onClick={() => setShowShop(false)} 
@@ -1357,13 +1361,13 @@ export default function Home() {
 
               <div className="overflow-y-auto pr-1 py-4 space-y-3.5 flex-1 text-left">
                 
-                <div className="bg-[var(--surface-alt)] border border-[#C79A3E]/30 rounded-2xl p-3.5 flex items-center justify-between">
+                <div className="tahrir-shop-balance bg-[var(--surface-alt)] border border-[#C79A3E]/30 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-[#C79A3E]/15 border border-[#C79A3E]/30 flex items-center justify-center">
                       <Coins className="w-4 h-4 text-[var(--accent)] animate-pulse" />
                     </div>
                     <div>
-                      <p className="text-[10px] text-[var(--text-muted)]">Joriy balansingiz</p>
+                      <p className="text-xs font-semibold text-[var(--text-muted)]">Joriy balansingiz</p>
                       <p className="text-lg font-serif font-bold text-[var(--text-main)]">
                         {userCoins} <span className="text-xs font-sans font-normal text-[var(--gold-text)]">tanga</span>
                       </p>
@@ -1386,7 +1390,7 @@ export default function Home() {
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedPackage(pkg)}
-                        className={`relative rounded-2xl p-4 border cursor-pointer transition-all flex flex-col justify-between group ${
+                        className={`tahrir-shop-package relative rounded-2xl p-4 border cursor-pointer transition-all flex flex-col justify-between group ${
                           pkg.popular
                             ? 'bg-[var(--surface-alt)] border-[#C79A3E] shadow-[0_5px_20px_rgba(199,154,62,0.25)]'
                             : pkg.bestValue
@@ -1396,7 +1400,7 @@ export default function Home() {
                       >
                         {pkg.badge && (
                           <div className="mb-2">
-                            <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-md inline-block ${
+                            <span className={`text-[11px] font-extrabold px-2.5 py-1 rounded-md inline-block ${
                               pkg.popular 
                                 ? 'bg-[#C79A3E] text-[#0A0706]' 
                                 : pkg.bestValue
@@ -1422,7 +1426,7 @@ export default function Home() {
                           </div>
 
                           {pkg.bonus && (
-                            <p className="text-[10px] text-emerald-700 font-semibold mt-0.5">
+                            <p className="text-xs text-emerald-800 font-semibold mt-1">
                               +{pkg.bonus} bonus <span className="text-[var(--text-muted)]">({totalCoins} jami)</span>
                             </p>
                           )}
@@ -1431,7 +1435,7 @@ export default function Home() {
                         <div className="mt-3 pt-2.5 border-t border-[var(--line)] flex items-center justify-between">
                           <div>
                             <p className="text-xs font-bold text-[var(--text-main)]">{pkg.priceUzs}</p>
-                            <p className="text-[9px] text-[var(--text-muted)]">{pkg.priceUsd}</p>
+                            <p className="text-xs font-medium text-[var(--text-muted)] mt-0.5">{pkg.priceUsd}</p>
                           </div>
                           <div className="w-6 h-6 rounded-lg bg-[#C79A3E]/10 border border-[#C79A3E]/30 flex items-center justify-center text-[var(--accent)] group-hover:bg-[#C79A3E] group-hover:text-[#0A0706] transition-all">
                             <ArrowRight className="w-3 h-3" />
@@ -1444,18 +1448,18 @@ export default function Home() {
 
               </div>
 
-              <div className="pt-2.5 border-t border-[var(--line)] grid grid-cols-3 gap-2 text-center text-xs text-[var(--text-muted)] shrink-0">
+              <div className="tahrir-shop-stats pt-3 border-t border-[var(--line)] grid grid-cols-3 gap-2 text-center text-xs text-[var(--text-muted)] shrink-0">
                 <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalPurchased}</p>
-                  <p className="text-[9px]">Sotib olingan</p>
+                  <p className="text-xs">Sotib olingan</p>
                 </div>
                 <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalSpent}</p>
-                  <p className="text-[9px]">Sarflangan</p>
+                  <p className="text-xs">Sarflangan</p>
                 </div>
                 <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalTransactions}</p>
-                  <p className="text-[9px]">Amallar</p>
+                  <p className="text-xs">Amallar</p>
                 </div>
               </div>
 
@@ -1476,7 +1480,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 15 }}
               transition={{ type: "spring", duration: 0.3 }}
-              className="bg-[var(--modal-bg)] border border-[#C79A3E]/50 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative text-center"
+              className="tahrir-shop-checkout bg-[var(--modal-bg)] border border-[#C79A3E]/50 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative text-center"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C79A3E]/20 to-[#8A6420]/10 border border-[#C79A3E]/40 mx-auto flex items-center justify-center text-[var(--accent)] mb-3 shadow-md">
