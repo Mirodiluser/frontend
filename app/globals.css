@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #58483b;
-  --foreground: #30231b;
+  --background: #3e3028;
+  --foreground: #f6e9da;
 }
 @theme inline {
   --color-background: var(--background);
@@ -19,30 +19,30 @@ body {
 /*
  * TAHRIR.AI — Quiet Premium Library
  * The original library is atmospheric, not an image behind legible text.
- * No flat white and no full-screen dark overlay: a warm central reading light
- * separates the editorial header and practical workspace from the backdrop.
+ * No white fog or full-screen blackout: lightly shaded bookshelves frame
+ * the dark coffee reading cards, with crisp ivory text on top.
  */
 .tahrir-ui {
-  --page-bg: #6b5849;
-  --surface: rgba(231, 215, 192, .97);
-  --surface-alt: rgba(221, 202, 177, .96);
-  --input-bg: rgba(243, 232, 214, .98);
-  --text-main: #30231a;
-  --text-secondary: #4c3829;
-  --text-muted: #66503d;
-  --gold-text: #86511e;
-  --accent: #9b622a;
-  --tab-active: #2f2116;
-  --line: rgba(111, 78, 47, .30);
-  --header-bg: rgba(226, 209, 185, .93);
-  --modal-bg: #e9d9c4;
-  --modal-shadow: 0 28px 70px rgba(28, 18, 11, .32);
-  --panel-shadow: 0 20px 52px rgba(32, 20, 13, .22), 0 1px 0 rgba(255, 250, 238, .65) inset;
-  --hero-text: #2e231c;
-  --hero-sub: #483627;
-  --onbg: #422f22;
+  --page-bg: #403029;
+  --surface: rgba(62, 44, 34, .96);
+  --surface-alt: rgba(82, 58, 43, .96);
+  --input-bg: rgba(47, 34, 28, .96);
+  --text-main: #f8f0e7;
+  --text-secondary: #e5d2bd;
+  --text-muted: #cbb199;
+  --gold-text: #f0c38a;
+  --accent: #e9b475;
+  --tab-active: #fff4e8;
+  --line: rgba(234, 196, 152, .30);
+  --header-bg: rgba(49, 34, 27, .92);
+  --modal-bg: #493327;
+  --modal-shadow: 0 28px 70px rgba(18, 11, 8, .47);
+  --panel-shadow: 0 18px 46px rgba(18, 11, 8, .30), 0 1px 0 rgba(255, 223, 184, .10) inset;
+  --hero-text: #fff1df;
+  --hero-sub: #ead5be;
+  --onbg: #e9d6c2;
   isolation: isolate;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 /* Genuine restored library photograph, desaturated to avoid visual noise. */
@@ -50,41 +50,36 @@ body {
 .tahrir-library-photo {
   position: absolute;
   inset: -14px;
-  background: #554639 url('/dark-library.jpg') center center / cover no-repeat;
-  filter: blur(3.5px) brightness(1.12) saturate(.69);
-  transform: scale(1.045);
+  background: #49372c url('/dark-library.jpg') center center / cover no-repeat;
+  filter: blur(1.9px) brightness(1.23) saturate(.78);
+  transform: scale(1.025);
 }
 
-/* The image remains visible at the sides; in the reading zone it almost disappears. */
+/* Bookshelves remain visible across the canvas while a transparent tint protects text. */
 .tahrir-library-veil {
   position: absolute;
   inset: 0;
+  /* Transparent espresso overlay: NO beige/white wash over the library. */
   background:
     linear-gradient(90deg,
-      rgba(39, 29, 24, .23) 0%,
-      rgba(195, 176, 154, .58) 12%,
-      rgba(224, 210, 192, .90) 29%,
-      rgba(231, 218, 199, .96) 47%,
-      rgba(231, 218, 199, .96) 53%,
-      rgba(224, 210, 192, .90) 71%,
-      rgba(195, 176, 154, .58) 88%,
-      rgba(39, 29, 24, .23) 100%),
-    linear-gradient(180deg,
-      rgba(229, 211, 187, .53),
-      rgba(228, 211, 190, .24) 46%,
-      rgba(74, 54, 40, .16) 100%);
+      rgba(27, 20, 17, .18) 0%,
+      rgba(36, 26, 21, .28) 28%,
+      rgba(38, 27, 22, .35) 50%,
+      rgba(36, 26, 21, .28) 72%,
+      rgba(27, 20, 17, .18) 100%),
+    linear-gradient(180deg, rgba(24, 16, 12, .10), rgba(28, 19, 15, .28) 100%);
 }
+
 .tahrir-focus-light {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 54% 52% at 50% 23%, rgba(250, 237, 215, .46), transparent 82%),
-    radial-gradient(ellipse 60% 52% at 50% 84%, rgba(233, 215, 190, .28), transparent 85%);
+  background: radial-gradient(ellipse 55% 55% at 50% 32%, rgba(184, 125, 66, .10), transparent 81%);
 }
+
 .tahrir-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 94% 92% at 50% 42%, transparent 59%, rgba(43, 30, 24, .25) 100%);
+  background: radial-gradient(ellipse 94% 92% at 50% 42%, transparent 59%, rgba(30, 19, 13, .27) 100%);
 }
 .tahrir-ambient-edge {
   position: absolute;
@@ -108,7 +103,7 @@ body {
   animation-delay: -12s;
 }
 
-/* Invisible reading-light halo under the central content (not a visible box). */
+/* Avoid the washed-out white halo from the previous version. */
 .tahrir-focus-stage { isolation: isolate; }
 .tahrir-focus-stage::before {
   content: "";
@@ -116,16 +111,16 @@ body {
   z-index: -1;
   inset: -18px -25px 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 71% 53% at 50% 18%, rgba(238, 225, 206, .47), transparent 84%);
+  background: none;
 }
 
 .tahrir-hero {
   color: var(--hero-text) !important;
-  text-shadow: 0 2px 16px rgba(240, 226, 205, .65);
+  text-shadow: 0 4px 24px rgba(18, 9, 6, .72);
 }
 .tahrir-lead {
   color: var(--hero-sub) !important;
-  text-shadow: 0 1px 12px rgba(239, 224, 200, .35);
+  text-shadow: 0 2px 12px rgba(20, 11, 7, .68);
 }
 .tahrir-onbg {
   color: var(--onbg) !important;
@@ -135,7 +130,7 @@ body {
 .tahrir-header {
   background: var(--header-bg);
   border-color: var(--line);
-  box-shadow: 0 9px 30px rgba(31, 20, 13, .17), 0 1px 0 rgba(255, 249, 233, .4) inset;
+  box-shadow: 0 9px 30px rgba(31, 20, 13, .17), 0 1px 0 rgba(255, 222, 176, .09) inset;
   -webkit-backdrop-filter: blur(24px) saturate(.85);
   backdrop-filter: blur(24px) saturate(.85);
 }
@@ -160,7 +155,7 @@ body {
   animation: tahrir-word .78s cubic-bezier(.2,.8,.2,1) forwards;
 }
 .tahrir-shimmer {
-  background: linear-gradient(100deg, #704423 0%, #8c561c 32%, #b77b3b 51%, #8c561c 70%, #704423 100%);
+  background: linear-gradient(100deg, #f4d3a6 0%, #e4aa67 32%, #ffe0b4 51%, #dfa264 70%, #f4d3a6 100%);
   background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -200,17 +195,17 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity .4s;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255,248,230,.35), transparent 68%);
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(227,171,109,.10), transparent 68%);
 }
 @media(hover:hover) {
   .tahrir-panel:hover::before, .tahrir-tabs:hover::before { opacity: .75; }
 }
 .tahrir-tabs {
-  background: rgba(227,210,188,.98) !important;
+  background: rgba(65, 46, 35, .96) !important;
   max-width: 100%;
 }
 .tahrir-tabs .absolute.inset-0 {
-  background: rgba(171, 119, 61, .25);
+  background: rgba(216, 151, 76, .23);
   box-shadow: inset 0 0 0 1px rgba(131,83,38,.27), 0 3px 12px rgba(108,67,29,.10);
 }
 .tahrir-tab {
@@ -220,7 +215,7 @@ body {
 .tahrir-tab:hover { transform: translateY(-1px); }
 
 .tahrir-login-gate {
-  background: rgba(234, 220, 201, .96);
+  background: rgba(50, 35, 27, .97);
   color: var(--text-main);
   border: 1px solid var(--line);
 }
@@ -241,7 +236,7 @@ body {
 .tahrir-ui .tahrir-dropzone h4 { font-size: 1.02rem; font-weight: 600; line-height: 1.55; }
 .tahrir-ui .tahrir-dropzone > p { font-size: .86rem; }
 .tahrir-ui textarea { font-size: clamp(1rem, 1.45vw, 1.07rem) !important; line-height: 1.78; }
-.tahrir-ui ::placeholder { color: #76604a; }
+.tahrir-ui ::placeholder { color: #cbb49b; }
 .tahrir-ui ::selection { background: rgba(190,146,89,.33); }
 
 /* Give actions the wow factor, rather than making the background move. */
@@ -265,7 +260,7 @@ body {
   inset: 0;
   pointer-events: none;
   transform: translateX(-125%);
-  background: linear-gradient(110deg, transparent 25%, rgba(255,247,218,.32) 50%, transparent 75%);
+  background: linear-gradient(110deg, transparent 25%, rgba(255,236,199,.27) 50%, transparent 75%);
   transition: transform .85s cubic-bezier(.2,.7,.2,1);
 }
 .tahrir-primary:hover:not(:disabled)::after { transform: translateX(125%); }
@@ -285,12 +280,11 @@ body {
   .tahrir-ui .tahrir-hero { font-size: clamp(2.1rem, 8vw, 3rem); line-height: 1.12; }
   .tahrir-tabs { width: 100%; }
   .tahrir-tabs .tahrir-tab { flex: 1 1 auto; justify-content: center; padding: 12px 10px; font-size: .9rem; }
-  .tahrir-library-photo { filter: blur(5px) brightness(1.17) saturate(.61); }
+  .tahrir-library-photo { filter: blur(2.5px) brightness(1.22) saturate(.75); }
   .tahrir-library-veil {
-    background: linear-gradient(90deg,
-      rgba(218,202,181,.86), rgba(233,220,201,.96) 24%,
-      rgba(233,220,201,.97) 76%, rgba(218,202,181,.86));
+    background: linear-gradient(180deg, rgba(34, 24, 19, .36), rgba(34, 24, 19, .43));
   }
+
   .tahrir-focus-stage::before { inset: 0 -10px; }
   .tahrir-ambient-edge { display: none; }
 }
@@ -302,8 +296,8 @@ body {
   .tahrir-ui *, .tahrir-ui *::before, .tahrir-ui *::after { transition-duration: .01ms !important; }
 }
 @media(prefers-contrast: more) {
-  .tahrir-ui { --surface: #eadcc8; --surface-alt: #dfccb2; --input-bg: #f3e7d6; --text-muted: #4a3729; --line: rgba(60,39,25,.48); }
-  .tahrir-library-veil { background: rgba(234, 219, 199, .97); }
+  .tahrir-ui { --surface: #38271f; --surface-alt: #4b3426; --input-bg: #33241c; --text-muted: #f5dfc8; --line: rgba(255,226,194,.50); }
+  .tahrir-library-veil { background: rgba(27, 19, 14, .40); }
 }
 
 @keyframes tahrir-word { to { opacity: 1; transform: none; filter: blur(0); } }
