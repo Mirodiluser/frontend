@@ -84,6 +84,7 @@ export default function AdminPage(){
   const [userOffset,setUserOffset]=useState(0);
   const [txOffset,setTxOffset]=useState(0);
   const [detailOffset,setDetailOffset]=useState(0);
+  const [health,setHealth]=useState<'checking'|'online'|'offline'>('checking');
   const [loading,setLoading]=useState(true);
   const [loadingUsers,setLoadingUsers]=useState(false);
   const [loadingTx,setLoadingTx]=useState(false);
@@ -96,6 +97,18 @@ export default function AdminPage(){
   const [requestId,setRequestId]=useState('');
   const [submitting,setSubmitting]=useState(false);
   const reload=useCallback(()=>{setRevision(v=>v+1);},[]);
+  useEffect(()=>{
+    let mounted=true;
+    const check=async()=>{
+      try{
+        const response=await fetch(API+'/api/health',{cache:'no-store'});
+        if(mounted)setHealth(response.ok?'online':'offline');
+      }catch{if(mounted)setHealth('offline');}
+    };
+    void check();
+    const id=window.setInterval(()=>{void check();},60000);
+    return ()=>{mounted=false;window.clearInterval(id);};
+  },[]);
   useEffect(()=>{
     let cancelled=false;
     setLoading(true);
@@ -194,6 +207,10 @@ export default function AdminPage(){
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-2 text-xs font-semibold text-emerald-100"><LockKeyhole size={14}/> Доступ по ADMIN_USER_ID</span>
+          <span className={'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold '+(health==='online'?'border-emerald-300/25 bg-emerald-300/10 text-emerald-100':health==='offline'?'border-rose-300/30 bg-rose-500/10 text-rose-100':'border-[#E8B982]/30 bg-white/5 text-[#F0D3AE]')}>
+            <span className={'h-2 w-2 rounded-full '+(health==='online'?'bg-emerald-300':health==='offline'?'bg-rose-300':'bg-amber-300')}/>
+            {health==='online'?'Backend работает':health==='offline'?'Backend недоступен':'Проверка сервера'}
+          </span>
           <Link href="/" className={smallButton}><ArrowLeft size={15}/> На сайт</Link>
           <button onClick={reload} disabled={loading} className={smallButton}><RefreshCw size={15} className={loading?'animate-spin':''}/> Обновить</button>
         </div>
