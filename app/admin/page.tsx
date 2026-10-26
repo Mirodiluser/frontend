@@ -9,7 +9,7 @@ type Metric={users:number;coins:number;spent:number;month:{operations:number;spe
 type TxRow={id:number;userId:number;type:string;amount:number;description:string;feature:string;featureLabel:string;createdAt:string;userName?:string;identifier?:string};
 type PageUsers={users:UserRow[];total:number;limit:number;offset:number};
 type PageTx={transactions:TxRow[];total:number;limit:number;offset:number};
-type Detail={user:UserRow;transactions:TxRow[];total:number;limit:number;offset:number;services:Metric['services'];orders:OrderRow[]};
+type Detail={user:UserRow;transactions:TxRow[];total:number;limit:number;offset:number;services:Metric['services'];orders:OrderRow[];refundedSpendIds:number[]};
 type Signal={id:number;card_type:string;card_last4:string;amount_tiyin:number;operation_time:string|null;channel:string;status:string;received_at:string};
 type OrderRow={id?:number;order_id:string;user_id?:number;package_id:string;amount:number;coins:number;status:string;created_at:string};
 type Overview={users:UserRow[];smsSignals:Signal[];orders:OrderRow[];note:string};
@@ -168,8 +168,8 @@ export default function AdminPage(){
     }catch(e){setError(e instanceof Error?e.message:'Операция не выполнена');}
     finally{setSubmitting(false);}
   }
-  function exportVisible(){
-    const current=tab==='transactions'?(transactions?.transactions||[]):detail?.transactions||[];
+  function exportVisible(fromUser=false){
+    const current=fromUser?(detail?.transactions||[]):(transactions?.transactions||[]);
     if(!current.length)return;
     const esc=(s:any)=>'"'+String(s??'').replace(/"/g,'""').replace(/^[=+\-@]/,'\u0027$&')+'"';
     const fields=['ID','Пользователь','Тип','Функция','Монеты','Дата','Описание'];
@@ -296,7 +296,7 @@ export default function AdminPage(){
             <select aria-label="Тип операции" value={txType} onChange={e=>{setTxType(e.target.value);setTxOffset(0);}} className="max-w-[205px] rounded-xl border border-[#E8C39C]/30 bg-[#563825] px-3 py-2 text-xs font-semibold text-[#FFF0DC] outline-none">
               {kinds.map(v=><option key={v.value} value={v.value}>{v.label}</option>)}
             </select>
-            <button onClick={exportVisible} className={smallButton}><Download size={15}/> CSV</button>
+            <button onClick={()=>exportVisible(false)} className={smallButton}><Download size={15}/> CSV</button>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -372,7 +372,7 @@ export default function AdminPage(){
           <div className="grid gap-2 sm:grid-cols-3">
             <button onClick={()=>openAction('credit')} className="flex items-center justify-center gap-2 rounded-xl bg-[linear-gradient(165deg,#98633D,#67371D)] px-4 py-3 text-sm font-bold text-[#FFF2DD] shadow-[inset_0_1px_0_#E9BD8F,0_7px_14px_#74412633] transition hover:brightness-110"><Plus size={17}/> Начислить монеты</button>
             <button onClick={()=>openAction('debit')} className="flex items-center justify-center gap-2 rounded-xl border border-[#AF7852]/45 bg-[#F0D7B7] px-4 py-3 text-sm font-bold text-[#60351F] transition hover:bg-[#E8C89D]"><Minus size={17}/> Списать вручную</button>
-            <button onClick={exportVisible} className="flex items-center justify-center gap-2 rounded-xl border border-[#AF7852]/45 bg-white/55 px-4 py-3 text-sm font-bold text-[#60351F] transition hover:bg-white"><Download size={16}/> Экспорт истории</button>
+            <button onClick={()=>exportVisible(true)} className="flex items-center justify-center gap-2 rounded-xl border border-[#AF7852]/45 bg-white/55 px-4 py-3 text-sm font-bold text-[#60351F] transition hover:bg-white"><Download size={16}/> Экспорт истории</button>
           </div>
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
             <section className="overflow-hidden rounded-2xl border border-[#B58859]/30 bg-white/50">
@@ -387,7 +387,9 @@ export default function AdminPage(){
                   <tbody className="divide-y divide-[#B88B61]/20">{detail.transactions.map(t=><tr key={t.id} className="hover:bg-white/45">
                     <td className="whitespace-nowrap p-3">{when(t.createdAt)}</td><td className="max-w-[260px] p-3"><strong>{t.featureLabel}</strong><span className="mt-0.5 block truncate text-[#775339]" title={t.description}>{t.description}</span></td>
                     <td className={'p-3 font-bold '+(isDebit(t.type)?'text-[#9B4233]':'text-[#256C4C]')}>{isDebit(t.type)?'−':'+'}{number(t.amount)}</td>
-                    <td className="p-3">{t.type==='spend'?<button onClick={()=>openAction('refund',t)} title="Вернуть монеты по этой конкретной операции" className="inline-flex items-center gap-1 rounded-lg border border-[#AE7F4B]/35 bg-[#F5DBB4] px-2 py-1.5 font-bold hover:bg-[#EDC890]"><Undo2 size={13}/> Возврат</button>:'—'}</td>
+                    <td className="p-3">{t.type==='spend'?(detail.refundedSpendIds?.includes(t.id)
+                      ?<span className="font-semibold text-emerald-800">Возвращено</span>
+                      :<button onClick={()=>openAction('refund',t)} title="Вернуть монеты по этой конкретной операции" className="inline-flex items-center gap-1 rounded-lg border border-[#AE7F4B]/35 bg-[#F5DBB4] px-2 py-1.5 font-bold hover:bg-[#EDC890]"><Undo2 size={13}/> Возврат</button>):'—'}</td>
                   </tr>)}</tbody>
                 </table>
                 {!detail.transactions.length&&<p className="p-4 text-xs text-[#775339]">Транзакций нет.</p>}
