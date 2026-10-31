@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 const siteUrl = "https://tahrirai.uz";
-const siteTitle = "TAHRIR.AI (TahrirAi) — O‘zbek imlo tekshiruvi, Kirill ↔ Lotin, DOCX";
+const siteTitle = "Tahrir AI (TahrirAi) — O‘zbek imlo tekshiruvi va DOCX";
 const siteDescription =
-  "TahrirAi (TAHRIR.AI) — o‘zbekcha matn va Word DOCX hujjatlari uchun imlo tekshiruvi, Kirill–Lotin transliteratsiyasi hamda fayl konverteri. Onlayn vositalar.";
+  "Tahrir AI (TAHRIR.AI, TahrirAi) — o‘zbek tilidagi matn va Word DOCX hujjatlari uchun imlo tekshiruvi, kirill-lotin transliteratsiyasi va fayl konverteri.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -77,7 +77,7 @@ const structuredData = {
       "@id": siteUrl + "/#website",
       url: siteUrl + "/",
       name: "TAHRIR.AI",
-      alternateName: ["TahrirAi", "Tahrir AI", "TAHRIRAI"],
+      alternateName: ["Tahrir AI", "TahrirAi", "TAHRIRAI", "TAHRIR.AI"],
       description: siteDescription,
       inLanguage: "uz",
     },
