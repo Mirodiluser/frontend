@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback, useMemo, useDeferredValue } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { 
   FileText, 
@@ -948,6 +949,9 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.20em] text-[var(--gold-text)]">
+            TAHRIR.AI — o‘zbek matnlari uchun onlayn vositalar
+          </p>
           <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight">
             {['Mukammal','grammatika'].map((word,i)=>(
               <span key={word} className="tahrir-word" style={{animationDelay:`${0.15+i*0.12}s`}}>{word}&nbsp;</span>
@@ -960,6 +964,11 @@ export default function Home() {
           <p className="tahrir-lead mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
+          <div className="mt-3">
+            <Link href="/about" className="text-xs font-semibold text-[var(--text-secondary)] underline underline-offset-4 decoration-[#C79A3E]/45 transition-colors hover:text-[var(--gold-text)]">
+              TAHRIR.AI (TahrirAi) haqida
+            </Link>
+          </div>
           <div className="tahrir-hero-divider" aria-hidden="true"><span /></div>
         </motion.div>
 
