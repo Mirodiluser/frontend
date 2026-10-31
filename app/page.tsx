@@ -964,9 +964,13 @@ export default function Home() {
           <p className="tahrir-lead mt-4 text-base sm:text-lg text-[var(--text-secondary)] max-w-xl mx-auto font-light leading-relaxed">
             Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.
           </p>
-          <div className="mt-3">
-            <Link href="/about" className="text-xs font-semibold text-[var(--text-secondary)] underline underline-offset-4 decoration-[#C79A3E]/45 transition-colors hover:text-[var(--gold-text)]">
-              TAHRIR.AI (TahrirAi) haqida
+          <div className="mt-4">
+            <Link
+              href="/about"
+              className="group inline-flex items-center justify-center gap-2.5 rounded-full border border-[#FBE5C2]/80 bg-[linear-gradient(135deg,#F9E8CD_0%,#E7BF8E_54%,#CD975B_100%)] px-5 py-2.5 text-sm font-bold tracking-[0.01em] text-[#3F2618] shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_24px_rgba(44,21,8,0.23),0_0_18px_rgba(242,193,126,0.2)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[#FFF5E0] hover:brightness-110 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_12px_30px_rgba(44,21,8,0.28),0_0_24px_rgba(249,205,143,0.42)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#FFE5BC]"
+            >
+              <span>TAHRIR.AI (TahrirAi) haqida</span>
+              <ArrowRight size={16} aria-hidden="true" className="shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
           <div className="tahrir-hero-divider" aria-hidden="true"><span /></div>
