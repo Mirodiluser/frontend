@@ -950,7 +950,7 @@ export default function Home() {
           transition={{ duration: 0.6 }}
         >
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.20em] text-[var(--gold-text)]">
-            TAHRIR.AI — o‘zbek matnlari uchun onlayn vositalar
+            TAHRIR.AI (Tahrir AI) — o‘zbek matnlari uchun onlayn vositalar
           </p>
           <h1 className="tahrir-hero text-4xl sm:text-5xl md:text-6xl font-serif font-normal tracking-tight text-[var(--text-main)] max-w-3xl mx-auto leading-tight">
             {['Mukammal','grammatika'].map((word,i)=>(
