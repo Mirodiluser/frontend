@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/"],
+        // Admin pages declare robots: noindex in their own metadata.\n        // Blocking them here would prevent crawlers from seeing that directive.\n        disallow: ["/api/"],
       },
     ],
     sitemap: siteUrl + "/sitemap.xml",
