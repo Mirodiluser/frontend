@@ -150,7 +150,7 @@ export default function Home() {
     pkg: CoinPackage;
     exactAmount: number;
   } | null>(null);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(300);
   const [cardCopied, setCardCopied] = useState(false);
   const [amountCopied, setAmountCopied] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -271,6 +271,11 @@ export default function Home() {
         const res = await authFetch(`${API_URL}/api/payment/check-status/${activeOrder.orderId}`);
         if (res.ok) {
           const data = await res.json();
+          if (data.status === 'EXPIRED') {
+            setActiveOrder(null);
+            addToast('warning','Toʻlov muddati tugadi','5 daqiqalik buyurtma muddati tugadi. Yangi buyurtma yarating.');
+            return;
+          }
           if (data.status === 'PAID') {
             clearInterval(timer);
             clearInterval(polling);
@@ -330,7 +335,7 @@ export default function Home() {
       pkg,
       exactAmount: order.amount
     });
-    setTimeLeft(600);
+    setTimeLeft(300);
     setShowShop(false);
     setSelectedPackage(null);
   };
@@ -365,7 +370,7 @@ export default function Home() {
         iconType:'basic'
       };
       setActiveOrder({orderId:data.orderId,pkg:customPkg,exactAmount:data.amount});
-      setTimeLeft(600);
+      setTimeLeft(300);
       setShowShop(false);
       setSelectedPackage(null);
     }catch{
