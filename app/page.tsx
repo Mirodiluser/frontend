@@ -51,7 +51,7 @@ const AI_MAX_WORDS = 200;
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // TOʻLOV QABUL QILUVCHI KARTA
-const CARD_NUMBER = "9860012110051468";
+const CARD_NUMBER = "5614688705522596";
 
 // Запрос к API с JWT-токеном пользователя
 function authFetch(url: string, init: RequestInit = {}) {
@@ -1721,7 +1721,7 @@ export default function Home() {
       <AnimatePresence>
         {activeOrder && (
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#3a3418]/50 backdrop-blur-xl p-4 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#191510]/65 backdrop-blur-xl p-2.5 sm:p-4 overflow-y-auto"
             onClick={() => setActiveOrder(null)}
           >
             <motion.div 
@@ -1729,7 +1729,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", duration: 0.35, bounce: 0.1 }}
-              className="bg-[var(--modal-bg)] border border-[#C79A3E]/40 rounded-3xl p-5 sm:p-6 w-full max-w-md shadow-[var(--modal-shadow)] relative text-left my-auto max-h-[95vh] overflow-y-auto"
+              className="bg-[var(--modal-bg)] border border-[#C79A3E]/35 rounded-[28px] p-4 sm:p-6 w-full max-w-[830px] shadow-[0_32px_100px_rgba(0,0,0,0.35)] relative text-left my-auto max-h-[calc(100dvh-20px)] overflow-y-auto lg:overflow-visible"
               onClick={(e) => e.stopPropagation()}
             >
               {/* YOPISH TUGMASI (X) */}
@@ -1757,7 +1757,7 @@ export default function Home() {
               </div>
 
               {/* Aniq to'lov summasi ko'rsatkichi */}
-              <div className="mt-3.5 p-3.5 rounded-2xl bg-[var(--surface-alt)] border border-[#C79A3E]/30 text-center relative overflow-hidden shadow-inner">
+              <div className="mt-3 p-3 rounded-2xl bg-[var(--surface-alt)] border border-[#C79A3E]/30 text-center relative overflow-hidden shadow-inner">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#C79A3E]/5 blur-2xl rounded-full pointer-events-none" />
                 <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider font-semibold">Toʻlanishi kerak boʻlgan aniq summa</p>
                 <div className="flex items-center justify-center gap-2 mt-1">
@@ -1775,8 +1775,10 @@ export default function Home() {
                 </div>
               </div>
 
+              <div className="mt-3 grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,0.88fr)]">
+                <div className="min-w-0 flex flex-col justify-between gap-2.5">
               {/* Muhim ogohlantirish */}
-              <div className="mt-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-400/25 via-amber-400/15 to-amber-400/25 border-2 border-amber-600/50 text-amber-900 shadow-[0_8px_24px_rgba(217,119,6,0.15)] flex items-start gap-3 relative overflow-hidden">
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-400/25 via-amber-400/15 to-amber-400/25 border-2 border-amber-600/50 text-amber-900 shadow-[0_8px_24px_rgba(217,119,6,0.15)] flex items-start gap-3 relative overflow-hidden">
                 <div className="w-8 h-8 rounded-xl bg-amber-400/30 border border-amber-600/40 flex items-center justify-center shrink-0 mt-0.5 text-amber-700">
                   <AlertTriangle className="w-4 h-4 text-amber-700 animate-pulse" />
                 </div>
@@ -1807,13 +1809,11 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Click va Payme QR to‘lov: buyurtma summasi backenddan olinadi. */}
-              <PaymentQrMethods />
-
-              {/* Bank ilovasi orqali toʻlov, faqat koʻrsatilgan karta uchun. */}
-              <p className="mt-3 text-center text-[11px] text-[var(--text-muted)]">
-                Toʻlovni bank ilovangiz orqali yuqoridagi kartaga oʻtkazing.
-              </p>
+                  <p className="text-[11px] leading-5 text-[var(--text-muted)]">QR-kod orqali yoki kartaga pul oʻtkazing. Aynan buyurtma summasini toʻlang.</p>
+                </div>
+              {/* Click va Payme QR */}
+              <div className="min-w-0"><PaymentQrMethods /></div>
+              </div>
 
               {/* Kutish indikatori */}
               <div className="mt-3 pt-2.5 border-t border-[var(--line)] flex items-center justify-between text-xs text-[var(--text-muted)]">
