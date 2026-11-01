@@ -26,7 +26,7 @@ function PaymentCode({method}: {method: keyof typeof CODES}) {
       className="block aspect-square w-full bg-white">
       <rect width={size+8} height={size+8} fill="white"/>
       {rows.flatMap((row,y)=>Array.from({length:size},(_,x)=>{
-        const on=(BigInt('0x'+row)&(1n<<BigInt(size-x-1)))!==0n;
+        const on=(BigInt('0x'+row)&(BigInt(1)<<BigInt(size-x-1)))!==BigInt(0);
         return on?<rect key={`${y}-${x}`} x={x+4} y={y+4} width="1" height="1" fill="#080808"/>:null;
       }))}
     </svg>
