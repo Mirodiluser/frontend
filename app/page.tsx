@@ -39,6 +39,7 @@ import {
   PartyPopper,
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
+import PaymentQrMethods from './components/PaymentQrMethods';
 import GuideTour from './components/GuideTour';
 import Ambient from './components/Ambient';
 import DocxTranslitPro from './components/DocxTranslitPro';
@@ -1805,6 +1806,9 @@ export default function Home() {
                   <span>{cardCopied ? 'Nusxalandi' : 'Nusxa'}</span>
                 </button>
               </div>
+
+              {/* Click va Payme QR to‘lov: buyurtma summasi backenddan olinadi. */}
+              <PaymentQrMethods />
 
               {/* Bank ilovasi orqali toʻlov, faqat koʻrsatilgan karta uchun. */}
               <p className="mt-3 text-center text-[11px] text-[var(--text-muted)]">
