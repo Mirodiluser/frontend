@@ -44,34 +44,29 @@ export default function PaymentQrMethods() {
     try {await navigator.clipboard.writeText(value);setCopied(true);window.setTimeout(()=>setCopied(false),2000);} catch {/* Clipboard permission can be denied. */}
   };
   return (
-    <section aria-label="QR orqali to‘lov" className="mt-3 rounded-2xl border border-[var(--line)] bg-[var(--surface-alt)] p-3 sm:p-4">
-      <div className="mb-3 flex items-center gap-2">
+    <section aria-label="QR orqali to‘lov" className="h-full rounded-[22px] border border-[#C79A3E]/25 bg-[var(--surface-alt)] p-3 sm:p-4 shadow-[0_12px_35px_rgba(0,0,0,0.06)]">
+      <div className="mb-2.5 flex items-center gap-2">
         <QrCode className="h-4 w-4 text-[var(--gold-text)]"/>
-        <h3 className="text-sm font-bold text-[var(--text-main)]">QR-kod orqali to‘lov</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)]">QR orqali to‘lov</h3>
       </div>
       <div role="group" aria-label="To‘lov ilovasini tanlang" className="grid grid-cols-2 gap-2">
         {(['click','payme'] as const).map(method=>(
           <button key={method} type="button" onClick={()=>{setSelected(method);setCopied(false)}}
             aria-pressed={selected===method}
-            className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${selected===method?'border-[#C79A3E] bg-[#C79A3E]/10 text-[var(--text-main)] shadow-[0_4px_15px_rgba(199,154,62,0.15)]':'border-[var(--line)] bg-[var(--input-bg)] text-[var(--text-muted)] hover:border-[#C79A3E]/40'}`}>
-            <span aria-hidden="true" className={`flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br ${CODES[method].gradient} text-sm font-extrabold text-white`}>
-              {method==='click'?'C':'P'}
-            </span>
-            {CODES[method].title}
+            className={`flex min-w-0 items-center justify-center rounded-xl border p-2 transition-all duration-200 ${selected===method?'border-[#C79A3E] bg-[#C79A3E]/10 shadow-[0_5px_18px_rgba(199,154,62,0.16)]':'border-[var(--line)] bg-[var(--input-bg)] hover:border-[#C79A3E]/40'}`}>
+            <img src={method==='click'?'https://api.logobank.uz/media/logos_png/Click-02.png':'https://cdn.payme.uz/logo/new/svg/payme_blue.svg'}
+              alt={CODES[method].title} loading="lazy" className="h-8 w-full max-w-[116px] rounded-md object-contain" />
           </button>
         ))}
       </div>
-      <div className="mx-auto mt-3 w-full max-w-[230px] overflow-hidden rounded-2xl border border-black/5 bg-white p-2.5 shadow-[0_12px_35px_rgba(15,23,42,0.10)]">
+      <div className="mx-auto mt-2.5 w-full max-w-[190px] overflow-hidden rounded-2xl border border-black/5 bg-white p-2 shadow-[0_10px_25px_rgba(0,0,0,0.08)]">
         <PaymentCode method={selected}/>
       </div>
-      <p className="mt-3 text-center text-xs font-semibold text-[var(--text-main)]">{item.tag} QR-kodni skaner qiling</p>
-      <p className="mt-1 text-center text-[11px] leading-5 text-[var(--text-muted)]">
-        Buyurtmada ko‘rsatilgan aniq summani kiriting. QR-kod summani avtomatik belgilamasligi mumkin.
-      </p>
+      <p className="mt-2 text-center text-xs font-semibold text-[var(--text-main)]">{item.tag} skaner qiling</p>
       <button type="button" onClick={()=>void copyPaymentData()}
-        className="mx-auto mt-2 flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[11px] font-semibold text-[var(--gold-text)] hover:bg-[#C79A3E]/10">
+        className="mx-auto mt-1 flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-semibold text-[var(--gold-text)] hover:bg-[#C79A3E]/10">
         {copied?<Check className="h-3.5 w-3.5"/>:<Copy className="h-3.5 w-3.5"/>}
-        {copied?'Nusxalandi':'To‘lov maʼlumotini nusxalash'}
+        {copied?'Nusxalandi':'Maʼlumotni nusxalash'}
       </button>
     </section>
   );
