@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
-import { Check, Wallet, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
+import { Check, Wallet, ShieldCheck, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
 
 /** Qadamlar uchun kichik jonli sahnalar (stage). Hammasi CSS + yengil React. */
 
@@ -163,6 +163,16 @@ export function WalletDemo() {
   );
 }
 
+export function PrivacyDemo(){
+  return (
+    <div className="tg-d-privacy" aria-hidden="true">
+      <span className="tg-d-privacy-ring"/>
+      <div className="tg-d-privacy-shield"><ShieldCheck size={42} strokeWidth={1.65}/></div>
+      <span className="tg-d-privacy-label">MAXFIYLIK</span>
+    </div>
+  );
+}
+
 export function DoneDemo() {
   return (
     <div className="tg-d-done" aria-hidden="true">
@@ -182,5 +192,6 @@ export const DEMOS: Record<string, () => ReactElement> = {
   corrector: CorrectorDemo,
   converter: ConverterDemo,
   account: WalletDemo,
+  privacy: PrivacyDemo,
   done: DoneDemo,
 };
