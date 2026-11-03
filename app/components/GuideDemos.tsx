@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { ReactElement } from 'react';
-import { Check, Coins, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
+import { Check, Wallet, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
 
 /** Qadamlar uchun kichik jonli sahnalar (stage). Hammasi CSS + yengil React. */
 
@@ -91,8 +91,8 @@ export function DocxProDemo() {
           <span>Kirill ↔ Lotin</span>
         </div>
         <div className="tg-d-pro-price">
-          <Coins size={15} strokeWidth={2} />
-          <span><strong>3</strong> tanga</span>
+          <Wallet size={15} strokeWidth={2} />
+          <span><strong>1 200</strong> soʻm</span>
         </div>
         <small className="tg-d-pro-example">namuna</small>
       </div>
@@ -146,15 +146,15 @@ export function ConverterDemo() {
   );
 }
 
-export function CoinsDemo() {
-  const numRef = useRef<HTMLDivElement>(null);
+export function WalletDemo() {
+  const numRef = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     let raf = 0;
     const loop = (now: number) => {
       const t = (now % 3600) / 3600;
-      const p = Math.min(1, t / 0.5);
+      const p = Math.min(1, t / 0.52);
       const e = 1 - Math.pow(1 - p, 3);
-      if (numRef.current) numRef.current.firstChild!.textContent = `+${Math.round(15 * e)}`;
+      if (numRef.current) numRef.current.textContent = Math.round(2000 * e).toLocaleString('uz-UZ');
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -165,12 +165,12 @@ export function CoinsDemo() {
       {[0, 0.5, 1].map((d, i) => (
         <span key={i} className="tg-d-drop" style={{ left: 18 + i * 18, animationDelay: `${d}s` }} />
       ))}
-      <div className="tg-d-coin">
-        <Coins size={28} strokeWidth={2.2} />
+      <div className="tg-d-wallet">
+        <Wallet size={28} strokeWidth={1.85} />
       </div>
-      <div className="tg-d-num" ref={numRef}>
-        <span>+0</span>
-        <small>TANGA</small>
+      <div className="tg-d-num">
+        <span ref={numRef}>2 000</span>
+        <small>SOʻM · MINIMAL TOʻLOV</small>
       </div>
     </div>
   );
@@ -194,6 +194,6 @@ export const DEMOS: Record<string, () => ReactElement> = {
   docxpro: DocxProDemo,
   corrector: CorrectorDemo,
   converter: ConverterDemo,
-  account: CoinsDemo,
+  account: WalletDemo,
   done: DoneDemo,
 };
