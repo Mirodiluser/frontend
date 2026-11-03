@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowRight, Check, Wallet, Feather, FileText, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, Wallet, ShieldCheck, Feather, FileText, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
 import { GUIDE_CSS } from './guideStyles';
 import { DEMOS } from './GuideDemos';
 
@@ -106,6 +106,18 @@ export const GUIDE_STEPS: Step[] = [
       '“Hisobni toʻldirish” boʻlimida kerakli summani kiriting',
       'Buyurtma 5 daqiqa amal qiladi. Aynan koʻrsatilgan summani toʻlang',
       'Toʻlov tasdiqlangach, mablagʻ soʻmdagi balansingizga qoʻshiladi',
+    ],
+  },
+  {
+    id: 'privacy',
+    icon: ShieldCheck,
+    title: 'Maxfiylik va himoya',
+    text: 'Hujjatlar xizmat koʻrsatish uchun qayta ishlanadi, lekin doimiy hujjatlar arxivida saqlanmaydi.',
+    bullets: [
+      'Oddiy yuklamalar server xotirasida qayta ishlanadi; katta DOCX uchun vaqtinchalik fayllar yaratilishi mumkin.',
+      'Katta hujjatlarning vaqtinchalik fayllari vazifa tugagach yoki belgilangan muddatda oʻchiriladi (45 daqiqagacha).',
+      'Hisobingiz va toʻlov tarixiga oid zarur maʼlumotlar bazada saqlanadi.',
+      'AI tekshiruvida matnning tegishli qismlari tashqi AI xizmatida qayta ishlanishi mumkin.',
     ],
   },
   {
@@ -593,7 +605,15 @@ export default function GuideTour({ onClose, onTabChange }: GuideTourProps) {
               <div key={step.id}>
                 <div className="tg-kicker">Qoʻllanma · {pad2(index)} / {pad2(N - 1)}</div>
                 <h3 id="tg-title" className="tg-h"><Words text={step.title} base={40} step={60} /></h3>
-                <p className="tg-p" aria-live="polite"><Words text={step.text} base={200} step={22} /></p>
+                {step.id === 'privacy' ? (
+                  <div className="tg-privacy-emphasis" role="note">
+                    <div className="tg-privacy-icon"><ShieldCheck size={21} strokeWidth={1.9}/></div>
+                    <div>
+                      <strong>HUJJATLAR DOIMIY SAQLANMAYDI</strong>
+                      <p>{step.text}</p>
+                    </div>
+                  </div>
+                ) : <p className="tg-p" aria-live="polite"><Words text={step.text} base={200} step={22} /></p>}
                 {step.bullets && (
                   <ul className="tg-ul">
                     {step.bullets.map((b, i) => (
