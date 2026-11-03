@@ -390,4 +390,17 @@ export const GUIDE_CSS = `
   .tg-d-pro-filedot,.tg-d-pro-script,.tg-d-pro-arrows svg,
   .tg-d-pro-price{animation:none!important;transform:none!important;filter:none!important}
 }
+
+/* Strong but restrained privacy treatment within the original gold guide. */
+.tg-privacy-emphasis{
+  display:flex;align-items:flex-start;gap:12px;margin:12px 0 14px;padding:15px 14px;
+  border:1px solid rgba(124,85,29,.56);border-left:4px solid #9e722e;border-radius:15px;
+  color:#2b2014;background:linear-gradient(125deg,rgba(255,247,222,.95),rgba(230,194,121,.52));
+  box-shadow:0 10px 28px rgba(91,57,20,.12),inset 0 1px rgba(255,255,255,.58);
+}
+.tg-privacy-icon{width:35px;height:35px;flex:none;display:grid;place-items:center;
+ border-radius:11px;background:#60401e;color:#f5dfac;box-shadow:0 4px 13px rgba(78,46,17,.18)}
+.tg-privacy-emphasis strong{font-size:11px;line-height:1.45;letter-spacing:.06em;color:#503410;display:block}
+.tg-privacy-emphasis p{font-size:12px;line-height:1.6;margin:5px 0 0;color:#4e3a27}
+@media(max-width:639px){.tg-privacy-emphasis{padding:11px 10px;gap:9px}.tg-privacy-icon{width:30px;height:30px}.tg-privacy-emphasis p{font-size:11px}}
 `;
