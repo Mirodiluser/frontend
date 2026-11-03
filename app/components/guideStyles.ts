@@ -403,4 +403,12 @@ export const GUIDE_CSS = `
 .tg-privacy-emphasis strong{font-size:11px;line-height:1.45;letter-spacing:.06em;color:#503410;display:block}
 .tg-privacy-emphasis p{font-size:12px;line-height:1.6;margin:5px 0 0;color:#4e3a27}
 @media(max-width:639px){.tg-privacy-emphasis{padding:11px 10px;gap:9px}.tg-privacy-icon{width:30px;height:30px}.tg-privacy-emphasis p{font-size:11px}}
+
+.tg-d-privacy{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;height:100%;width:100%}
+.tg-d-privacy-ring{position:absolute;width:100px;height:100px;border-radius:50%;border:1px solid rgba(187,135,53,.33);
+box-shadow:0 0 0 13px rgba(219,173,86,.09),0 0 0 27px rgba(219,173,86,.045);animation:tg-privacy-pulse 3.6s ease-in-out infinite}
+.tg-d-privacy-shield{position:relative;color:#674322;filter:drop-shadow(0 6px 9px rgba(114,72,28,.2));animation:tg-wallet-float 3.6s ease-in-out infinite}
+.tg-d-privacy-label{font-size:10px;letter-spacing:.22em;font-weight:800;color:#8d642d}
+@keyframes tg-privacy-pulse{0%,100%{transform:scale(.95);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+@media(prefers-reduced-motion:reduce){.tg-d-privacy-ring,.tg-d-privacy-shield{animation:none!important}}
 `;
