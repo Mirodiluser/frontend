@@ -135,6 +135,7 @@ export default function Home() {
   const [authName, setAuthName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState('');
+  const [authAccountNotFound,setAuthAccountNotFound]=useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   const [showShop, setShowShop] = useState(false);
@@ -417,8 +418,9 @@ export default function Home() {
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
+    setAuthAccountNotFound(false);
 
-    if (authPassword.length < 6) {
+    if (authMode === 'register' && authPassword.length < 6) {
       setAuthError('Parol kamida 6 ta belgidan iborat boʻlishi shart');
       return;
     }
@@ -440,6 +442,7 @@ export default function Home() {
       const data = await res.json();
 
       if (!res.ok || data.error) {
+        setAuthAccountNotFound(authMode === 'login' && data.code === 'ACCOUNT_NOT_FOUND');
         setAuthError(data.error || 'Xatolik yuz berdi');
         setIsAuthLoading(false);
         return;
@@ -2019,8 +2022,9 @@ export default function Home() {
                 </div>
 
                 {authError && (
-                  <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 text-xs font-semibold text-center">
-                    {authError}
+                  <div role="alert" className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-700 text-xs font-semibold text-center space-y-2">
+                    <p>{authError}</p>
+                    {authAccountNotFound && authMode === 'login' && <button type="button" onClick={()=>{setAuthMode('register');setAuthError('');setAuthAccountNotFound(false);setAuthPassword('');}} className="inline-flex items-center gap-1.5 rounded-lg bg-[#C79A3E] px-3 py-2 text-[#20180C] font-bold hover:bg-[#D6AC58] transition-colors"><UserPlus className="w-3.5 h-3.5"/> Roʻyxatdan oʻtish</button>}
                   </div>
                 )}
 
@@ -2051,7 +2055,7 @@ export default function Home() {
                     Akkauntingiz yoʻqmi?{' '}
                     <button 
                       type="button"
-                      onClick={() => { setAuthMode('register'); setAuthError(''); }} 
+                      onClick={() => { setAuthMode('register'); setAuthError(''); setAuthAccountNotFound(false); }} 
                       className="text-[var(--accent)] font-bold hover:underline ml-1 cursor-pointer"
                     >
                       Roʻyxatdan oʻtish
@@ -2062,7 +2066,7 @@ export default function Home() {
                     Allaqachon hisobingiz bormi?{' '}
                     <button 
                       type="button"
-                      onClick={() => { setAuthMode('login'); setAuthError(''); }} 
+                      onClick={() => { setAuthMode('login'); setAuthError(''); setAuthAccountNotFound(false); }} 
                       className="text-[var(--accent)] font-bold hover:underline ml-1 cursor-pointer"
                     >
                       Tizimga kirish
