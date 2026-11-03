@@ -11,7 +11,7 @@ const format=(value:number)=>new Intl.NumberFormat('uz-UZ').format(value);
 export default function UzsTopupPanel({apiUrl,balance,onCheckout}:Props){
  const [maximum,setMaximum]=useState(6000);
  useEffect(()=>{let alive=true;fetch(apiUrl+'/api/uzs/payment/config',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>{if(alive&&Number.isSafeInteger(x?.maximumAmount)&&x.maximumAmount>=2000)setMaximum(x.maximumAmount);}).catch(()=>{});return()=>{alive=false;};},[apiUrl]);
- const [raw,setRaw]=useState('2000');
+ const [raw,setRaw]=useState('');
  const [busy,setBusy]=useState(false);
  const entered=Number(raw);
  const valid=raw.trim()!==''&&Number.isSafeInteger(entered)&&entered>0&&entered<=maximum;
@@ -37,7 +37,7 @@ export default function UzsTopupPanel({apiUrl,balance,onCheckout}:Props){
    <div className="flex items-center gap-3 rounded-xl bg-[var(--input-bg)] border border-[var(--line)] px-4 py-3 focus-within:border-[#C79A3E]">
     <input id="uzs-topup-amount" type="number" inputMode="numeric" min="1" step="100" value={raw}
       onChange={e=>setRaw(e.target.value)}
-      className="flex-1 min-w-0 bg-transparent outline-none text-xl font-semibold text-[var(--text-main)]" placeholder="2000"/>
+      className="flex-1 min-w-0 bg-transparent outline-none text-xl font-semibold text-[var(--text-main)]" placeholder="Summani kiriting"/>
     <span className="text-sm font-medium text-[var(--gold-text)]">soʻm</span>
    </div>
    {needsMinimum&&<p className="text-xs font-medium text-amber-700">Minimal toʻlov 2 000 soʻm. Davom etsangiz 2 000 soʻmlik buyurtma yaratiladi.</p>}
