@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import type { LucideIcon } from 'lucide-react';
-import { ArrowRight, Check, Coins, Feather, FileText, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check, Wallet, Feather, FileText, FileType, RefreshCw, Sparkles, X } from 'lucide-react';
 import { GUIDE_CSS } from './guideStyles';
 import { DEMOS } from './GuideDemos';
 
@@ -64,8 +64,8 @@ export const GUIDE_STEPS: Step[] = [
     bullets: [
       'Kirill → Lotin yoki Lotin → Kirill yoʻnalishini tanlang',
       '25 MB gacha boʻlgan .DOCX faylni shu yerga yuklang',
-      'Narx avtomatik tangada chiqadi; balans yetmasa Doʻkon ochiladi',
-      'Fayl yuborilishi yakunlanmasa, tangalar yechilmaydi',
+      'Narx sahifalar soniga qarab soʻmda hisoblanadi: 1 sahifa — 400 soʻm',
+      'Fayl yuborilishi yakunlanmasa, balansdan mablagʻ yechilmaydi',
     ],
   },
   {
@@ -77,7 +77,7 @@ export const GUIDE_STEPS: Step[] = [
     text: 'Dissertatsiya, maqola va referatingizdagi imlo xatolarini topadi.',
     bullets: [
       'Faqat Word (.DOCX) fayli qabul qilinadi',
-      'Sahifalar soni avtomatik hisoblanadi: 1 sahifa = 1 tanga',
+      'Sahifalar soni avtomatik hisoblanadi: 1 sahifa = 400 soʻm',
       'Xato soʻzlar hujjatda sariq rang bilan belgilanadi',
       'Hujjatning qolgan qismi oʻzgarmaydi, tayyor faylni yuklab olasiz',
     ],
@@ -98,13 +98,14 @@ export const GUIDE_STEPS: Step[] = [
   {
     id: 'account',
     target: 'account',
-    icon: Coins,
-    title: 'Hisob va tangalar',
-    text: 'Imlo Tahrirchi va DOCX Transliteration PRO tangalar bilan ishlaydi. Balans va Doʻkon shu yerda.',
+    icon: Wallet,
+    title: 'Hisob va balans',
+    text: 'Imlo Tahrirchi va DOCX Transliteration PRO xizmatlari soʻmda hisoblanadi. Hisobingizni shu yerdan toʻldirasiz.',
     bullets: [
       '“Kirish” orqali hisobingizga kirasiz yoki roʻyxatdan oʻtasiz',
-      '“Doʻkon”da kerakli tanga miqdorini tanlab, kartaga aynan koʻrsatilgan summani oʻtkazasiz',
-      'Toʻlov tasdiqlangach, tangalar balansingizga qoʻshiladi',
+      '“Hisobni toʻldirish”da summani kiriting (eng kamida 2 000 soʻm)',
+      'Buyurtma 5 daqiqa amal qiladi. Aynan koʻrsatilgan summani toʻlang',
+      'Toʻlov tasdiqlangach, mablagʻ soʻmdagi balansingizga qoʻshiladi',
     ],
   },
   {
@@ -126,7 +127,7 @@ const GAP = 18;
 const EDGE = 16;
 const BP_MOBILE = 640;
 const N = GUIDE_STEPS.length;
-const CHIPS = ['Kirill ↔ Latin', 'DOCX PRO', 'Imlo Tahrirchi', 'Konverter', 'Tangalar'];
+const CHIPS = ['Kirill ↔ Latin', 'DOCX PRO', 'Imlo Tahrirchi', 'Konverter', 'Soʻmdagi balans'];
 
 /* ---------- pruzhina (semi-implicit Euler, kichik qadamlar bilan barqaror) ---------- */
 interface Sp { p: number; v: number }
