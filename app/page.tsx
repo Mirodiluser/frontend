@@ -40,6 +40,7 @@ import {
 } from 'lucide-react';
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import PaymentQrMethods from './components/PaymentQrMethods';
+import UzsTopupPanel from './components/UzsTopupPanel';
 import GuideTour from './components/GuideTour';
 import Ambient from './components/Ambient';
 import DocxTranslitPro from './components/DocxTranslitPro';
@@ -88,6 +89,8 @@ interface Toast {
   message: string;
 }
 
+const UZS_WALLET_MODE=process.env.NEXT_PUBLIC_UZS_WALLET_ENABLED==='true';
+
 export default function Home() {
   const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<'translit' | 'corrector' | 'converter'>('corrector');
@@ -123,6 +126,7 @@ export default function Home() {
 
   const [user, setUser] = useState<UserData | null>(null);
   const [userCoins, setUserCoins] = useState(0);
+  const [uzsBalance,setUzsBalance]=useState<number|null>(null);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -199,20 +203,28 @@ export default function Home() {
     localStorage.removeItem('tahrir_token');
     setUser(null);
     setUserCoins(0);
+    setUzsBalance(null);
     setWalletStats({ coins: 0, totalSpent: 0, totalPurchased: 0, totalTransactions: 0, transactions: [] });
   }, []);
 
   const loadUserWallet = useCallback(async () => {
     setIsLoadingWallet(true);
     try {
-      const res = await authFetch(`${API_URL}/api/wallet`);
+      const res = await authFetch(`${API_URL}${UZS_WALLET_MODE?'/api/uzs/wallet':'/api/wallet'}`);
       if (res.status === 401) {
         resetSession();
         addToast('warning', 'Sessiya tugadi', 'Iltimos, qaytadan tizimga kiring');
       } else if (res.ok) {
         const data = await res.json();
-        setWalletStats(data);
-        setUserCoins(data.coins);
+        if(UZS_WALLET_MODE){
+          if(Number.isSafeInteger(data.balanceUzs)&&data.balanceUzs>=0){
+            setUzsBalance(data.balanceUzs);
+            setUserCoins(data.balanceUzs);
+          }else{setUzsBalance(null);}
+        }else{
+          setWalletStats(data);
+          setUserCoins(data.coins);
+        }
       }
     } catch {
       console.error('Hamyonni yuklashda xatolik yuz berdi');
@@ -268,7 +280,7 @@ export default function Home() {
 
     const polling = setInterval(async () => {
       try {
-        const res = await authFetch(`${API_URL}/api/payment/check-status/${activeOrder.orderId}`);
+        const res = await authFetch(`${API_URL}${UZS_WALLET_MODE?'/api/uzs/payment/check-status':'/api/payment/check-status'}/${activeOrder.orderId}`);
         if (res.ok) {
           const data = await res.json();
           if (data.status === 'EXPIRED') {
@@ -279,7 +291,7 @@ export default function Home() {
           if (data.status === 'PAID') {
             clearInterval(timer);
             clearInterval(polling);
-            const totalGained = activeOrder.pkg.amount + (activeOrder.pkg.bonus || 0);
+            const totalGained = UZS_WALLET_MODE?activeOrder.exactAmount:activeOrder.pkg.amount + (activeOrder.pkg.bonus || 0);
             setSuccessCoins(totalGained);
             setPaymentSuccess(true);
             setActiveOrder(null);
@@ -296,6 +308,30 @@ export default function Home() {
       clearInterval(polling);
     };
   }, [activeOrder, paymentSuccess, user, loadUserWallet, addToast]);
+
+  const handleStartUzsPayment = async (amount:number) => {
+    if(!user){setShowShop(false);setAuthMode('login');setShowAuthModal(true);return;}
+    try{
+      const response=await authFetch(API_URL+'/api/uzs/payment/create-order',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({amount})
+      });
+      const data=await response.json().catch(()=>({}));
+      if(response.status===401){
+        resetSession();setShowShop(false);setAuthMode('login');setShowAuthModal(true);return;
+      }
+      if(!response.ok||typeof data.orderId!=='string'||
+        !Number.isSafeInteger(data.amount)||data.amount<2000){
+        addToast('error','Buyurtma xatosi',data.error||'Toʻlovni boshlash imkonsiz');return;
+      }
+      const paymentPackage:CoinPackage={
+        id:'uzs_wallet',amount:data.amount,numericPrice:data.amount,
+        priceUzs:formatPrice(data.amount)+' soʻm',priceUsd:'',iconType:'basic'
+      };
+      setActiveOrder({orderId:data.orderId,pkg:paymentPackage,exactAmount:data.amount});
+      setTimeLeft(300);setShowShop(false);
+    }catch{addToast('error','Server xatosi','Toʻlov serveriga ulanib boʻlmadi');}
+  };
 
   const handleStartPayment = async (pkg: CoinPackage) => {
     if (!user) {
@@ -642,8 +678,10 @@ export default function Home() {
     if (!file || !pageInfo) return;
     if (spellJob && spellJob.status!=='failed') return;
 
-    if (userCoins < pageInfo.requiredCoins) {
-      addToast('error', 'Yetarli tanga yoʻq!', `Kerak: ${pageInfo.requiredCoins} tanga, sizda: ${userCoins} tanga.`);
+    const requiredAmount=UZS_WALLET_MODE?pageInfo.pages*400:pageInfo.requiredCoins;
+    if ((UZS_WALLET_MODE&&uzsBalance===null)||userCoins < requiredAmount) {
+      addToast('error', UZS_WALLET_MODE?'Mablagʻ yetarli emas!':'Yetarli tanga yoʻq!',
+        UZS_WALLET_MODE?`Kerak: ${requiredAmount} soʻm, balans: ${uzsBalance??0} soʻm.`:`Kerak: ${pageInfo.requiredCoins} tanga, sizda: ${userCoins} tanga.`);
       setTimeout(() => setShowShop(true), 900);
       return;
     }
@@ -688,7 +726,7 @@ export default function Home() {
         a.remove();
         setTimeout(() => window.URL.revokeObjectURL(url), 1000);
 
-        addToast('success', 'Tayyor!', 'Hujjat muvaffaqiyatli tahrirlandi. Narxi: '+pageInfo.requiredCoins+' tanga.');
+        addToast('success', 'Tayyor!', 'Hujjat muvaffaqiyatli tahrirlandi. Narxi: '+(UZS_WALLET_MODE?pageInfo.pages*400+' soʻm':pageInfo.requiredCoins+' tanga')+'.');
         await loadUserWallet();
       } else {
         const errorData = await res.json().catch(() => ({}));
@@ -901,7 +939,7 @@ export default function Home() {
                   className="tahrir-navlink flex items-center gap-2 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
                 >
                   <Coins className="w-4 h-4 text-[var(--accent)] animate-pulse" />
-                  <span className="text-xs sm:text-sm font-semibold text-[var(--gold-text)]">{userCoins} tanga</span>
+                  <span className="text-xs sm:text-sm font-semibold text-[var(--gold-text)]">{UZS_WALLET_MODE?formatPrice(userCoins)+' soʻm':userCoins+' tanga'}</span>
                 </motion.button>
 
                 <div className="tahrir-nav-account flex items-center gap-2 py-1.5 px-3 rounded-xl">
@@ -938,7 +976,7 @@ export default function Home() {
               className="tahrir-nav-shop px-4 sm:px-5 py-2 text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Coins className="w-3.5 h-3.5" />
-              <span>Doʻkon</span>
+              <span>{UZS_WALLET_MODE?'Hisobni toʻldirish':'Doʻkon'}</span>
             </motion.button>
             </div>
           </motion.div>
@@ -1181,7 +1219,7 @@ export default function Home() {
                       <FileText className="w-4 h-4 text-[var(--accent)]" />
                       Hujjatni tahrir qilish (Dissertatsiya, Maqola, Referat)
                     </h3>
-                    <span className="text-xs text-[var(--text-muted)]">1 sahifa = 1 tanga</span>
+                    <span className="text-xs text-[var(--text-muted)]">{UZS_WALLET_MODE?'1 sahifa = 400 soʻm':'1 sahifa = 1 tanga'}</span>
                   </div>
 
                   <div
@@ -1240,7 +1278,7 @@ export default function Home() {
                         ) : pageInfo && (
                           <div className="flex flex-col items-center gap-2">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#C79A3E]/10 border border-[#C79A3E]/30 text-xs text-[var(--gold-text)] font-medium">
-                              <span>💰 Narxi: <b>{pageInfo.requiredCoins} tanga</b></span>
+                              <span>💰 Narxi: <b>{UZS_WALLET_MODE?formatPrice(pageInfo.pages*400)+' soʻm':pageInfo.requiredCoins+' tanga'}</b></span>
                             </div>
                             {pageInfo.processingMode==='background'&&
                               <p className="text-xs font-medium text-[#765339]">
@@ -1531,9 +1569,9 @@ export default function Home() {
               <div className="flex items-center justify-between pb-3.5 border-b border-[var(--line)] shrink-0">
                 <div className="text-left">
                   <h2 className="text-lg sm:text-xl font-serif font-bold text-[var(--text-main)] flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-[var(--accent)]" /> Tanga Doʻkoni
+                    <Coins className="w-5 h-5 text-[var(--accent)]" /> {UZS_WALLET_MODE?'Hisobni toʻldirish':'Tanga Doʻkoni'}
                   </h2>
-                  <p className="text-sm text-[var(--text-muted)] mt-1">Kerakli sahifalar hajmiga mos eng qulay paketni tanlang</p>
+                  <p className="text-sm text-[var(--text-muted)] mt-1">{UZS_WALLET_MODE?'Hisobingizni kerakli miqdorda toʻldiring':'Kerakli sahifalar hajmiga mos eng qulay paketni tanlang'}</p>
                 </div>
                 <button 
                   onClick={() => setShowShop(false)} 
@@ -1544,6 +1582,7 @@ export default function Home() {
               </div>
 
               <div className="overflow-y-auto pr-1 py-4 space-y-3.5 flex-1 text-left">
+                {UZS_WALLET_MODE ? <UzsTopupPanel balance={uzsBalance} onCheckout={handleStartUzsPayment}/> : <>
                 
                 <div className="tahrir-shop-balance bg-[var(--surface-alt)] border border-[#C79A3E]/30 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -1630,9 +1669,10 @@ export default function Home() {
                   })}
                 </div>
 
+                </>}
               </div>
 
-              <div className="tahrir-shop-stats pt-3 border-t border-[var(--line)] grid grid-cols-3 gap-2 text-center text-xs text-[var(--text-muted)] shrink-0">
+              {!UZS_WALLET_MODE&&<div className="tahrir-shop-stats pt-3 border-t border-[var(--line)] grid grid-cols-3 gap-2 text-center text-xs text-[var(--text-muted)] shrink-0">
                 <div className="bg-[var(--surface-alt)] p-1.5 rounded-xl border border-[var(--line)]">
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalPurchased}</p>
                   <p className="text-xs">Sotib olingan</p>
@@ -1645,7 +1685,7 @@ export default function Home() {
                   <p className="text-[var(--gold-text)] font-bold text-xs">{walletStats.totalTransactions}</p>
                   <p className="text-xs">Amallar</p>
                 </div>
-              </div>
+              </div>}
 
             </motion.div>
           </div>
@@ -1654,7 +1694,7 @@ export default function Home() {
 
       {/* SOTIB OLISHNI TASDIQLASH (PAKET OYNASI) */}
       <AnimatePresence>
-        {selectedPackage && (
+        {selectedPackage && !UZS_WALLET_MODE && (
           <div 
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#3a3418]/40 backdrop-blur-xl p-4"
             onClick={() => setSelectedPackage(null)}
@@ -1792,7 +1832,7 @@ export default function Home() {
                     ⚠️ MUHIM OGOHLANTIRISH:
                   </p>
                   <p className="mt-0.5 text-amber-900 text-[11.5px]">
-                    Hisobingizga tangalar avtomatik tarzda tushishi uchun aynan <b className="text-[var(--text-main)] underline decoration-amber-600 underline-offset-2">{formatPrice(activeOrder.exactAmount)} so‘m</b> to‘lov qiling!
+                    Hisobingizga {UZS_WALLET_MODE?'soʻm':'tangalar'} avtomatik tarzda tushishi uchun aynan <b className="text-[var(--text-main)] underline decoration-amber-600 underline-offset-2">{formatPrice(activeOrder.exactAmount)} so‘m</b> to‘lov qiling!
                   </p>
                 </div>
               </div>
@@ -1862,12 +1902,12 @@ export default function Home() {
               </h3>
               
               <p className="mt-2 text-xs text-emerald-800 leading-relaxed">
-                Hisobingiz muvaffaqiyatli toʻldirildi. Tizim avtomatik tarzda tangalarni faollashtirdi.
+                Hisobingiz muvaffaqiyatli toʻldirildi. Tizim avtomatik tarzda {UZS_WALLET_MODE?'soʻm mablagʻini':'tangalarni'} faollashtirdi.
               </p>
 
               <div className="mt-5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-600/30 flex items-center justify-center gap-2">
                 <Coins className="w-5 h-5 text-emerald-700" />
-                <span className="text-lg font-bold text-[var(--text-main)]">+{successCoins} tanga qoʻshildi</span>
+                <span className="text-lg font-bold text-[var(--text-main)]">+{formatPrice(successCoins)} {UZS_WALLET_MODE?'soʻm':'tanga'} qoʻshildi</span>
               </div>
 
               <button
