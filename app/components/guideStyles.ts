@@ -194,6 +194,22 @@ export const GUIDE_CSS = `
 @keyframes tg-d-dot{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
 
 .tg-d-coins{display:flex;align-items:center;gap:18px}
+.tg-d-wallet{
+  position:relative;width:66px;height:66px;border-radius:19px;
+  display:flex;align-items:center;justify-content:center;color:#68421f;
+  background:linear-gradient(145deg,#fff4d3 0%,#e9c47d 45%,#bf8b43 100%);
+  box-shadow:0 12px 30px rgba(115,72,29,.25),inset 0 1.5px 0 rgba(255,249,230,.9),inset 0 -2px 5px rgba(114,68,30,.18);
+  border:1px solid rgba(255,247,216,.75);
+  animation:tg-wallet-float 3.6s ease-in-out infinite;
+}
+.tg-d-wallet::after{
+  content:'';position:absolute;inset:7px;border:1px solid rgba(132,87,42,.22);
+  border-radius:13px;pointer-events:none;
+}
+@keyframes tg-wallet-float{
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-5px) rotate(2deg)}
+}
 .tg-d-coin{position:relative;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;color:#5a3a1a;
   background:radial-gradient(circle at 30% 25%,#fff6df,#E6C16E 42%,#8A6420);box-shadow:0 12px 30px rgba(199,154,62,.4),inset 0 -4px 8px rgba(90,58,26,.35);
   animation:tg-d-spin 3.6s cubic-bezier(.6,0,.3,1) infinite;transform-style:preserve-3d}
@@ -216,7 +232,7 @@ export const GUIDE_CSS = `
 @media (prefers-reduced-motion:reduce){
   .tg-root,.tg-hole{transition:none}
   .tg-blob,.tg-dust i,.tg-ring,.tg-glow,.tg-scan::after,.tg-wave,.tg-mark .pr,.tg-mark .core svg,.tg-chip,.tg-next::after,
-  .tg-d-pill,.tg-d-tab,.tg-d-wr::before,.tg-d-badge,.tg-d-coin,.tg-d-drop,.tg-d-flow i,.tg-title .ai{animation:none!important}
+  .tg-d-pill,.tg-d-tab,.tg-d-wr::before,.tg-d-badge,.tg-d-coin,.tg-d-wallet,.tg-d-drop,.tg-d-flow i,.tg-title .ai{animation:none!important}
   .tg-w,.tg-li,.tg-glass,.tg-hero-wrap,.tg-title .ch,.tg-sub,.tg-cta,.tg-chip{animation-duration:.01ms!important;animation-delay:0s!important}
   .tg-d-wr::before{transform:scaleX(1)}
 }
