@@ -448,13 +448,13 @@ export default function Home() {
       localStorage.setItem('tahrir_user', JSON.stringify(data.user));
       localStorage.setItem('tahrir_token', data.token);
       setUser(data.user);
-      setUserCoins(data.user.coins);
+      setUserCoins(UZS_WALLET_MODE?0:data.user.coins);
       setShowAuthModal(false);
       setAuthIdentifier('');
       setAuthPassword('');
       setAuthName('');
       loadUserWallet();
-      addToast('success', 'Muvaffaqiyatli!', authMode === 'login' ? 'Tizimga xush kelibsiz!' : 'Yangi hisob ochildi va +15 tanga berildi!');
+      addToast('success', 'Muvaffaqiyatli!', authMode === 'login' ? 'Tizimga xush kelibsiz!' : (UZS_WALLET_MODE?'Yangi hisob ochildi!':'Yangi hisob ochildi va +15 tanga berildi!'));
     } catch {
       setAuthError('Serverga ulanishda xatolik yuz berdi');
     } finally {
@@ -707,7 +707,7 @@ export default function Home() {
           throw new Error(data.error||'Katta DOCX tekshiruvi boshlanmadi');
         }
         setSpellJob({id:data.jobId,filename:file.name,status:'queued',progress:0});
-        addToast('info','Katta hujjat qabul qilindi','Hujjat serverda navbat bilan tekshiriladi. Tangalar hozircha yechilmadi.');
+        addToast('info','Katta hujjat qabul qilindi',(UZS_WALLET_MODE?'Hujjat serverda navbat bilan tekshiriladi. Mablagʻ hozircha yechilmadi.':'Hujjat serverda navbat bilan tekshiriladi. Tangalar hozircha yechilmadi.'));
         return;
       }
       const res = await authFetch(`${API_URL}/api/check-file`, {
@@ -1953,7 +1953,7 @@ export default function Home() {
                 <p className="text-xs text-[var(--text-muted)] mt-0.5">
                   {authMode === 'login' 
                     ? 'Oʻz balansingiz va tahrirlangan fayllaringizni boshqaring' 
-                    : 'Hoziroq roʻyxatdan oʻting va +15 tanga bepul oling!'}
+                    : (UZS_WALLET_MODE?'Hoziroq roʻyxatdan oʻting!':'Hoziroq roʻyxatdan oʻting va +15 tanga bepul oling!')}
                 </p>
               </div>
 
