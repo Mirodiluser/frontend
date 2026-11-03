@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import { Check, Wallet, FileText, FileType, RefreshCw, Sparkles } from 'lucide-react';
 
@@ -92,7 +92,7 @@ export function DocxProDemo() {
         </div>
         <div className="tg-d-pro-price">
           <Wallet size={15} strokeWidth={2} />
-          <span><strong>1 200</strong> soʻm</span>
+          <span>Balans orqali</span>
         </div>
         <small className="tg-d-pro-example">namuna</small>
       </div>
@@ -147,19 +147,6 @@ export function ConverterDemo() {
 }
 
 export function WalletDemo() {
-  const numRef = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    let raf = 0;
-    const loop = (now: number) => {
-      const t = (now % 3600) / 3600;
-      const p = Math.min(1, t / 0.52);
-      const e = 1 - Math.pow(1 - p, 3);
-      if (numRef.current) numRef.current.textContent = Math.round(2000 * e).toLocaleString('uz-UZ');
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, []);
   return (
     <div className="tg-d-coins" aria-hidden="true" style={{ position: 'relative' }}>
       {[0, 0.5, 1].map((d, i) => (
@@ -169,8 +156,8 @@ export function WalletDemo() {
         <Wallet size={28} strokeWidth={1.85} />
       </div>
       <div className="tg-d-num">
-        <span ref={numRef}>2 000</span>
-        <small>SOʻM · MINIMAL TOʻLOV</small>
+        <span>SOʻM</span>
+        <small>HISOBNI TOʻLDIRISH</small>
       </div>
     </div>
   );
