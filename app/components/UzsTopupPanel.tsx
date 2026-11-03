@@ -1,17 +1,20 @@
 'use client';
-import {useState} from 'react';
+import {useEffect,useState} from 'react';
 import {ArrowRight,Loader2,Wallet} from 'lucide-react';
 
 type Props={
+ apiUrl:string;
  balance:number|null;
  onCheckout:(amount:number)=>Promise<void>;
 };
 const format=(value:number)=>new Intl.NumberFormat('uz-UZ').format(value);
-export default function UzsTopupPanel({balance,onCheckout}:Props){
+export default function UzsTopupPanel({apiUrl,balance,onCheckout}:Props){
+ const [maximum,setMaximum]=useState(6000);
+ useEffect(()=>{let alive=true;fetch(apiUrl+'/api/uzs/payment/config',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(x=>{if(alive&&Number.isSafeInteger(x?.maximumAmount)&&x.maximumAmount>=2000)setMaximum(x.maximumAmount);}).catch(()=>{});return()=>{alive=false;};},[apiUrl]);
  const [raw,setRaw]=useState('2000');
  const [busy,setBusy]=useState(false);
  const entered=Number(raw);
- const valid=raw.trim()!==''&&Number.isSafeInteger(entered)&&entered>0&&entered<=10000000;
+ const valid=raw.trim()!==''&&Number.isSafeInteger(entered)&&entered>0&&entered<=maximum;
  const rounded=valid?Math.floor(entered/100)*100:0;
  const amount=valid?Math.max(2000,rounded):0;
  const needsMinimum=valid&&entered<2000;
@@ -39,7 +42,7 @@ export default function UzsTopupPanel({balance,onCheckout}:Props){
    </div>
    {needsMinimum&&<p className="text-xs font-medium text-amber-700">Minimal toʻlov 2 000 soʻm. Davom etsangiz 2 000 soʻmlik buyurtma yaratiladi.</p>}
    {needsRounding&&<p className="text-xs font-medium text-amber-700">Toʻlov summasi 100 soʻmlik aniqlikka yaxlitlanadi: {format(amount)} soʻm.</p>}
-   {!valid&&raw!==''&&<p className="text-xs font-medium text-rose-700">1 dan 10 000 000 gacha butun summa kiriting.</p>}
+   {!valid&&raw!==''&&<p className="text-xs font-medium text-rose-700">1 dan {format(maximum)} soʻmgacha butun summa kiriting.</p>}
   </div>
   <div className="rounded-xl bg-[var(--surface-alt)] border border-[var(--line)] p-4 flex items-center justify-between">
    <span className="text-xs font-medium text-[var(--text-muted)]">Toʻlov uchun</span>
