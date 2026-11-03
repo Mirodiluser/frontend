@@ -2,6 +2,7 @@
 
 import {useCallback,useEffect,useMemo,useState} from 'react';
 import Link from 'next/link';
+import UzsAdminOverview from './UzsAdminOverview';
 import {Activity,AlertTriangle,ArrowDownRight,ArrowLeft,ArrowUpRight,CheckCircle2,ChevronLeft,ChevronRight,Coins,Download,Eye,FileText,Filter,History,LockKeyhole,Minus,Plus,Receipt,RefreshCw,Search,ShieldCheck,ShoppingBag,TrendingUp,Undo2,Users,X} from 'lucide-react';
 
 type UserRow={id:number;identifier:string;name:string;coins:number;total_spent:number;total_purchased:number;created_at:string;suspicious?:boolean};
@@ -67,7 +68,7 @@ function Pager({offset,total,onChange,size=25}:{offset:number;total:number;onCha
   </div>;
 }
 
-export default function AdminPage(){
+function LegacyAdminPage(){
   const [tab,setTab]=useState<Tab>('users');
   const [revision,setRevision]=useState(0);
   const [metrics,setMetrics]=useState<Metric|null>(null);
@@ -471,4 +472,8 @@ export default function AdminPage(){
       </section>
     </div>}
   </main>;
+}
+
+export default function AdminPage(){
+  return process.env.NEXT_PUBLIC_UZS_WALLET_ENABLED==='true' ? <UzsAdminOverview/> : <LegacyAdminPage/>;
 }

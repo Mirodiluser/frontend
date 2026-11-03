@@ -5,7 +5,8 @@ import {motion,useReducedMotion} from 'framer-motion';
 import {ArrowRight,CheckCircle2,Coins,FileText,FileUp,Loader2,Sparkles,Trash2} from 'lucide-react';
 
 type Direction='cyr2lat'|'lat2cyr';
-type Quote={pages:number;requiredCoins:number};
+type Quote={pages:number;requiredCoins:number;requiredUzs?:number};
+const UZS_MODE=process.env.NEXT_PUBLIC_UZS_WALLET_ENABLED==='true';
 type Props={
   apiUrl:string;
   loggedIn:boolean;
@@ -51,7 +52,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
       if(!response.ok)throw new Error(data.error||'Sahifalar hisoblanmadi');
       if(!Number.isSafeInteger(data.pages)||!Number.isSafeInteger(data.requiredCoins)||
          data.pages<1||data.pages>MAX_PAGES||data.requiredCoins<1)throw new Error('Sahifalar soni notoʻgʻri');
-      if(!controller.signal.aborted)setQuote({pages:data.pages,requiredCoins:data.requiredCoins});
+      if(!controller.signal.aborted)setQuote({pages:data.pages,requiredCoins:data.requiredCoins,requiredUzs:Number.isSafeInteger(data.requiredUzs)?data.requiredUzs:data.pages*400});
     }catch(e){
       if(!controller.signal.aborted){
         setQuote(null);
@@ -83,8 +84,9 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
   const convert=async()=>{
     if(!file||!quote||loadingQuote||working)return;
     if(!loggedIn){openLogin();return;}
-    if(coins<quote.requiredCoins){
-      notify('warning','Tangalar yetarli emas',quote.requiredCoins+' tanga kerak. Hozirgi balans: '+coins+'.');
+    if(coins<(UZS_MODE?(quote.requiredUzs??quote.pages*400):quote.requiredCoins)){
+      notify('warning',UZS_MODE?'Mablagʻ yetarli emas':'Tangalar yetarli emas',
+        (UZS_MODE?(quote.requiredUzs??quote.pages*400)+' soʻm':quote.requiredCoins+' tanga')+' kerak. Hozirgi balans: '+coins+'.');
       openShop();return;
     }
     setError('');setWorking(true);
@@ -188,7 +190,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
             {loadingQuote ? (
               <><Loader2 size={16} className="animate-spin" /><span>Narx hisoblanmoqda...</span></>
             ) : quote ? (
-              <><Coins size={18}/><span>Narxi: <strong>{quote.requiredCoins} tanga</strong></span></>
+              <><Coins size={18}/><span>Narxi: <strong>{UZS_MODE?(quote.requiredUzs??quote.pages*400)+' soʻm':quote.requiredCoins+' tanga'}</strong></span></>
             ) : null}
           </div>
         )}
