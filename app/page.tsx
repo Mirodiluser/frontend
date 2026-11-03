@@ -1984,7 +1984,7 @@ export default function Home() {
                 </h3>
                 <p className="text-xs text-[var(--text-muted)] mt-0.5">
                   {authMode === 'login' 
-                    ? 'Oʻz balansingiz va tahrirlangan fayllaringizni boshqaring' 
+                    ? 'Balansingiz va xizmatlardan foydalanishni boshqaring' 
                     : (UZS_WALLET_MODE?'Hoziroq roʻyxatdan oʻting!':'Hoziroq roʻyxatdan oʻting va +15 tanga bepul oling!')}
                 </p>
               </div>
