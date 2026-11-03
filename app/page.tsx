@@ -1582,7 +1582,7 @@ export default function Home() {
               </div>
 
               <div className="overflow-y-auto pr-1 py-4 space-y-3.5 flex-1 text-left">
-                {UZS_WALLET_MODE ? <UzsTopupPanel balance={uzsBalance} onCheckout={handleStartUzsPayment}/> : <>
+                {UZS_WALLET_MODE ? <UzsTopupPanel apiUrl={API_URL} balance={uzsBalance} onCheckout={handleStartUzsPayment}/> : <>
                 
                 <div className="tahrir-shop-balance bg-[var(--surface-alt)] border border-[#C79A3E]/30 rounded-2xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
