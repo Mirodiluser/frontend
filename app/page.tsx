@@ -42,6 +42,7 @@ import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCo
 import PaymentQrMethods from './components/PaymentQrMethods';
 import UzsTopupPanel from './components/UzsTopupPanel';
 import GuideTour from './components/GuideTour';
+import GoogleSignIn from './components/GoogleSignIn';
 import Ambient from './components/Ambient';
 import DocxTranslitPro from './components/DocxTranslitPro';
 import { analyzeLatin, cyrillicToLatin, countWords } from './lib/uzTranslit';
@@ -463,6 +464,34 @@ export default function Home() {
     } finally {
       setIsAuthLoading(false);
     }
+  };
+
+  const handleGoogleCredential = async (credential:string) => {
+    if(isAuthLoading)return;
+    setAuthAccountNotFound(false);
+    setAuthError('');
+    setIsAuthLoading(true);
+    try{
+      const res=await fetch(API_URL+'/api/auth/google',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({credential})
+      });
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||!data.token||!data.user){
+        setAuthError(data.error||'Google orqali kirish amalga oshmadi.');
+        return;
+      }
+      localStorage.setItem('tahrir_user',JSON.stringify(data.user));
+      localStorage.setItem('tahrir_token',data.token);
+      setUser(data.user);
+      setUserCoins(UZS_WALLET_MODE?0:data.user.coins);
+      setShowAuthModal(false);
+      setAuthIdentifier('');setAuthPassword('');setAuthName('');
+      loadUserWallet();
+      addToast('success','Xush kelibsiz!',data.created?'Google orqali hisob yaratildi.':'Google orqali kirdingiz.');
+    }catch{
+      setAuthError('Google bilan bogʻlanib boʻlmadi. Qayta urinib koʻring.');
+    }finally{setIsAuthLoading(false);}
   };
 
   const handleLogout = () => {
@@ -1960,6 +1989,12 @@ export default function Home() {
                 </p>
               </div>
 
+              <GoogleSignIn onCredential={(credential)=>{void handleGoogleCredential(credential);}} disabled={isAuthLoading}/>
+              {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && (
+                <div className="flex items-center gap-3 my-4 text-[10px] font-semibold tracking-wider text-[var(--text-muted)]">
+                  <span className="h-px flex-1 bg-[var(--line)]"/><span>YOKI EMAIL / TELEFON ORQALI</span><span className="h-px flex-1 bg-[var(--line)]"/>
+                </div>
+              )}
               <form onSubmit={handleAuthSubmit} className="space-y-3">
                 {authMode === 'register' && (
                   <div>
