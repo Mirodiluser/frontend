@@ -64,7 +64,7 @@ export const GUIDE_STEPS: Step[] = [
     bullets: [
       'Kirill → Lotin yoki Lotin → Kirill yoʻnalishini tanlang',
       '25 MB gacha boʻlgan .DOCX faylni shu yerga yuklang',
-      'Narx sahifalar soniga qarab soʻmda hisoblanadi: 1 sahifa — 400 soʻm',
+      'Toʻlov shaxsiy hisobingizdagi soʻm balansidan amalga oshiriladi',
       'Fayl yuborilishi yakunlanmasa, balansdan mablagʻ yechilmaydi',
     ],
   },
@@ -77,7 +77,7 @@ export const GUIDE_STEPS: Step[] = [
     text: 'Dissertatsiya, maqola va referatingizdagi imlo xatolarini topadi.',
     bullets: [
       'Faqat Word (.DOCX) fayli qabul qilinadi',
-      'Sahifalar soni avtomatik hisoblanadi: 1 sahifa = 400 soʻm',
+      'Sahifalar soni avtomatik hisoblanadi va xizmat narxi koʻrsatiladi',
       'Xato soʻzlar hujjatda sariq rang bilan belgilanadi',
       'Hujjatning qolgan qismi oʻzgarmaydi, tayyor faylni yuklab olasiz',
     ],
@@ -103,7 +103,7 @@ export const GUIDE_STEPS: Step[] = [
     text: 'Imlo Tahrirchi va DOCX Transliteration PRO xizmatlari soʻmda hisoblanadi. Hisobingizni shu yerdan toʻldirasiz.',
     bullets: [
       '“Kirish” orqali hisobingizga kirasiz yoki roʻyxatdan oʻtasiz',
-      '“Hisobni toʻldirish”da summani kiriting (eng kamida 2 000 soʻm)',
+      '“Hisobni toʻldirish” boʻlimida kerakli summani kiriting',
       'Buyurtma 5 daqiqa amal qiladi. Aynan koʻrsatilgan summani toʻlang',
       'Toʻlov tasdiqlangach, mablagʻ soʻmdagi balansingizga qoʻshiladi',
     ],
