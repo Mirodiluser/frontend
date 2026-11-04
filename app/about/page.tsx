@@ -89,6 +89,27 @@ export default function AboutTahrirAi() {
           </div>
         </section>
 
+        <section className="mt-16 sm:mt-20" aria-labelledby="search-tools-title">
+          <h2 id="search-tools-title" className="font-serif text-3xl font-bold">
+            Oʻzbek matni bilan ishlash vositalari
+          </h2>
+          <p className="mt-3 max-w-[710px] text-sm leading-7 text-[#E8C9AA]">
+            Har bir vosita qanday ishlashi, qaysi fayllar mos kelishi va natijani qanday olish haqida qoʻshimcha maʼlumot.
+          </p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <Link href="/imlo-tekshirish" className="rounded-[20px] border border-[#F3C794]/30 bg-[#4A3022]/65 p-5 transition hover:border-[#F3C794]/70 hover:bg-[#62402A]">
+              <h3 className="text-lg font-bold text-[#FFE7C6]">Oʻzbekcha imlo tekshirish</h3>
+              <p className="mt-2 text-sm leading-6 text-[#E8C9AA]">Word DOCX hujjatidagi imlo xatolarini belgilash va tekshirilgan faylni olish.</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#F5CB91]">Batafsil <ArrowRight size={15}/></span>
+            </Link>
+            <Link href="/kirill-lotin" className="rounded-[20px] border border-[#F3C794]/30 bg-[#4A3022]/65 p-5 transition hover:border-[#F3C794]/70 hover:bg-[#62402A]">
+              <h3 className="text-lg font-bold text-[#FFE7C6]">Kirill–lotin transliteratsiya</h3>
+              <p className="mt-2 text-sm leading-6 text-[#E8C9AA]">Oʻzbek matni va DOCX hujjatlarini ikki yozuv orasida oʻgirish.</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#F5CB91]">Batafsil <ArrowRight size={15}/></span>
+            </Link>
+          </div>
+        </section>
+
         <section className="mt-16 rounded-[24px] border border-[#F2C894]/25 bg-[#29180F]/40 p-6 sm:p-9" aria-labelledby="questions-title">
           <h2 id="questions-title" className="font-serif text-3xl font-bold">Ko‘p beriladigan savollar</h2>
           <dl className="mt-7 space-y-7">
@@ -108,8 +129,8 @@ export default function AboutTahrirAi() {
             <div>
               <dt className="text-base font-bold text-[#FFE7C6]">DOCX hujjatlar uchun tekshirish pullikmi?</dt>
               <dd className="mt-2 text-sm leading-7 text-[#E8C6A6]">
-                Ayrim DOCX xizmatlari tangalar orqali hisoblanadi. Aniq narx hujjat yuklangach,
-                ish boshlanishidan oldin ko‘rsatiladi.
+                Ayrim DOCX xizmatlari soʻmda hisoblanadi. Aniq narx hujjat tanlangach,
+                ish boshlanishidan oldin koʻrsatiladi.
               </dd>
             </div>
             <div>
