@@ -10,6 +10,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: siteUrl + "/imlo-tekshirish",
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: siteUrl + "/kirill-lotin",
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
       url: siteUrl + "/about",
       changeFrequency: "monthly",
       priority: 0.6,
