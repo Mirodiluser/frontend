@@ -7,8 +7,8 @@ import {Check, Copy, QrCode} from 'lucide-react';
 // Keeping the matrices in source avoids remote image hosting or third-party tracking.
 const CODES = {
   click: {
-    size: 49,
-    rows: '1fd326b0a497f 1048e22185f41 1754347d4835d 174463a775a5d 1755807f2305d 104b2d475cc41 1fd555555557f 00131cc4d5100 00c91c7e5a755 0d133a8320bdd 04cf4dc61a969 00117724d437a 0edd21f496eb6 0db13c71a8870 0763892f03b09 1a0f29c31642d 15714fb7c2a61 1c1e9d95b1394 1a54b984876cd 113fefa0bff7b 004b605dcfe64 0619fe7bff7d4 07f169fdaf7f7 0f1d8645c4319 155902d701158 071795c55bb13 05f2397d745ff 0ba45dd1c6cb5 1865e5a957bfb 150c29b7277f3 13df76ae3454e 0e85afe8af183 1f5e8a4d89159 04084f0b77cab 1b489032cde38 17b473fbaf617 0edebfeaeffae 020865c71aae2 08c5de1d2695f 0e0d1c6f1bbf0 1c7803fcff7f1 0012b1457ff18 1fc6d0575fd5d 105ae7c4f2d19 1740b2fc87ff6 174c84f13fdb3 174978494d655 10412e92b0cf1 1fce0b22bdf09'.split(' '),
+    size: 37,
+    rows: '1fd14d6d7f 105b5baf41 174c150d5d 175a1e7a5d 17436c575d 104492d841 1fd555557f 0015af0600 16e452c54b 1fb238acae 17fee50b48 1c89e6689c 034b041edb 0d9f315b78 1df2005855 038a0e1232 1adc1f0f1e 11b93b9817 07c831b71b 1e9f3b8022 11ee9f0535 1f248e6508 015f80a0e2 130974dc9c 12f724a1f4 06831e0ab7 0cc67352fa 179914b311 05e164adf5 00159ef915 1fd0ab8955 105b620710 17458415fa 175164f9db 175b52a8d2 1048504c70 1fdababc17'.split(' '),
     title: 'Click', gradient: 'from-[#0079fa] to-[#00b5fa]', tag: 'Click orqali'
   },
   payme: {
@@ -29,6 +29,14 @@ function PaymentCode({method}: {method: keyof typeof CODES}) {
         const on=(BigInt('0x'+row)&(BigInt(1)<<BigInt(size-x-1)))!==BigInt(0);
         return on?<rect key={`${y}-${x}`} x={x+4} y={y+4} width="1" height="1" fill="#080808"/>:null;
       }))}
+      {method==='click' && (
+        <g aria-hidden="true">
+          <circle cx={size/2+4} cy={size/2+4} r="5.9" fill="#fff"/>
+          <rect x={size/2} y={size/2} width="8" height="8" rx="3.4"
+            transform={`rotate(45 ${size/2+4} ${size/2+4})`} fill="#087cf6"/>
+          <circle cx={size/2+4} cy={size/2+4} r="1.45" fill="#fff"/>
+        </g>
+      )}
     </svg>
   );
 }
@@ -39,7 +47,7 @@ export default function PaymentQrMethods() {
   const item=CODES[selected];
   const copyPaymentData=async()=>{
     const value=selected==='click'
-      ? 'https://my.click.uz/clickp2p/4988AF869F5ACCB9600943BB680A3C335732B454A68BA0B2541DE5C6CCC7FE96'
+      ? 'https://my.click.uz/clickp2p/4B93BE8781CA620547655EA4223BCADD0DA84F8C31F3DD416914653CF798610A'
       : '50507049072656567940';
     try {await navigator.clipboard.writeText(value);setCopied(true);window.setTimeout(()=>setCopied(false),2000);} catch {/* Clipboard permission can be denied. */}
   };
