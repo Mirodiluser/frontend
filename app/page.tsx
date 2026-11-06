@@ -328,7 +328,7 @@ export default function Home() {
       setActiveOrder({orderId:cached.orderId,pkg,exactAmount:cached.amount,
         createdAt:cached.createdAt,expiresAt:cached.expiresAt});
     }catch{}
-  },[user?.id,activeOrder]);
+  },[user?.id]);
   useEffect(()=>{
     if(!UZS_WALLET_MODE||!activeOrder||!user?.id)return;
     try{localStorage.setItem('tahrir_pending_uzs_order',JSON.stringify({
