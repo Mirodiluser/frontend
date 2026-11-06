@@ -41,6 +41,7 @@ import {
 import FlexibleCoinOffer, {type FlexibleCoinQuote} from './components/FlexibleCoinOffer';
 import PaymentQrMethods from './components/PaymentQrMethods';
 import UzsTopupPanel from './components/UzsTopupPanel';
+import UzsPaymentExperience from './components/UzsPaymentExperience';
 import GuideTour from './components/GuideTour';
 import GoogleSignIn from './components/GoogleSignIn';
 import Ambient from './components/Ambient';
@@ -155,6 +156,8 @@ export default function Home() {
     orderId: string;
     pkg: CoinPackage;
     exactAmount: number;
+    createdAt?:string;
+    expiresAt?:string;
   } | null>(null);
   const [timeLeft, setTimeLeft] = useState(300);
   const [cardCopied, setCardCopied] = useState(false);
@@ -266,7 +269,7 @@ export default function Home() {
 
   // Taymer va to'lovni avtomatik tekshirish
   useEffect(() => {
-    if (!activeOrder || paymentSuccess) return;
+    if (!activeOrder || paymentSuccess || UZS_WALLET_MODE) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -311,6 +314,29 @@ export default function Home() {
     };
   }, [activeOrder, paymentSuccess, user, loadUserWallet, addToast]);
 
+  // Keep a checkout accessible after closing the modal or refreshing the tab.
+  useEffect(()=>{
+    if(!UZS_WALLET_MODE||!user?.id||activeOrder)return;
+    try{
+      const raw=localStorage.getItem('tahrir_pending_uzs_order');
+      if(!raw)return;
+      const cached=JSON.parse(raw);
+      if(cached.userId!==user.id||typeof cached.orderId!=='string'||
+         !Number.isSafeInteger(cached.amount)||cached.amount<2000)return;
+      const pkg:CoinPackage={id:'uzs_wallet',amount:cached.amount,numericPrice:cached.amount,
+        priceUzs:formatPrice(cached.amount)+' soʻm',priceUsd:'',iconType:'basic'};
+      setActiveOrder({orderId:cached.orderId,pkg,exactAmount:cached.amount,
+        createdAt:cached.createdAt,expiresAt:cached.expiresAt});
+    }catch{}
+  },[user?.id,activeOrder]);
+  useEffect(()=>{
+    if(!UZS_WALLET_MODE||!activeOrder||!user?.id)return;
+    try{localStorage.setItem('tahrir_pending_uzs_order',JSON.stringify({
+      userId:user.id,orderId:activeOrder.orderId,amount:activeOrder.exactAmount,
+      createdAt:activeOrder.createdAt,expiresAt:activeOrder.expiresAt
+    }));}catch{}
+  },[activeOrder,user?.id]);
+
   const handleStartUzsPayment = async (amount:number) => {
     if(!user){setShowShop(false);setAuthMode('login');setShowAuthModal(true);return;}
     try{
@@ -322,6 +348,20 @@ export default function Home() {
       if(response.status===401){
         resetSession();setShowShop(false);setAuthMode('login');setShowAuthModal(true);return;
       }
+      if(!response.ok && data.code==='ORDER_ALREADY_ACTIVE'&&typeof data.orderId==='string'){
+        const previous=await authFetch(API_URL+'/api/uzs/payment/check-status/'+encodeURIComponent(data.orderId));
+        if(previous.ok){
+          const old=await previous.json();
+          if(Number.isSafeInteger(old.amount)&&old.amount>=2000){
+            const pkg:CoinPackage={id:'uzs_wallet',amount:old.amount,numericPrice:old.amount,
+              priceUzs:formatPrice(old.amount)+' soʻm',priceUsd:'',iconType:'basic'};
+            setActiveOrder({orderId:data.orderId,pkg,exactAmount:old.amount,
+              createdAt:old.createdAt,expiresAt:old.expiresAt});
+            setShowShop(false);
+            return;
+          }
+        }
+      }
       if(!response.ok||typeof data.orderId!=='string'||
         !Number.isSafeInteger(data.amount)||data.amount<2000){
         addToast('error','Buyurtma xatosi',data.error||'Toʻlovni boshlash imkonsiz');return;
@@ -330,8 +370,9 @@ export default function Home() {
         id:'uzs_wallet',amount:data.amount,numericPrice:data.amount,
         priceUzs:formatPrice(data.amount)+' soʻm',priceUsd:'',iconType:'basic'
       };
-      setActiveOrder({orderId:data.orderId,pkg:paymentPackage,exactAmount:data.amount});
-      setTimeLeft(300);setShowShop(false);
+      setActiveOrder({orderId:data.orderId,pkg:paymentPackage,exactAmount:data.amount,
+        createdAt:data.createdAt,expiresAt:data.expiresAt});
+      setTimeLeft(Number(data.expiresInSeconds)||1800);setShowShop(false);
     }catch{addToast('error','Server xatosi','Toʻlov serveriga ulanib boʻlmadi');}
   };
 
@@ -1798,7 +1839,21 @@ export default function Home() {
 
       {/* TOʻLOV JARAYONI VA KARTA REKVIZITLARI */}
       <AnimatePresence>
-        {activeOrder && (
+        {activeOrder && (UZS_WALLET_MODE?(
+          <UzsPaymentExperience
+            key={activeOrder.orderId} apiUrl={API_URL}
+            orderId={activeOrder.orderId} amount={activeOrder.exactAmount}
+            createdAt={activeOrder.createdAt} expiresAt={activeOrder.expiresAt}
+            cardNumber={CARD_NUMBER}
+            onClose={()=>setActiveOrder(null)}
+            onPaid={()=>{
+              setSuccessCoins(activeOrder.exactAmount);
+              setPaymentSuccess(true);
+              setActiveOrder(null);
+              if(user)void loadUserWallet();
+            }}
+          />
+        ):(
           <div 
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#191510]/65 backdrop-blur-xl p-2.5 sm:p-4 overflow-y-auto"
             onClick={() => setActiveOrder(null)}
@@ -1909,7 +1964,7 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
-        )}
+        ))}
       </AnimatePresence>
 
       {/* MUVAFFAQIYATLI TO'LOV OYNASI */}
