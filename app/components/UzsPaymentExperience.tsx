@@ -1,7 +1,7 @@
 'use client';
-import {useEffect,useState,useCallback} from 'react';
+import {useEffect,useState,useCallback,useRef} from 'react';
 import {motion,AnimatePresence} from 'framer-motion';
-import {AlertCircle,Check,CheckCheck,Clock3,Copy,ExternalLink,Headphones,LoaderCircle,ShieldCheck,Wallet,X,RefreshCw} from 'lucide-react';
+import {AlertCircle,Check,CheckCheck,Clock3,Copy,ExternalLink,Headphones,LoaderCircle,ShieldCheck,Wallet,X} from 'lucide-react';
 import PaymentQrMethods from './PaymentQrMethods';
 
 type OrderStatus='PENDING'|'REVIEW'|'PAID'|'DECLINED'|'EXPIRED';
@@ -38,7 +38,9 @@ export default function UzsPaymentExperience({
   const [copied,setCopied]=useState<'card'|'amount'|null>(null);
   const [serverExpires,setServerExpires]=useState(expiresAt||'');
   const [serverCreated,setServerCreated]=useState(createdAt||'');
-  const finalPaid=useCallback(()=>{try{localStorage.removeItem('tahrir_pending_uzs_order');}catch{}onPaid();},[onPaid]);
+  const paidRef=useRef(onPaid);
+  useEffect(()=>{paidRef.current=onPaid;},[onPaid]);
+  const finalPaid=useCallback(()=>{try{localStorage.removeItem('tahrir_pending_uzs_order');}catch{}paidRef.current();},[]);
   useEffect(()=>{
     let active=true;
     let finished=false;
