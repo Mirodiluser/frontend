@@ -53,6 +53,6 @@ export default function UzsTopupPanel({apiUrl,balance,onCheckout}:Props){
     {busy?<Loader2 className="w-4 h-4 animate-spin"/>:<ArrowRight className="w-4 h-4"/>}
     {needsMinimum?'2 000 soʻmga davom etish':'Toʻlovga oʻtish'}
   </button>
-  <p className="text-xs text-center text-[var(--text-muted)]">Toʻlov buyurtmasi 5 daqiqa amal qiladi. Faqat ko'rsatilgan aniq summani toʻlang.</p>
+  <p className="text-xs text-center text-[var(--text-muted)]">Toʻlov buyurtmasi 30 daqiqa amal qiladi. Faqat ko'rsatilgan aniq summani toʻlang.</p>
  </div>;
 }
