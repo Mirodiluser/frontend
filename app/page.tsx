@@ -172,7 +172,7 @@ export default function Home() {
   ];
 
   const [pageInfo, setPageInfo] = useState<{ pages: number; requiredCoins: number; processingMode?: 'instant' | 'background' } | null>(null);
-  const [spellJob, setSpellJob] = useState<{id:string; filename:string;status:'queued'|'processing'|'ready'|'downloading'|'failed';progress:number;error?:string}|null>(null);
+  const [spellJob, setSpellJob] = useState<{id:string; filename:string;status:'queued'|'processing'|'ready'|'downloading'|'failed';progress:number;error?:string;warning?:string;unverifiedWords?:number}|null>(null);
   const [isCountingPages, setIsCountingPages] = useState(false);
 
   const [converterFile, setConverterFile] = useState<File | null>(null);
@@ -659,7 +659,7 @@ export default function Home() {
         }
         if (['queued','processing','ready','failed'].includes(data.status)) {
           setSpellJob(j => j?.id===spellJob.id ? {
-            ...j,status:data.status,progress:Number(data.progress)||0,error:data.error||undefined
+            ...j,status:data.status,progress:Number(data.progress)||0,error:data.error||undefined,warning:data.warning||undefined,unverifiedWords:Number(data.unverifiedWords)||0
           }:j);
         }
       } catch {
@@ -686,11 +686,12 @@ export default function Home() {
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
       a.href=url;
-      a.download='tahrirlangan_'+job.filename;
+      const partial=res.headers.get('x-spellcheck-partial')==='true';
+      a.download=(partial?'qisman_':'tahrirlangan_')+job.filename;
       document.body.appendChild(a);a.click();a.remove();
       window.setTimeout(()=>URL.revokeObjectURL(url),60000);
       setSpellJob(null);
-      addToast('success','DOCX tayyor!','Hujjat yuklandi. Toʻlov fayl yuborilgach hisoblanadi.');
+      addToast(partial?'warning':'success',partial?'DOCX qisman tekshirildi':'DOCX tayyor!',partial?'Ayrim soʻzlar AI tomonidan tekshirilmadi. Natija bepul, pul yechilmadi.':'Hujjat yuklandi. Toʻlov fayl yuborilgach hisoblanadi.');
       await loadUserWallet();
       window.setTimeout(()=>{void loadUserWallet();},1200);
     } catch (e) {
@@ -1344,8 +1345,9 @@ export default function Home() {
                             transition={{duration:.65,ease:'easeOut'}} />
                         </div>
                         {spellJob.error&&<p className="text-xs text-[#984437] mt-2">{spellJob.error}</p>}
+                        {spellJob.warning&&<p className="text-xs text-[#984437] mt-2">{spellJob.warning}</p>}
                         <p className="text-xs text-[#765033] mt-2">
-                          {spellJob.status==='ready'?'Tayyor DOCX-ni yuklab oling — toʻlov faqat yuborish tugagach hisoblanadi.':
+                          {spellJob.status==='ready'?(spellJob.warning?'Hujjat qisman tekshirildi. Tekshirilmagan soʻzlar xato deb belgilanmadi va pul yechilmaydi.':'Tayyor DOCX-ni yuklab oling — toʻlov faqat yuborish tugagach hisoblanadi.'):
                           'Tekshiruv fon rejimida davom etadi. Jarayon muvaffaqiyatsiz boʻlsa, tangalar yechilmaydi.'}
                         </p>
                         {spellJob.status==='ready'&&(
