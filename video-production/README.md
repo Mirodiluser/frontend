@@ -31,6 +31,19 @@ bash scripts/qc.sh out/final/TAHRIR_AI_Premium_Cinematic_4K60.mp4
 To change anything: edit times/texts in `src/film.js`, preview with `still.cjs`, re-render only affected segments
 (delete the matching `out/seg/master_XXXXXX.mp4.done` files and run `render.cjs` again — finished segments are reused).
 
-## Narration
+## Narration (Uzbek, via transcript-tts MCP)
+`scripts/voiceover.py` connects to the **transcript-tts** MCP server (github.com/ShevinuM/transcript-tts — Microsoft Edge neural TTS,
+voice `uz-UZ-SardorNeural`) over stdio, calls its `text_to_speech` tool for each of the 13 segments in `voiceover/tts_segments.json`
+(brand names spelled phonetically for correct pronunciation), adapts the speaking rate so every segment fits its scene, levels the voice
+and writes `out/audio/voice.wav`. `scripts/mux_hd.sh` then ducks the music under the voice and embeds Uzbek subtitles.
+```bash
+git clone https://github.com/ShevinuM/transcript-tts /home/user/shevinum/transcript-tts   # TRANSCRIPT_TTS_SERVER overrides the path
+pip install edge-tts "mcp[cli]>=2.0.0"
+python3 scripts/voiceover.py && python3 scripts/srt.py && bash scripts/mux_hd.sh
+```
+Network: the host `speech.platform.bing.com` must be allowed. Behind an HTTPS proxy, edge-tts needs `proxy=` passed to
+`edge_tts.Communicate` (a 2-line change in the server's `text_to_speech`; the stock server only works without a proxy).
+
+### Human narrator (optional)
 If a professional Uzbek voice recording is made from `voiceover/script_uz.md`, save it as `out/audio/voice.wav` (48 kHz) and run
 `scripts/mux.sh` — the music is side-chain ducked under the voice automatically.

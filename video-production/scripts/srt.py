@@ -6,9 +6,12 @@ def sec(s):
 def ts(x):
     h = int(x // 3600); m = int(x % 3600 // 60); s = x % 60
     return f"{h:02d}:{m:02d}:{int(s):02d},{int(round((s - int(s)) * 1000)):03d}"
+import json, os
+TIM = json.load(open('out/audio/vo/timing.json')) if os.path.exists('out/audio/vo/timing.json') else None
 cues = []
-for r in rows:
+for ri, r in enumerate(rows):
     _, tm, txt, _ = r.split('|'); a, b = [sec(x.strip()) for x in tm.split('–')]
+    if TIM: a, b = TIM[ri]['start'], TIM[ri]['start'] + TIM[ri]['speech'] + 0.25  # follow the recorded narration
     sents0 = [s.strip() for s in re.split(r'(?<=[.!?])\s+', txt.strip()) if s.strip()]
     sents = []
     for s0 in sents0:  # long sentences → chunks at commas / dashes (≤ 84 chars per cue)
