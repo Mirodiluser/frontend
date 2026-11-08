@@ -5,10 +5,11 @@ Each segment is fitted to its scene window via voice_settings.speed, then placed
 import json, os, subprocess, urllib.request
 import numpy as np, soundfile as sf
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-OUT = os.path.join(ROOT, 'out', 'audio', 'el'); os.makedirs(OUT, exist_ok=True)
 cfg = json.load(open(os.path.join(ROOT, 'voiceover', 'tts_segments.json'), encoding='utf-8'))
 VOICE = os.environ.get('EL_VOICE', 'onwK4e9ZLuTAKqWW03F9')  # Daniel — Steady Broadcaster
 KEY = os.environ.get('ELEVEN_API_KEY', 'proxy-injected')
+OUT = os.path.join(ROOT, 'out', 'audio', 'el', VOICE); os.makedirs(OUT, exist_ok=True)  # cache per voice
+START_SPEED = json.loads(os.environ.get('EL_SPEEDS', '{}'))  # optional per-segment starting speeds
 def tts(text, speed, prev, nxt, path):
     body = {'text': text, 'model_id': 'eleven_v4', 'language_code': 'uz', 'previous_text': prev, 'next_text': nxt,
             'voice_settings': {'stability': 0.55, 'similarity_boost': 0.8, 'style': 0.15, 'use_speaker_boost': True, 'speed': speed}}
@@ -18,7 +19,7 @@ def tts(text, speed, prev, nxt, path):
     return float(subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path]))
 segs = cfg['segments']; timing = []
 for i, s in enumerate(segs):
-    win = s['end'] - s['start']; speed = 0.97; path = os.path.join(OUT, f'seg{i:02d}.mp3')
+    win = s['end'] - s['start']; speed = START_SPEED.get(str(i), 0.97); path = os.path.join(OUT, f'seg{i:02d}.mp3')
     prev = segs[i - 1]['text'] if i else ''; nxt = segs[i + 1]['text'] if i + 1 < len(segs) else ''
     meta = path + '.json'; cached = os.path.exists(meta) and json.load(open(meta)).get('text') == s['text']
     if cached:
