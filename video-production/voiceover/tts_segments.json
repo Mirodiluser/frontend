@@ -2,18 +2,70 @@
   "voice": "uz-UZ-SardorNeural",
   "note": "Text for speech synthesis. Brand/tech names are written phonetically so the Uzbek neural voice pronounces them correctly; on-screen spelling stays unchanged.",
   "segments": [
-    {"start": 1.6, "end": 11.0, "text": "Tahrir Ey-Ay — oʻzbek tilidagi matnlar va hujjatlar bilan ishlashni osonlashtiruvchi zamonaviy raqamli platforma."},
-    {"start": 15.2, "end": 35.4, "text": "Platformada toʻrtta asosiy vosita bor. Kirill-Lotin vositasi matnni bir zumda oʻgiradi. Di-O-Si-Iks Transliteyshn Pro butun Vord hujjatini oʻgiradi. Imlo Tahrirchi imlo xatolarini belgilaydi, Fayl Konverter esa fayllarni boshqa formatga oʻtkazadi. Pullik xizmatlar shaxsiy balans orqali hisoblanadi."},
-    {"start": 36.6, "end": 53.4, "text": "Ishni roʻyxatdan oʻtishdan boshlaymiz. Yuqoridagi «Kirish» tugmasini bosing va «Roʻyxatdan oʻtish»ni tanlang. Ismingizni, elektron pochta yoki telefon raqamingizni kiriting, kamida olti belgidan iborat parol yarating va tugmani bosing."},
-    {"start": 54.2, "end": 56.6, "text": "Hisobingiz tayyor."},
-    {"start": 57.6, "end": 66.4, "text": "Keyingi safar «Kirish» tugmasini bosib, elektron pochta yoki telefon raqamingiz va parolingiz bilan hisobingizga kirasiz."},
-    {"start": 72.2, "end": 99.4, "text": "Kirill-Lotin boʻlimida avval yoʻnalishni tanlang. Matnni kiriting yoki buferdan qoʻying — natija darhol chiqadi. «Nusxa olish» tugmasi tayyor matnni nusxalaydi. Almashtirish tugmasi yoʻnalishni Lotindan Kirillga oʻzgartiradi. Shubhali soʻz chiqsa, uni «Ey-Ay bilan aniqlash» tugmasi orqali tekshirish mumkin."},
-    {"start": 100.6, "end": 126.4, "text": "Di-O-Si-Iks Transliteyshn Pro butun Vord hujjatini oʻgiradi. Yoʻnalishni tanlang va faylni yuklang — narx sahifalar soniga qarab avtomatik hisoblanadi. Oʻgirish jarayonida sarlavhalar, roʻyxatlar va jadvallar oʻz joyida qoladi. Tayyor fayl kompyuteringizga yuklab olinadi."},
-    {"start": 127.6, "end": 158.6, "text": "Imlo Tahrirchi Vord hujjatidagi imlo xatolarini topishga yordam beradi. Faylni yuklang — sahifalar soni va xizmat narxi avtomatik koʻrsatiladi. «Tekshirishni boshlash» tugmasini bosgach, hujjat serverda tekshiriladi. Taxminiy xato soʻzlar sariq rang bilan belgilanadi, matnning qolgan qismi esa oʻzgarmaydi. Tayyor hujjatni yuklab oling va xatolarni oʻzingiz tuzating."},
-    {"start": 159.6, "end": 180.6, "text": "Fayl Konverter bepul. Faylni yuklang, kerakli formatni tanlang va «Oʻgirish va yuklab olish» tugmasini bosing. Vord, Pi-Di-Ef, matn, Ech-Ti-Em-El va rasm fayllari qabul qilinadi. Murakkab hujjatlarda natija tanlangan format va rejimga bogʻliq."},
-    {"start": 181.6, "end": 192.2, "text": "Joriy balansingiz sahifaning yuqori qismida koʻrinadi. Uni toʻldirish uchun «Hisobni toʻldirish» tugmasini bosing va kerakli summani kiriting."},
-    {"start": 192.6, "end": 229.0, "text": "«Toʻlovga oʻtish» tugmasini bosganingizda tizim buyurtma yaratadi va aniq summa hamda qabul qiluvchi kartani koʻrsatadi. Maʼlumotlarni nusxalang va bank ilovangiz orqali aynan shu summani oʻtkazing. Buyurtma oʻttiz daqiqa amal qiladi. Saytga qaytib, «Men toʻladim» tugmasini bosing — u biroz vaqtdan keyin paydo boʻladi. Administrator tushumni tekshirib tasdiqlagach, mablagʻ balansingizga qoʻshiladi. Muammo boʻlsa, qoʻllab-quvvatlash xizmatiga murojaat qiling."},
-    {"start": 230.2, "end": 251.4, "text": "Maxfiylik haqida. Hujjatlar faqat siz tanlagan vazifani bajarish uchun qayta ishlanadi va doimiy arxivda saqlanmaydi. Katta hujjatlar uchun vaqtinchalik texnik fayllar yaratilishi mumkin. Hisob ishlashi uchun zarur maʼlumotlar saqlanadi, Ey-Ay tekshiruvida esa matnning ayrim qismlari tashqi Ey-Ay xizmatida qayta ishlanishi mumkin."},
-    {"start": 255.0, "end": 263.5, "text": "Tahrir Ey-Ay — oʻzbek matnlari va hujjatlari bilan ishlashning zamonaviy usuli. Tahrir-ey-ay nuqta uz."}
+    {
+      "start": 1.6,
+      "end": 11.0,
+      "text": "Tahrir Ey-Ay — oʻzbek tilidagi matnlar va hujjatlar bilan ishlashni osonlashtiruvchi zamonaviy raqamli platforma."
+    },
+    {
+      "start": 15.2,
+      "end": 35.4,
+      "text": "Platformada toʻrtta asosiy vosita bor. Kirill-Lotin matnni bir zumda oʻgiradi, Di-O-Si-Iks Transliteyshn Pro esa butun Vord hujjatini. Imlo Tahrirchi imlo xatolarini belgilaydi, Fayl Konverter esa formatni oʻzgartiradi. Pullik xizmatlar shaxsiy balans orqali hisoblanadi."
+    },
+    {
+      "start": 36.6,
+      "end": 53.4,
+      "text": "Ishni roʻyxatdan oʻtishdan boshlaymiz. Yuqoridagi «Kirish» tugmasini bosing va «Roʻyxatdan oʻtish»ni tanlang. Ismingizni, elektron pochta yoki telefon raqamingizni kiriting, kamida olti belgidan iborat parol yarating va tugmani bosing."
+    },
+    {
+      "start": 54.2,
+      "end": 56.6,
+      "text": "Hisobingiz tayyor."
+    },
+    {
+      "start": 57.6,
+      "end": 66.4,
+      "text": "Keyingi safar «Kirish» tugmasini bosib, elektron pochta yoki telefon raqamingiz va parolingiz bilan hisobingizga kirasiz."
+    },
+    {
+      "start": 72.2,
+      "end": 99.4,
+      "text": "Kirill-Lotin boʻlimida avval yoʻnalishni tanlang. Matnni kiriting yoki buferdan qoʻying — natija darhol chiqadi. «Nusxa olish» tugmasi tayyor matnni nusxalaydi. Almashtirish tugmasi yoʻnalishni Lotindan Kirillga oʻzgartiradi. Shubhali soʻz chiqsa, uni «Ey-Ay bilan aniqlash» tugmasi orqali tekshirish mumkin."
+    },
+    {
+      "start": 100.6,
+      "end": 126.4,
+      "text": "Di-O-Si-Iks Transliteyshn Pro butun Vord hujjatini oʻgiradi. Yoʻnalishni tanlang va faylni yuklang — narx sahifalar soniga qarab avtomatik hisoblanadi. Oʻgirish jarayonida sarlavhalar, roʻyxatlar va jadvallar oʻz joyida qoladi. Tayyor fayl kompyuteringizga yuklab olinadi."
+    },
+    {
+      "start": 127.6,
+      "end": 158.6,
+      "text": "Imlo Tahrirchi Vord hujjatidagi imlo xatolarini topishga yordam beradi. Faylni yuklang — sahifalar soni va xizmat narxi avtomatik koʻrsatiladi. «Tekshirishni boshlash» tugmasini bosgach, hujjat serverda tekshiriladi. Taxminiy xato soʻzlar sariq rang bilan belgilanadi, matnning qolgan qismi esa oʻzgarmaydi. Tayyor hujjatni yuklab oling va xatolarni oʻzingiz tuzating."
+    },
+    {
+      "start": 159.6,
+      "end": 180.6,
+      "text": "Fayl Konverter bepul. Faylni yuklang, kerakli formatni tanlang va «Oʻgirish va yuklab olish» tugmasini bosing. Vord, Pi-Di-Ef, matn, Ech-Ti-Em-El va rasm fayllari qabul qilinadi. Murakkab hujjatlarda natija tanlangan format va rejimga bogʻliq."
+    },
+    {
+      "start": 181.6,
+      "end": 192.2,
+      "text": "Joriy balansingiz sahifaning yuqori qismida koʻrinadi. Uni toʻldirish uchun «Hisobni toʻldirish» tugmasini bosing va kerakli summani kiriting."
+    },
+    {
+      "start": 192.6,
+      "end": 229.0,
+      "text": "«Toʻlovga oʻtish» tugmasini bosganingizda tizim buyurtma yaratadi va aniq summa hamda qabul qiluvchi kartani koʻrsatadi. Maʼlumotlarni nusxalang va bank ilovangiz orqali aynan shu summani oʻtkazing. Buyurtma oʻttiz daqiqa amal qiladi. Saytga qaytib, «Men toʻladim» tugmasini bosing — u biroz vaqtdan keyin paydo boʻladi. Administrator tushumni tekshirib tasdiqlagach, mablagʻ balansingizga qoʻshiladi. Muammo boʻlsa, qoʻllab-quvvatlash xizmatiga murojaat qiling."
+    },
+    {
+      "start": 230.2,
+      "end": 251.4,
+      "text": "Maxfiylik haqida. Hujjatlar faqat siz tanlagan vazifa uchun qayta ishlanadi va doimiy arxivda saqlanmaydi. Katta hujjatlarda vaqtinchalik texnik fayllar yaratilishi mumkin. Hisob uchun zarur maʼlumotlar saqlanadi, Ey-Ay tekshiruvida esa matnning ayrim qismlari tashqi xizmatda qayta ishlanishi mumkin."
+    },
+    {
+      "start": 255.0,
+      "end": 263.5,
+      "text": "Tahrir Ey-Ay — oʻzbek matnlari va hujjatlari bilan ishlashning zamonaviy usuli. Tahrir-ey-ay nuqta uz."
+    }
   ]
 }

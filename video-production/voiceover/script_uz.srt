@@ -1,237 +1,232 @@
 1
-00:00:01,600 --> 00:00:09,120
+00:00:01,600 --> 00:00:10,159
 TAHRIR AI — oʻzbek tilidagi matnlar va hujjatlar bilan
 ishlashni osonlashtiruvchi zamonaviy raqamli platforma.
 
 2
-00:00:15,200 --> 00:00:17,758
+00:00:15,200 --> 00:00:18,138
 Platformada toʻrtta asosiy vosita bor.
 
 3
-00:00:17,808 --> 00:00:20,572
-Kirill ↔ Latin matnni bir zumda oʻgiradi.
+00:00:18,188 --> 00:00:21,361
+Kirill ↔ Latin matnni bir zumda oʻgiradi,
 
 4
-00:00:20,622 --> 00:00:24,347
+00:00:21,411 --> 00:00:25,292
 DOCX Transliteration PRO
-butun Word hujjatini oʻgiradi.
+esa butun Word hujjatini.
 
 5
-00:00:24,397 --> 00:00:27,229
+00:00:25,342 --> 00:00:31,896
 Imlo Tahrirchi imlo xatolarini belgilaydi,
+Fayl Konverter esa formatni oʻzgartiradi.
 
 6
-00:00:27,279 --> 00:00:31,004
-Fayl Konverter esa fayllarni
-boshqa formatga oʻtkazadi.
-
-7
-00:00:31,054 --> 00:00:34,504
+00:00:31,946 --> 00:00:35,906
 Pullik xizmatlar shaxsiy
 balans orqali hisoblanadi.
 
-8
-00:00:36,600 --> 00:00:39,197
+7
+00:00:36,600 --> 00:00:39,402
 Ishni roʻyxatdan oʻtishdan boshlaymiz.
 
-9
-00:00:39,247 --> 00:00:44,074
+8
+00:00:39,452 --> 00:00:44,656
 Yuqoridagi «Kirish» tugmasini bosing
 va «Roʻyxatdan oʻtish»ni tanlang.
 
-10
-00:00:44,124 --> 00:00:48,463
+9
+00:00:44,706 --> 00:00:49,384
 Ismingizni, elektron pochta yoki
 telefon raqamingizni kiriting,
 
-11
-00:00:48,513 --> 00:00:52,712
+10
+00:00:49,434 --> 00:00:53,962
 kamida olti belgidan iborat
 parol yarating va tugmani bosing.
 
-12
-00:00:54,200 --> 00:00:56,488
+11
+00:00:54,200 --> 00:00:56,124
 Hisobingiz tayyor.
 
-13
-00:00:57,600 --> 00:01:00,489
+12
+00:00:57,600 --> 00:01:00,630
 Keyingi safar «Kirish» tugmasini bosib,
 
-14
-00:01:00,539 --> 00:01:05,840
+13
+00:01:00,680 --> 00:01:06,238
 email yoki telefon raqamingiz va
 parolingiz bilan hisobingizga kirasiz.
 
-15
-00:01:12,200 --> 00:01:15,727
+14
+00:01:12,200 --> 00:01:16,048
 Kirill ↔ Latin boʻlimida
 avval yoʻnalishni tanlang.
 
-16
-00:01:15,777 --> 00:01:20,075
+15
+00:01:16,098 --> 00:01:20,787
 Matnni kiriting yoki buferdan
 qoʻying — natija darhol chiqadi.
 
-17
-00:01:20,125 --> 00:01:23,371
+16
+00:01:20,837 --> 00:01:24,379
 «Nusxa olish» tugmasi
 tayyor matnni nusxalaydi.
 
-18
-00:01:23,421 --> 00:01:27,860
+17
+00:01:24,429 --> 00:01:29,271
 Almashtirish tugmasi yoʻnalishni
 Lotindan Kirillga oʻzgartiradi.
 
-19
-00:01:27,910 --> 00:01:33,400
+18
+00:01:29,321 --> 00:01:35,309
 Shubhali soʻz chiqsa, uni «AI bilan
 aniqlash» tugmasi orqali tekshirish mumkin.
 
-20
-00:01:40,600 --> 00:01:44,507
+19
+00:01:40,600 --> 00:01:44,874
 DOCX Transliteration PRO
 butun Word hujjatini oʻgiradi.
 
-21
-00:01:44,557 --> 00:01:50,982
+20
+00:01:44,924 --> 00:01:51,950
 Yoʻnalishni tanlang va faylni yuklang — narx
 sahifalar soniga qarab avtomatik hisoblanadi.
 
-22
-00:01:51,032 --> 00:01:56,378
+21
+00:01:52,000 --> 00:01:57,847
 Oʻgirish jarayonida sarlavhalar,
 roʻyxatlar va jadvallar oʻz joyida qoladi.
 
-23
-00:01:56,428 --> 00:01:59,544
+22
+00:01:57,897 --> 00:02:01,306
 Tayyor fayl kompyuteringizga
 yuklab olinadi.
 
-24
-00:02:07,600 --> 00:02:12,500
+23
+00:02:07,600 --> 00:02:12,565
 Imlo Tahrirchi Word hujjatidagi imlo
 xatolarini topishga yordam beradi.
 
-25
-00:02:12,550 --> 00:02:17,449
+24
+00:02:12,615 --> 00:02:17,580
 Faylni yuklang — sahifalar soni va
 xizmat narxi avtomatik koʻrsatiladi.
 
-26
-00:02:17,499 --> 00:02:22,469
+25
+00:02:17,630 --> 00:02:22,666
 «Tekshirishni boshlash» tugmasini
 bosgach, hujjat serverda tekshiriladi.
 
-27
-00:02:22,519 --> 00:02:26,024
+26
+00:02:22,716 --> 00:02:26,269
 Taxminiy xato soʻzlar sariq
 rang bilan belgilanadi,
 
-28
-00:02:26,074 --> 00:02:28,673
+27
+00:02:26,319 --> 00:02:28,953
 matnning qolgan qismi esa oʻzgarmaydi.
 
-29
-00:02:28,723 --> 00:02:32,856
+28
+00:02:29,003 --> 00:02:33,191
 Tayyor hujjatni yuklab oling
 va xatolarni oʻzingiz tuzating.
 
-30
-00:02:39,600 --> 00:02:41,199
+29
+00:02:39,600 --> 00:02:41,428
 Fayl Konverter bepul.
 
-31
-00:02:41,249 --> 00:02:42,377
+30
+00:02:41,478 --> 00:02:42,769
 Faylni yuklang,
 
-32
-00:02:42,427 --> 00:02:48,030
+31
+00:02:42,819 --> 00:02:49,207
 kerakli formatni tanlang va «Oʻgirish
 va Yuklab olish» tugmasini bosing.
 
-33
-00:02:48,080 --> 00:02:52,271
+32
+00:02:49,257 --> 00:02:54,035
 Word, PDF, matn, HTML va
 rasm fayllari qabul qilinadi.
 
-34
-00:02:52,321 --> 00:02:57,296
+33
+00:02:54,085 --> 00:02:59,758
 Murakkab hujjatlarda natija
 tanlangan format va rejimga bogʻliq.
 
-35
-00:03:01,600 --> 00:03:05,304
+34
+00:03:01,600 --> 00:03:05,457
 Joriy balansingiz sahifaning
 yuqori qismida koʻrinadi.
 
-36
-00:03:05,354 --> 00:03:11,352
+35
+00:03:05,507 --> 00:03:11,753
 Uni toʻldirish uchun «Hisobni toʻldirish»
 tugmasini bosing va kerakli summani kiriting.
 
-37
-00:03:12,600 --> 00:03:20,681
+36
+00:03:12,600 --> 00:03:21,195
 «Toʻlovga oʻtish» tugmasini bosganingizda tizim buyurtma
 yaratadi va aniq summa hamda qabul qiluvchi kartani koʻrsatadi.
 
-38
-00:03:20,731 --> 00:03:25,898
+37
+00:03:21,245 --> 00:03:26,742
 Maʼlumotlarni nusxalang va bank ilovangiz
 orqali aynan shu summani oʻtkazing.
 
-39
-00:03:25,948 --> 00:03:28,270
+38
+00:03:26,792 --> 00:03:29,264
 Buyurtma oʻttiz daqiqa amal qiladi.
 
-40
-00:03:28,320 --> 00:03:29,219
+39
+00:03:29,314 --> 00:03:30,272
 Saytga qaytib,
 
-41
-00:03:29,269 --> 00:03:33,962
+40
+00:03:30,322 --> 00:03:35,315
 «Men toʻladim» tugmasini bosing — u
 biroz vaqtdan keyin paydo boʻladi.
 
-42
-00:03:34,012 --> 00:03:39,382
+41
+00:03:35,365 --> 00:03:41,078
 Administrator tushumni tekshirib tasdiqlagach,
 mablagʻ balansingizga qoʻshiladi.
 
-43
-00:03:39,432 --> 00:03:43,448
+42
+00:03:41,128 --> 00:03:45,401
 Muammo boʻlsa, qoʻllab-quvvatlash
 xizmatiga murojaat qiling.
 
-44
-00:03:50,200 --> 00:03:51,221
+43
+00:03:50,200 --> 00:03:51,457
 Maxfiylik haqida.
 
-45
-00:03:51,271 --> 00:03:57,459
-Hujjatlar faqat siz tanlagan vazifani bajarish
-uchun qayta ishlanadi va doimiy arxivda saqlanmaydi.
+44
+00:03:51,507 --> 00:03:58,225
+Hujjatlar faqat siz tanlagan vazifa uchun
+qayta ishlanadi va doimiy arxivda saqlanmaydi.
 
-46
-00:03:57,509 --> 00:04:01,807
-Katta hujjatlar uchun vaqtinchalik
+45
+00:03:58,275 --> 00:04:03,224
+Katta hujjatlarda vaqtinchalik
 texnik fayllar yaratilishi mumkin.
 
+46
+00:04:03,274 --> 00:04:06,301
+Hisob uchun zarur maʼlumotlar saqlanadi,
+
 47
-00:04:01,857 --> 00:04:04,895
-Hisob ishlashi uchun zarur
-maʼlumotlar saqlanadi,
+00:04:06,351 --> 00:04:12,761
+AI tekshiruvida esa matnning ayrim qismlari
+tashqi xizmatda qayta ishlanishi mumkin.
 
 48
-00:04:04,945 --> 00:04:10,440
-AI tekshiruvida esa matnning ayrim qismlari
-tashqi AI xizmatida qayta ishlanishi mumkin.
-
-49
-00:04:15,000 --> 00:04:21,773
+00:04:15,000 --> 00:04:22,128
 TAHRIR AI — oʻzbek matnlari va hujjatlari
 bilan ishlashning zamonaviy usuli.
 
-50
-00:04:21,823 --> 00:04:22,760
+49
+00:04:22,178 --> 00:04:23,167
 tahrirai.uz
 
