@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>TAHRIR AI — film</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="stage">
+  <!-- ============ BACKGROUND (film space) ============ -->
+  <div id="bg">
+    <div class="bg-base"></div>
+    <div class="bg-blob b1"></div><div class="bg-blob b2"></div><div class="bg-blob b3"></div>
+    <svg class="bg-lines" viewBox="0 0 1920 1080" preserveAspectRatio="none"><path id="bgl1" d="M-40 760 C 380 640, 720 900, 1100 760 S 1700 560, 1980 640"/><path id="bgl2" d="M-40 860 C 420 760, 760 1000, 1180 840 S 1720 700, 1980 760"/><path id="bgl3" d="M-40 300 C 300 220, 640 380, 1020 280 S 1640 140, 1980 220"/></svg>
+    <div id="dust"></div>
+  </div>
+
+  <!-- ============ WORLD (camera space) ============ -->
+  <div id="world">
+    <!-- floating depth fragments (opening / finale / transitions) -->
+    <div id="frags"></div>
+
+    <div id="browser">
+      <div class="br-chrome">
+        <div class="br-dots"><i></i><i></i><i></i></div>
+        <div class="br-tab"><span class="br-fav"></span><span>Tahrir AI (TahrirAi) — Oʻzbek imlo tekshiruvi va DOCX</span></div>
+        <div class="br-url"><span class="br-lock"></span><b>tahrirai.uz</b></div>
+        <div class="br-demo">Namoyish · demo maʼlumotlar</div>
+      </div>
+      <div class="br-view" id="view">
+        <div class="site-bg">
+          <div class="hb-base"></div><div class="hb-light l"></div><div class="hb-light r"></div>
+          <svg class="hb-waves" viewBox="0 0 1440 916" preserveAspectRatio="none"><path d="M0 640 C 260 560, 520 720, 820 630 S 1260 520, 1440 580" /><path d="M0 700 C 300 620, 560 790, 880 690 S 1280 600, 1440 650" /><path d="M0 760 C 320 700, 600 840, 920 760 S 1300 690, 1440 720" /></svg>
+          <div class="hb-quill" id="hbQuill"></div>
+          <div class="hb-vig"></div>
+        </div>
+        <div class="site" id="site">
+          <header class="hdr" id="hdr">
+            <div class="brand" id="brand"><div class="brand-mark" id="brandMark"><div></div></div><span class="brand-title">TAHRIR<span>.AI</span></span></div>
+            <div class="nav">
+              <button class="navlink" id="navGuide"><i data-i="book-open" data-s="15"></i><span>Qoʻllanma</span></button>
+              <div class="nav-acc-wrap" id="accWrap">
+                <button class="navlink" id="navLogin"><i data-i="log-in" data-s="15"></i><span>Kirish</span></button>
+                <button class="navlink nav-bal" id="navBal"><i data-i="coins" data-s="16"></i><span id="navBalTxt">0 soʻm</span></button>
+                <div class="nav-acc" id="navAcc"><div class="nav-acc-ic"><i data-i="user" data-s="14"></i></div><span>Demo Foydalanuvchi</span><i data-i="log-out" data-s="14" class="dim"></i></div>
+              </div>
+              <button class="nav-shop" id="navShop"><i data-i="coins" data-s="15"></i><span>Hisobni toʻldirish</span></button>
+            </div>
+          </header>
+
+          <section class="hero" id="hero">
+            <p class="eyebrow" id="eyebrow">TAHRIR.AI (Tahrir AI) — o‘zbek matnlari uchun onlayn vositalar</p>
+            <h1 class="h1" id="h1"><span class="hw">Mukammal</span> <span class="hw">grammatika</span> <span class="hw it">va</span> <span class="hw it">matn</span> <span class="hw it">sofligi</span></h1>
+            <p class="lead" id="lead">Katta hajmdagi ilmiy dissertatsiya va maqolalarni bir zumda Kirilldan Lotinga oʻgirish, imlo xatolarini sunʼiy intellekt orqali tahrirlash hamda fayllarni erkin konvertatsiya qilish.</p>
+            <div class="about-pill" id="aboutPill"><span>TAHRIR.AI (TahrirAi) haqida</span><i data-i="arrow-right" data-s="16"></i></div>
+            <div class="divider"><span></span></div>
+          </section>
+
+          <div class="shell" id="shell">
+            <div class="tabs" id="tabs">
+              <div class="tab-pill" id="tabPill"></div>
+              <button class="tab" id="tabTr"><i data-i="refresh-cw" data-s="19"></i><span>Kirill ↔ Latin</span></button>
+              <button class="tab" id="tabCo"><i data-i="sparkles" data-s="19"></i><span>Imlo Tahrirchi</span></button>
+              <button class="tab" id="tabCv"><i data-i="file-type" data-s="19"></i><span>Fayl Konverter</span></button>
+            </div>
+            <div class="tab-content" id="tabContent">
+              <!-- ===== Kirill ↔ Latin ===== -->
+              <div class="tc" id="tcTr">
+                <div class="dir-row" id="dirRow"><span id="dirL">KIRILL</span><button class="dir-swap" id="dirSwap"><i data-i="arrow-left-right" data-s="16"></i></button><span id="dirR">LOTIN</span></div>
+                <div class="tr-grid">
+                  <div class="panel tr-panel" id="trIn">
+                    <div class="tp-head"><span class="tp-lab"><i class="dot"></i><b id="trInLab">KIRILL MATNI</b></span><span class="tp-tools"><span class="chip" id="trPaste"><i data-i="clipboard-paste" data-s="14"></i> Qoʻyish</span><span class="chip" id="trCount">0 belgi (0 soʻz)</span></span></div>
+                    <div class="tp-body" id="trInText"><span class="ph" id="trInPh">Kirill alifbosidagi matnni bu yerga kiriting...</span></div>
+                    <div class="gate" id="trGate"><div class="gate-ic"><i data-i="lock" data-s="20"></i></div><p class="g1">Avtorizatsiya kerak</p><p class="g2">Kirill ↔ Latin vositasidan foydalanish uchun tizimga kiring yoki roʻyxatdan oʻting.</p><span class="gate-btn">Kirish</span></div>
+                  </div>
+                  <div class="panel tr-panel" id="trOut">
+                    <div class="tp-head"><span class="tp-lab"><i class="dot d2"></i><b id="trOutLab">LOTIN NATIJASI</b></span><span class="chip copy" id="trCopy"><span id="trCopyIc"></span><span id="trCopyTx">Nusxa olish</span></span></div>
+                    <div class="tp-body" id="trOutText"><span class="ph it" id="trOutPh">Natija bu yerda aks etadi...</span></div>
+                    <div class="ai-strip" id="aiStrip"><p><b>1 ta shubhali soʻz: </b><span>Ritsar</span></p><span class="ai-btn" id="aiBtn"><span id="aiBtnIc"></span>AI bilan aniqlash</span></div>
+                    <div class="sweep" id="trSweep"></div>
+                  </div>
+                </div>
+                <!-- DOCX Transliteration PRO -->
+                <section class="dxp" id="dxp">
+                  <div class="dxp-head"><span class="dxp-mark"><i data-i="file-text" data-s="24"></i></span><div><div class="dxp-t"><h3>DOCX Transliteration PRO</h3><span class="dxp-badge"><i data-i="sparkles" data-s="12"></i> Premium</span></div><p>Kirill ↔ Lotin: Word hujjatining shriftlari, jadvallari va tuzilishini saqlagan holda</p></div></div>
+                  <div class="dxp-body">
+                    <div><p class="dxp-lab">Oʻgirish yoʻnalishi</p><div class="dxp-dir"><span class="dxp-opt" id="dxC2L">Kirill → Lotin</span><span class="dxp-opt" id="dxL2C">Lotin → Kirill</span></div></div>
+                    <div><p class="dxp-lab">DOCX faylni yuklang</p>
+                      <div class="dxp-drop" id="dxDrop"><span class="dxp-up" id="dxUpIc"></span>
+                        <div class="dxp-empty" id="dxEmpty"><p class="b">Hujjatni tashlang yoki faylni tanlang</p><p class="s">.DOCX · 25 MB gacha · format saqlanadi</p></div>
+                        <div class="dxp-file" id="dxFile"><p class="b">maqola_kirill.docx</p><p class="s">48 KB · DOCX</p></div>
+                        <span class="dxp-rm" id="dxRm"><i data-i="trash-2" data-s="17"></i></span>
+                      </div></div>
+                    <div class="dxp-price" id="dxPrice"><span id="dxPriceIc"></span><span id="dxPriceTx">Narx hisoblanmoqda...</span></div>
+                    <div class="dxp-act"><span class="dxp-submit" id="dxSubmit"><span id="dxSubIc"></span><span id="dxSubTx">DOCX o‘girish</span><i data-i="arrow-right" data-s="17" id="dxSubArr"></i></span></div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- ===== Imlo Tahrirchi ===== -->
+              <div class="tc" id="tcCo">
+                <div class="panel big-panel">
+                  <div class="bp-head"><h3><i data-i="file-text" data-s="16" class="acc"></i>Hujjatni tahrir qilish (Dissertatsiya, Maqola, Referat)</h3></div>
+                  <div class="drop" id="coDrop">
+                    <div class="tool-ic"><i data-i="cloud-upload" data-s="26"></i></div>
+                    <div id="coEmpty"><h4>Hujjatni bu yerga tashlang yoki <u>faylni tanlang</u></h4><p class="dp">Faqat .DOCX formatidagi Word fayli qabul qilinadi.</p></div>
+                    <div id="coFile" class="filebox"><div class="fchip"><i data-i="circle-check" data-s="16" class="acc"></i><div><p class="fn">referat_maktab.docx</p><p class="fs">36 KB</p></div><span class="rm"><i data-i="trash-2" data-s="14"></i></span></div>
+                      <div class="counting" id="coCount"><span class="spin" id="coSpin"></span><span>Sahifalar soni hisoblanmoqda...</span></div>
+                      <div class="price-pill" id="coPrice"><i data-i="coins" data-s="14"></i><span>Narxi: </span><b class="masked" id="coMask"></b></div>
+                    </div>
+                    <div class="job" id="coJob"><div class="job-h"><b id="coJobT">Hujjat tekshirilmoqda</b><span id="coJobP">0%</span></div><div class="job-bar"><i id="coJobBar"></i></div><p id="coJobNote">Tekshiruv fon rejimida davom etadi. Jarayon muvaffaqiyatsiz boʻlsa, mablagʻ yechilmaydi.</p><span class="job-dl" id="coJobDl">Tayyor DOCX-ni yuklab olish</span></div>
+                    <span class="primary" id="coStart"><span id="coStartIc"></span><span id="coStartTx">Tekshirishni boshlash</span><i data-i="arrow-right" data-s="16" id="coStartArr"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== Fayl Konverter ===== -->
+              <div class="tc" id="tcCv">
+                <div class="panel big-panel">
+                  <div class="bp-head"><h3><i data-i="file-type" data-s="16" class="acc"></i>Universal Fayl Konverter</h3><span class="free">Cheksiz Bepul</span></div>
+                  <div class="drop" id="cvDrop">
+                    <div class="tool-ic"><i data-i="cloud-upload" data-s="26"></i></div>
+                    <div id="cvEmpty"><h4>Hujjat yoki rasmni bu yerga tashlang yoki <u>faylni tanlang</u></h4><p class="dp">PDF, Word, ODT, RTF, HTML, TXT va rasmlar qabul qilinadi.</p></div>
+                    <div id="cvFile" class="filebox wide"><div class="fchip w"><div class="fl"><i data-i="circle-check" data-s="16" class="acc"></i><div><p class="fn">hisobot.docx</p><p class="fs">124 KB</p></div></div><span class="rm"><i data-i="trash-2" data-s="14"></i></span></div>
+                      <div class="fmtbox"><p>Qaysi formatga oʻgirish kerak?</p><div class="fmts"><span class="fmt" id="fmPdf">PDF (.pdf)</span><span class="fmt" id="fmDocx">Word (.docx)</span><span class="fmt" id="fmTxt">Matn (.txt)</span></div></div>
+                    </div>
+                    <span class="primary" id="cvGo"><span id="cvGoIc"></span><span id="cvGoTx">Oʻgirish va Yuklab olish</span><i data-i="arrow-right" data-s="16" id="cvGoArr"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="guar"><span><i data-i="shield-check" data-s="16"></i>Format imkon qadar saqlanadi</span><span>•</span><span>Akademik standartlar boʻyicha tahrir</span></div>
+        </div>
+
+        <!-- toasts (fixed top-right of the site) -->
+        <div class="toasts" id="toasts">
+          <div class="toast" id="toastReg"><i data-i="circle-check" data-s="18"></i><div><b>Muvaffaqiyatli!</b><p>Yangi hisob ochildi!</p></div></div>
+          <div class="toast" id="toastLogin"><i data-i="circle-check" data-s="18"></i><div><b>Muvaffaqiyatli!</b><p>Tizimga xush kelibsiz!</p></div></div>
+          <div class="toast" id="toastDocx"><i data-i="circle-check" data-s="18"></i><div><b>DOCX tayyor!</b><p>Hujjat muvaffaqiyatli tayyorlandi va yuklandi.</p></div></div>
+                  </div>
+
+        <!-- ===== Payment success modal (page.tsx paymentSuccess) ===== -->
+        <div class="modal-back" id="succBack"><div class="succ" id="succ"><div class="succ-ic"><i data-i="badge-check" data-s="32"></i></div><h3>Toʻlov muvaffaqiyatli!</h3><p>Hisobingiz muvaffaqiyatli toʻldirildi. Tizim avtomatik tarzda soʻm mablagʻini faollashtirdi.</p><div class="succ-amt"><i data-i="coins" data-s="20"></i><span>+5&nbsp;000 soʻm qoʻshildi</span></div><span class="succ-btn" id="succBtn">Ajoyib, davom etish</span></div></div>
+
+        <!-- ===== Auth modal ===== -->
+        <div class="modal-back" id="authBack">
+          <div class="auth" id="auth">
+            <div class="auth-x"><i data-i="x" data-s="16"></i></div>
+            <div class="auth-top"><div class="auth-ic"><i data-i="user" data-s="22"></i></div>
+              <h3 id="authTitle">Akkauntga kirish</h3><p id="authSub">Balansingiz va xizmatlardan foydalanishni boshqaring</p></div>
+            <div class="auth-form">
+              <div class="fld fld-name" id="fName"><label>Ismingiz</label><div class="inp" id="iName"><i data-i="user" data-s="16"></i><span class="val" id="vName"></span><span class="ph" id="pName">Masalan: Sardor Aliyev</span><span class="caret"></span></div></div>
+              <div class="fld" id="fId"><label>Gmail yoki Telefon raqam</label><div class="inp" id="iId"><i data-i="mail" data-s="16"></i><span class="val" id="vId"></span><span class="ph" id="pId">example@gmail.com yoki 998901234567</span><span class="caret"></span></div></div>
+              <div class="fld" id="fPw"><label>Parol</label><div class="inp" id="iPw"><i data-i="lock" data-s="16"></i><span class="val pw" id="vPw"></span><span class="ph" id="pPw">Kamida 6 ta belgi</span><span class="caret"></span><span class="eye"><i data-i="eye" data-s="16"></i></span></div></div>
+              <span class="auth-btn" id="authBtn"><span id="authBtnIc"></span><span id="authBtnTx">Tizimga kirish</span><i data-i="arrow-right" data-s="16" id="authBtnArr"></i></span>
+            </div>
+            <div class="auth-foot" id="authFoot"><span id="authQ">Akkauntingiz yoʻqmi?</span> <b id="authSw">Roʻyxatdan oʻtish</b></div>
+          </div>
+        </div>
+
+        <!-- ===== Top-up modal (UzsTopupPanel inside shop modal) ===== -->
+        <div class="modal-back shopback" id="shopBack">
+          <div class="shop" id="shop">
+            <div class="shop-h"><div><h2><i data-i="coins" data-s="20" class="acc"></i>Hisobni toʻldirish</h2><p>Hisobingizni kerakli miqdorda toʻldiring</p></div><span class="xbtn"><i data-i="x" data-s="16"></i></span></div>
+            <div class="shop-b">
+              <div class="bal-card"><p>Shaxsiy hisobingiz</p><div><i data-i="wallet" data-s="24" class="acc"></i><span class="bal-num" id="shopBal">0 <small>soʻm</small></span></div></div>
+              <label class="amt-lab">Hisobni toʻldirish summasi</label>
+              <div class="amt" id="amtInp"><span class="val" id="amtVal"></span><span class="ph" id="amtPh">Summani kiriting</span><span class="caret"></span><span class="cur">soʻm</span></div>
+              <div class="sumrow"><span>Toʻlov uchun</span><strong id="sumVal">— soʻm</strong></div>
+              <span class="pay-btn" id="payBtn"><span id="payBtnIc"></span>Toʻlovga oʻtish</span>
+              <p class="shop-note">Toʻlov buyurtmasi 30 daqiqa amal qiladi. Faqat koʻrsatilgan aniq summani toʻlang.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Payment experience (UzsPaymentExperience) ===== -->
+        <div class="modal-back payback" id="payBack">
+          <section class="pay" id="pay">
+            <div class="pay-glow"></div>
+            <div class="pay-h"><div class="pay-hl"><div class="pay-wal"><i data-i="wallet" data-s="20"></i></div><div><p class="kick">TAHRIR AI · TOʻLOV</p><h2 id="payTitle">Toʻlov kutilmoqda</h2></div></div><span class="xbtn"><i data-i="x" data-s="18"></i></span></div>
+            <div class="pay-pending" id="payPending">
+              <div class="pay-grid">
+                <div class="pay-left">
+                  <div class="pcard amt-card" id="pcAmt"><p>Aynan shu summani toʻlang</p><div class="pa"><span class="big">5&nbsp;000 <small>soʻm</small></span><span class="cp" id="cpAmt"></span></div><div class="clock"><i data-i="clock-3" data-s="14"></i><span>Buyurtma muddati: <b id="payClock">30:00</b></span></div></div>
+                  <div class="pcard card-card" id="pcCard"><p>Qabul qiluvchi karta <em class="demo-tag">namuna</em></p><div class="pa"><span class="mono">8600 0000 0000 0000</span><span class="cp box" id="cpCard"></span></div></div>
+                  <div class="pinfo"><i data-i="shield-check" data-s="16"></i><span>Click, Payme yoki kartaga oʻtkazing. Toʻlovdan soʻng «Men toʻladim» tugmasini bosing. Administrator bankdagi tushumni tekshiradi.</span></div>
+                </div>
+                <div class="qr-box"><div class="qr-h"><i data-i="qr-code" data-s="16"></i><b>QR orqali toʻlov</b></div><div class="qr-sw"><span class="on">Click</span><span>Payme</span></div><div class="qr-img"><div class="qr-fake" id="qrFake"></div><em class="demo-tag">namuna</em></div></div>
+              </div>
+              <div class="pay-cta">
+                <div class="delay" id="payDelay"><span class="spin" id="paySpin"></span><span>«Men toʻladim» tugmasi <b id="payDelayN">25</b> soniyadan keyin chiqadi</span></div>
+                <span class="paid-btn" id="paidBtn"><span id="paidBtnIc"></span>Men toʻladim</span>
+              </div>
+            </div>
+            <div class="pay-review" id="payReview">
+              <div class="rv-ic"><span class="rv-ping" id="rvPing"></span><span class="spin big" id="rvSpin"></span></div>
+              <h3>Iltimos, biroz kuting</h3>
+              <p>Toʻlovingiz tekshirishga yuborildi. Administrator bankdagi tushumni tasdiqlagach balansingiz yangilanadi.</p>
+              <div class="rv-pill"><i data-i="clock-3" data-s="16"></i>Administrator javobi kutilmoqda</div>
+              <p class="rv-sm">5&nbsp;000 soʻm · Natija avtomatik yangilanadi</p>
+            </div>
+            <div class="pay-paid" id="payPaid">
+              <div class="pd-ic" id="pdIc"><i data-i="check-check" data-s="40"></i></div>
+              <h3>Toʻlov tasdiqlandi!</h3>
+            </div>
+            <div class="pay-f"><p id="payFoot">Holat avtomatik tekshiriladi. Oynani yopish buyurtmani bekor qilmaydi.</p><span class="sup"><i data-i="headphones" data-s="16"></i> Qoʻllab-quvvatlash <i data-i="external-link" data-s="14"></i></span></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FX (screen space hero objects) ============ -->
+  <div id="fx">
+    <!-- Opening -->
+    <div id="open">
+      <svg id="openSvg" viewBox="0 0 1920 1080">
+        <defs>
+          <linearGradient id="gGold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F5E3B3"/><stop offset=".5" stop-color="#E6C16E"/><stop offset="1" stop-color="#B58A2E"/></linearGradient>
+          <filter id="fGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <!-- one continuous calligraphic stroke that ends as a quill -->
+        <path id="opStroke" d="M 300 640 C 420 600, 520 700, 640 650 C 740 610, 760 540, 700 520 C 650 505, 620 560, 680 590 C 760 630, 860 560, 920 520 C 980 480, 1010 430, 990 400" fill="none" stroke="url(#gGold)" stroke-width="2.2" stroke-linecap="round" filter="url(#fGlow)"/>
+        <g id="opQuill" transform="translate(960 470)">
+          <path id="opQ1" d="M 70 -110 C 20 -100, -40 -50, -60 30 L -70 70" fill="none" stroke="url(#gGold)" stroke-width="2.4" stroke-linecap="round"/>
+          <path id="opQ2" d="M 70 -110 C 80 -40, 30 30, -48 40" fill="none" stroke="url(#gGold)" stroke-width="2.4" stroke-linecap="round"/>
+          <path id="opQ3" d="M 40 -60 L -40 40 M 25 -10 L -10 -5 M 50 -45 L 5 -40" fill="none" stroke="url(#gGold)" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+        </g>
+        <path id="opLine" d="M 560 760 L 1360 760" stroke="url(#gGold)" stroke-width="1.2" opacity=".7"/>
+      </svg>
+      <div id="opMark" class="big-mark"><div><span id="opMarkIc"></span></div></div>
+      <h1 id="opTitle" class="op-title"></h1>
+      <p id="opSub" class="op-sub">Oʻzbek matnlari va hujjatlari uchun zamonaviy platforma.</p>
+    </div>
+
+    <!-- Word document stage (DOCX PRO + Imlo + privacy) -->
+    <div id="docStage">
+      <div class="doc-shadow" id="docShadow"></div>
+      <div class="docwin" id="docWin">
+        <div class="docbar"><span class="docbar-ic"><i data-i="file-text" data-s="15"></i></span><span id="docName">maqola_kirill.docx</span><span class="docbar-r" id="docTag">Asl hujjat</span></div>
+        <div class="paper" id="paper">
+          <div class="doc-layer" id="docCyr"></div>
+          <div class="doc-layer" id="docLat"></div>
+          <div class="doc-layer" id="docImlo"></div>
+          <div class="scanline" id="scanline"></div>
+        </div>
+      </div>
+      <div class="cmp-lab" id="cmpA"><b>AVVAL</b><span>Кирилл</span></div>
+      <div class="cmp-lab" id="cmpB"><b>KEYIN</b><span>Lotin</span></div>
+    </div>
+
+    <!-- file token (picked file flying in, downloads) -->
+    <div class="ftoken" id="ftoken"><span class="ft-ic" id="ftIc"></span><div><b id="ftName">maqola_kirill.docx</b><small id="ftSize">48 KB</small></div><span class="ft-dl" id="ftDl"></span></div>
+
+    <!-- converter transformation -->
+    <div id="cvStage">
+      <div class="cvcard" id="cvA"><div class="cv-sheet"><i></i><i></i><i class="s"></i><i></i><i class="s"></i></div><b>DOCX</b><small>hisobot.docx</small></div>
+      <div class="cvcard pdf" id="cvB"><div class="cv-sheet"><i></i><i></i><i class="s"></i><i></i><i class="s"></i></div><b>PDF</b><small>hisobot.pdf</small></div>
+      <div class="cv-beam" id="cvBeam"></div>
+      <div class="cv-formats" id="cvFormats"></div>
+      <div class="cv-mode" id="cvMode"><p class="t">PDF → Word rejimi</p><div class="g"><span class="on">Tahrirlanadigan Word</span><span>Asl koʻrinish</span></div><p class="n" id="cvModeN">Matnni oʻzgartirish mumkin; murakkab bezak farq qilishi mumkin.</p></div>
+    </div>
+
+    <!-- bank app hint (illustrative only) -->
+    <div class="bankhint" id="bankHint">
+      <div class="phone"><div class="ph-notch"></div><div class="ph-scr"><p class="k">Bank ilovasi</p><div class="ph-row"><span>Summa</span><b>5&nbsp;000 soʻm</b></div><div class="ph-row"><span>Karta</span><b>8600 •••• 0000</b></div><span class="ph-btn">Oʻtkazish</span></div></div>
+      <p class="bh-cap">Oʻtkazmani oʻzingizga qulay bank ilovasida bajarasiz</p>
+    </div>
+
+    <!-- declined state info -->
+    <div class="declined" id="declined"><div class="dc-ic"><i data-i="circle-alert" data-s="30"></i></div><div><h4>Toʻlov rad etildi</h4><p>Agar pul oʻtkazgan boʻlsangiz, qoʻllab-quvvatlashga yozing. Administrator xato qarorni qayta koʻrib chiqishi mumkin.</p><span class="sup"><i data-i="headphones" data-s="15"></i> Qoʻllab-quvvatlash</span></div></div>
+
+    <!-- privacy -->
+    <div id="privacy">
+      <svg id="pvSvg" viewBox="0 0 1920 1080"></svg>
+      <div class="pv-core" id="pvCore"><div class="pv-doc"><i></i><i></i><i class="s"></i><i></i><i class="s"></i><i></i></div><div class="pv-shield" id="pvShield"><span id="pvShieldIc"></span></div></div>
+      <div class="pv-title" id="pvTitle"><p class="k">TAHRIR AI</p><h2>Maxfiylik va xavfsizlik</h2></div>
+      <div class="pv-items" id="pvItems"></div>
+    </div>
+
+    <!-- finale -->
+    <div id="finale">
+      <div id="fnMark" class="big-mark"><div><span id="fnMarkIc"></span></div></div>
+      <h1 id="fnTitle" class="op-title"></h1>
+      <p id="fnSub" class="op-sub">Oʻzbek matnlari va hujjatlari bilan ishlashning zamonaviy usuli.</p>
+      <p id="fnUrl" class="fn-url">tahrirai.uz</p>
+    </div>
+  </div>
+
+  <!-- ============ UI OVERLAY (screen space) ============ -->
+  <div id="ui">
+    <div id="focus"><div class="f-glow"></div><div class="f-ring" id="fRing"></div><div class="f-scan" id="fScan"></div></div>
+    <div id="guide" class="gcard"><div class="g-kick" id="gKick"></div><h3 class="g-h" id="gTitle"></h3><p class="g-p" id="gText"></p><div class="g-seg" id="gSeg"></div></div>
+    <div id="rail" class="rail"><p class="r-kick" id="rKick"></p><h3 class="r-h" id="rTitle"></h3><div class="r-list" id="rList"></div></div>
+    <div id="caption" class="caption"><span class="c-k" id="cK"></span><span class="c-t" id="cT"></span></div>
+    <div id="chapter"><span id="chNum"></span><span id="chName"></span><div class="ch-seg" id="chSeg"></div></div>
+    <div id="ffwd"><span id="ffIc"></span><span>Kutish vaqti tezlashtirilgan</span></div>
+    <div id="cursor"><svg viewBox="0 0 34 34" width="34" height="34"><path d="M4 3 L4 26 L10.5 20 L15 30 L19 28.2 L14.6 18.6 L23.5 18.4 Z" fill="#FFF6EA" stroke="#2D1D12" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+    <div id="ripples"></div>
+    <div id="demoBadge">Interfeys rekonstruksiyasi · namoyish rejimi</div>
+  </div>
+  <div id="grade"><div class="vig"></div><div class="grain" id="grain"></div><div class="fade" id="fade"></div></div>
+</div>
+<script src="icons.gen.js"></script>
+<script src="data.gen.js"></script>
+<script src="engine.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
