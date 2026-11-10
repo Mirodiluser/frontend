@@ -18,6 +18,8 @@ type Props={
 };
 const LIMIT=25*1024*1024;
 const MAX_PAGES=200;
+// DOCX Transliteration PRO tariff (Imlo Tahrirchi pricing is separate).
+const translitUzs=(pages:number)=>pages<=15?0:pages*300;
 const showSize=(bytes:number)=>bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.ceil(bytes/1024)+' KB';
 
 export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openShop,reloadWallet,notify}:Props){
@@ -52,7 +54,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
       if(!response.ok)throw new Error(data.error||'Sahifalar hisoblanmadi');
       if(!Number.isSafeInteger(data.pages)||!Number.isSafeInteger(data.requiredCoins)||
          data.pages<1||data.pages>MAX_PAGES||data.requiredCoins<1)throw new Error('Sahifalar soni notoʻgʻri');
-      if(!controller.signal.aborted)setQuote({pages:data.pages,requiredCoins:data.requiredCoins,requiredUzs:Number.isSafeInteger(data.requiredUzs)?data.requiredUzs:data.pages*400});
+      if(!controller.signal.aborted)setQuote({pages:data.pages,requiredCoins:data.requiredCoins,requiredUzs:Number.isSafeInteger(data.requiredUzs)?data.requiredUzs:translitUzs(data.pages)});
     }catch(e){
       if(!controller.signal.aborted){
         setQuote(null);
@@ -84,9 +86,9 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
   const convert=async()=>{
     if(!file||!quote||loadingQuote||working)return;
     if(!loggedIn){openLogin();return;}
-    if(coins<(UZS_MODE?(quote.requiredUzs??quote.pages*400):quote.requiredCoins)){
+    if(coins<(UZS_MODE?(quote.requiredUzs??translitUzs(quote.pages)):quote.requiredCoins)){
       notify('warning',UZS_MODE?'Mablagʻ yetarli emas':'Tangalar yetarli emas',
-        (UZS_MODE?(quote.requiredUzs??quote.pages*400)+' soʻm':quote.requiredCoins+' tanga')+' kerak. Hozirgi balans: '+coins+'.');
+        (UZS_MODE?(quote.requiredUzs??translitUzs(quote.pages))+' soʻm':quote.requiredCoins+' tanga')+' kerak. Hozirgi balans: '+coins+'.');
       openShop();return;
     }
     setError('');setWorking(true);
@@ -135,6 +137,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
             <span className="tahrir-docxpro-badge"><Sparkles size={12}/> Premium</span>
           </div>
           <p className="text-sm mt-1">Kirill ↔ Lotin: Word hujjatining shriftlari, jadvallari va tuzilishini saqlagan holda</p>
+          {UZS_MODE&&<p className="text-xs mt-1">15 sahifagacha bepul. 16 sahifadan boshlab barcha sahifalar uchun 300 soʻm/sahifa.</p>}
         </div>
       </div>
 
@@ -190,7 +193,7 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
             {loadingQuote ? (
               <><Loader2 size={16} className="animate-spin" /><span>Narx hisoblanmoqda...</span></>
             ) : quote ? (
-              <><Coins size={18}/><span>Narxi: <strong>{UZS_MODE?(quote.requiredUzs??quote.pages*400)+' soʻm':quote.requiredCoins+' tanga'}</strong></span></>
+              <><Coins size={18}/><span>Narxi: <strong>{UZS_MODE?((quote.requiredUzs??translitUzs(quote.pages))===0?'Bepul':(quote.requiredUzs??translitUzs(quote.pages))+' soʻm'):quote.requiredCoins+' tanga'}</strong></span></>
             ) : null}
           </div>
         )}
