@@ -117,7 +117,9 @@ export default function DocxTranslitPro({apiUrl,loggedIn,coins,openLogin,openSho
       link.download=(direction==='cyr2lat'?'lotin_':'kirill_')+name+'.docx';
       document.body.appendChild(link);link.click();link.remove();
       window.setTimeout(()=>URL.revokeObjectURL(url),60000);
-      notify('success','DOCX tayyor!','Hujjat muvaffaqiyatli tayyorlandi va yuklandi.');
+      const aiFallback=response.headers.get('X-Translit-AI-Fallback')==='1';
+      if(aiFallback)notify('warning','DOCX tayyor — AI aniqlashtirishsiz','Hujjat asosiy qoidalar bilan oʻgirildi. Gemini vaqtincha ishlamadi, mablagʻ yechilmadi. Noaniq soʻzlarni tekshiring.');
+      else notify('success','DOCX tayyor!','Hujjat muvaffaqiyatli tayyorlandi va yuklandi.');
       await reloadWallet().catch(()=>{});
       window.setTimeout(() => { void reloadWallet().catch(()=>{}); }, 1200);
     }catch(e){
