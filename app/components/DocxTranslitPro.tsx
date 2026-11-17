@@ -17,7 +17,7 @@ type Props={
   notify:(kind:'success'|'error'|'warning'|'info',title:string,message:string)=>void;
 };
 const LIMIT=25*1024*1024;
-const MAX_PAGES=200;
+const MAX_PAGES=300;
 // DOCX Transliteration PRO tariff (Imlo Tahrirchi pricing is separate).
 const translitUzs=(pages:number)=>pages<=15?0:pages*300;
 const showSize=(bytes:number)=>bytes>=1048576?(bytes/1048576).toFixed(1)+' MB':Math.ceil(bytes/1024)+' KB';
